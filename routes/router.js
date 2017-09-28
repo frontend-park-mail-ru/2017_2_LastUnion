@@ -21,7 +21,10 @@ class Router {
     return window.location.pathname;
   }
 
-  loadPage(url = null) {
+  loadPage(url) {
+    console.log(url);
+    if (!url || typeof url === 'undefined')
+      url = null;
     if(url == null) {
       url = this.getUrl();
     }
@@ -30,6 +33,7 @@ class Router {
       url = url.substring(0, url.length - 1);
     }
 
+
     const route = this.urls.filter(function(urlObj) {
       // later better use regular expression
       // but here we just compare 2 strings
@@ -37,6 +41,7 @@ class Router {
       return (urlObj.url == url);
     })[0];
 
+    console.log(route);
     if(this.CurrentRoute) {
       this.CurrentRoute.destroy();
     }

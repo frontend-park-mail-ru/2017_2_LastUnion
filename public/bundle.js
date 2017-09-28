@@ -91,7 +91,10 @@ class Router {
     return window.location.pathname;
   }
 
-  loadPage(url = null) {
+  loadPage(url) {
+    console.log(url);
+    if (!url || typeof url === 'undefined')
+      url = null;
     if(url == null) {
       url = this.getUrl();
     }
@@ -100,6 +103,7 @@ class Router {
       url = url.substring(0, url.length - 1);
     }
 
+
     const route = this.urls.filter(function(urlObj) {
       // later better use regular expression
       // but here we just compare 2 strings
@@ -107,6 +111,7 @@ class Router {
       return (urlObj.url == url);
     })[0];
 
+    console.log(route);
     if(this.CurrentRoute) {
       this.CurrentRoute.destroy();
     }
@@ -238,16 +243,19 @@ const DOM = __webpack_require__(5);
 class View {
 
   constructor() {
-    this.router = new Router();
     this.dom = new DOM();
   }
 
+
+
   SetEvent(links) {
     links.forEach(link => {
+      console.log(link.selector);
       link.selector.addEventListener('click', event => {
         event.preventDefault();
-        console.log(link);
-        this.router.LoadPage(link.route);
+        const router = new Router();
+        window.history.pushState({},'',link.route);
+        router.loadPage(link.route);
       });
     });
   }
@@ -347,7 +355,7 @@ __p += '<!-- HEADER -->\n<div class="container">\n    <nav class="navbar navbar-
  if (loggedin) { ;
 __p += '\n                    <p class="nav navbar-nav navbar-text">You scope is: 2517</p>\n                  ';
  } ;
-__p += '\n\n                    <li><a href="/score">Top gamers</a></li>\n\n                </ul>\n                <ul class="nav navbar-nav navbar-right">\n                    ';
+__p += '\n\n                    <li><a href="/scores">Top gamers</a></li>\n\n                </ul>\n                <ul class="nav navbar-nav navbar-right">\n                    ';
  if (loggedin) { ;
 __p += '\n                      <li><a href="/logout">Log out</a></li>\n                    ';
  } else { ;
@@ -473,6 +481,7 @@ class ScoresView extends View {
   }
 
   DestroyPage() {
+    console.log('destroy');
     this.dom.loadedBlocks['Header'].hidden = 'true';
     this.dom.loadedBlocks['Scores'].hidden = 'true';
   }

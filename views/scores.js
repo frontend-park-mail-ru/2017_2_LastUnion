@@ -34,6 +34,7 @@ class ScoresView extends View {
   }
 
   DestroyPage() {
+    console.log('destroy');
     this.dom.loadedBlocks['Header'].hidden = 'true';
     this.dom.loadedBlocks['Scores'].hidden = 'true';
   }

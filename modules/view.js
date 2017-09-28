@@ -6,16 +6,19 @@ const DOM = require('./dom');
 class View {
 
   constructor() {
-    this.router = new Router();
     this.dom = new DOM();
   }
 
+
+
   SetEvent(links) {
     links.forEach(link => {
+      console.log(link.selector);
       link.selector.addEventListener('click', event => {
         event.preventDefault();
-        console.log(link);
-        this.router.LoadPage(link.route);
+        const router = new Router();
+        window.history.pushState({},'',link.route);
+        router.loadPage(link.route);
       });
     });
   }
