@@ -1,6 +1,6 @@
 var express = require('express');
 var app = express();
-
+var glob = require('glob');
 var main = './public/';
 var bootstrap = './node_modules/bootstrap/dist/';
 
@@ -26,10 +26,13 @@ app.locals.ENV_DEVELOPMENT = env == 'development';
 
 // view engine setup
 var path = require('path');
-app.set('views', path.join(__dirname, 'views'));
+app.set('views', path.normalize(__dirname + '/') + 'views/templates');
 app.set('view engine', 'ejs');
 
-
+// var renderer = glob.sync(path.normalize(__dirname +'/views/templates/header/header.js'));
+// renderer.forEach(function(render){
+//   require(render)(app);
+// });
 
 /// catch 404 and forward to error handler
 app.use(function(req, res, next) {

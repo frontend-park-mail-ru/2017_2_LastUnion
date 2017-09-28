@@ -26,7 +26,9 @@ class View {
   }
 
   DestroyPage() {
-    
+
   }
 
 }
+
+module.exports = View;

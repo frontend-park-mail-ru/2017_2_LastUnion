@@ -27,7 +27,7 @@ class MenuView extends View {
   }
 
   DestroyPage() {
-    
+
   }
 
 }
