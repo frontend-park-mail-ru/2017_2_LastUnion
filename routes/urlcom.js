@@ -12,11 +12,13 @@ class UrlCom {
     if(!this.instance) {
       this.instance = new this.view();
     }
+
     this.instance.ConstructPage();
   }
 
   Destroy() {
     this.instance.DestroyPage();
+    this.instance = null;
   }
 
 }

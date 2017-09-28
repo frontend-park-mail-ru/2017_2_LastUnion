@@ -3,7 +3,8 @@ var app = express();
 var glob = require('glob');
 var main = './public/';
 var bootstrap = './node_modules/bootstrap/dist/';
-
+var logger = require('morgan');
+app.use(logger('dev'));
 const routes = [
   '/',
   '/signin',
@@ -19,6 +20,8 @@ routes.forEach(r => {
 
 app.use('/css', express.static(bootstrap + 'css'));
 app.use('/js', express.static(bootstrap + 'js'));
+app.use('/css', express.static('./public/css'));
+app.use('/img', express.static('./public/img'));
 
 var env = process.env.NODE_ENV || 'development';
 app.locals.ENV = env;
