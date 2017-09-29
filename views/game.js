@@ -1,6 +1,8 @@
 'use strict'
 
 const View = require('../modules/view');
+const Header = require('./templates/header/header');
+const Game = require('./templates/game/game');
 
 class GameView extends View {
 
@@ -9,19 +11,10 @@ class GameView extends View {
     if(GameView._instance) {
       return GameView._instance;
     }
-    console.log(this);
     GameView._instance = this;
-
+    this.dom.insertDom(this.body, Header.rend({loggedin : false}), 'Header');
+    this.dom.insertDom(this.body, Game.rend({}), 'Game');
     this.ListenLinks();
-  }
-
-  ListenLinks() {
-    var SelEvent = [];
-    //SelEvent.push({'selector': this.dom.gID("menu-play"), 'route' : "/play"});
-    //SelEvent.push({'selector': this.dom.gID("menu-signin"), 'route' : "/signin"});
-    //SelEvent.push({'selector': this.dom.gID("menu-signup"), 'route' : "/signup"});
-    //SelEvent.push({'selector': this.dom.gID("menu-score"), 'route' : "/score"});
-    this.SetEvent(SelEvent);
   }
 
   ConstructPage() {

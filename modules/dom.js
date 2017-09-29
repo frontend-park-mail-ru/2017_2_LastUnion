@@ -1,9 +1,5 @@
 'use strict'
 
-const Header = require('../views/templates/header/header');
-const Game = require('../views/templates/game/game');
-const Scores = require('../views/templates/scores/scores');
-
 class DOM {
 
   constructor() {
@@ -13,25 +9,15 @@ class DOM {
     DOM._instance = this;
 
     this.loadedBlocks = {};
-    const body = this.gTAG('body')[0];
-
-    this.insertDom(body, Header.rend({loggedin : false}), 'Header');
-    this.insertDom(body, Game.rend({}), 'Game');
-    this.insertDom(body, Scores.rend({
-      'users' : ['John','Mike','Bredd','Jarel','Jane'],
-      'place' : ['1','2','3','4','5'],
-      'score' : ['999','888','777','666','555'],
-      'userplace' : '999',
-      'userscore' : '0',
-    }), 'Scores');
-
   }
 
   insertDom(parent, elem, id) {
-    elem.hidden = 'true';
-    parent.appendChild(elem);
-    this.loadedBlocks[id] = elem;
-
+    if (!this.loadedBlocks[id] || typeof this.loadedBlocks[id] === 'undefined') {
+      elem.hidden = 'true';
+      parent.appendChild(elem);
+      this.loadedBlocks[id] = elem;
+      console.log("Loaded " + id + " in DOM");
+    }
   }
 
   gID(id) {
