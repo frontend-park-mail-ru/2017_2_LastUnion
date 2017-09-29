@@ -60,7 +60,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 2);
+/******/ 	return __webpack_require__(__webpack_require__.s = 3);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -70,7 +70,7 @@
 "use strict";
 
 
-const urlcom = __webpack_require__(3);
+const urlcom = __webpack_require__(4);
 
 class Router {
 
@@ -132,7 +132,7 @@ module.exports = Router;
 
 
 const Router = __webpack_require__(0);
-const DOM = __webpack_require__(5);
+const DOM = __webpack_require__(6);
 
 class View {
 
@@ -180,12 +180,27 @@ module.exports = View;
 /* 2 */
 /***/ (function(module, exports, __webpack_require__) {
 
+module.exports = {
+  rend : function(params){
+    var template = __webpack_require__(7);
+    let html = template(params);
+    const elem = document.createElement('div');
+    elem.innerHTML = html;
+    return elem;
+  }
+}
+
+
+/***/ }),
+/* 3 */
+/***/ (function(module, exports, __webpack_require__) {
+
 const router = __webpack_require__(0);
 const R = new router();
 
 //const MenuView = require('./views/menu');
-const GameView = __webpack_require__(4);
-const ScoresView = __webpack_require__(12);
+const GameView = __webpack_require__(5);
+const ScoresView = __webpack_require__(10);
 // class SigninView {}
 // class SignupView {}
 // class AboutView {}
@@ -203,7 +218,7 @@ R.loadPage();
 
 
 /***/ }),
-/* 3 */
+/* 4 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -236,14 +251,14 @@ module.exports = UrlCom;
 
 
 /***/ }),
-/* 4 */
+/* 5 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
 const View = __webpack_require__(1);
-const Header = __webpack_require__(6);
+const Header = __webpack_require__(2);
 const Game = __webpack_require__(8);
 
 class GameView extends View {
@@ -276,7 +291,7 @@ module.exports = GameView;
 
 
 /***/ }),
-/* 5 */
+/* 6 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -313,21 +328,6 @@ class DOM {
 }
 
 module.exports = DOM;
-
-
-/***/ }),
-/* 6 */
-/***/ (function(module, exports, __webpack_require__) {
-
-module.exports = {
-  rend : function(params){
-    var template = __webpack_require__(7);
-    let html = template(params);
-    const elem = document.createElement('div');
-    elem.innerHTML = html;
-    return elem;
-  }
-}
 
 
 /***/ }),
@@ -388,56 +388,12 @@ return __p
 /* 10 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = {
-  rend : function(params){
-    var template = __webpack_require__(11);
-    let html = template(params);
-    const elem = document.createElement('div');
-    elem.innerHTML = html;
-    return elem;
-  }
-}
-
-
-/***/ }),
-/* 11 */
-/***/ (function(module, exports) {
-
-module.exports = function (obj) {
-obj || (obj = {});
-var __t, __p = '', __j = Array.prototype.join;
-function print() { __p += __j.call(arguments, '') }
-with (obj) {
-__p += '<!-- SCORES -->\n<div class="container">\n    <div class="panel panel-default">\n        <div class="panel-heading">Best GAMERS</div>\n        <table class="table">\n            <thead>\n                <tr>\n                    <th>#</th>\n                    <th>Username</th>\n                    <th>Scope</th>\n                </tr>\n            </thead>\n            <tbody>\n                ';
- for(var i=0; i<users.length; i++) { ;
-__p += '\n                <tr>\n                    <th scope="row">' +
-((__t = ( place[i] )) == null ? '' : __t) +
-'</th>\n                    <th>' +
-((__t = ( users[i] )) == null ? '' : __t) +
-'</th>\n                    <th>' +
-((__t = ( score[i] )) == null ? '' : __t) +
-'</th>\n                </tr>\n                ';
- } ;
-__p += '\n                <tr>\n                    <th scope="row">' +
-((__t = ( userplace )) == null ? '' : __t) +
-'</th>\n                    <th>YOU</th>\n                    <th>' +
-((__t = ( userscore )) == null ? '' : __t) +
-'</th>\n                </tr>\n            </tbody>\n        </table>\n    </div>\n</div>\n<!-- SCORES -->\n';
-
-}
-return __p
-}
-
-/***/ }),
-/* 12 */
-/***/ (function(module, exports, __webpack_require__) {
-
 "use strict";
 
 
 const View = __webpack_require__(1);
-const Header = __webpack_require__(6);
-const Scores = __webpack_require__(10);
+const Header = __webpack_require__(2);
+const Scores = __webpack_require__(11);
 
 class ScoresView extends View {
 
@@ -472,6 +428,50 @@ class ScoresView extends View {
 
 module.exports = ScoresView;
 
+
+/***/ }),
+/* 11 */
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports = {
+  rend : function(params){
+    var template = __webpack_require__(12);
+    let html = template(params);
+    const elem = document.createElement('div');
+    elem.innerHTML = html;
+    return elem;
+  }
+}
+
+
+/***/ }),
+/* 12 */
+/***/ (function(module, exports) {
+
+module.exports = function (obj) {
+obj || (obj = {});
+var __t, __p = '', __j = Array.prototype.join;
+function print() { __p += __j.call(arguments, '') }
+with (obj) {
+__p += '<!-- SCORES -->\n<div class="container">\n    <div class="panel panel-default">\n        <div class="panel-heading">Best GAMERS</div>\n        <table class="table">\n            <thead>\n                <tr>\n                    <th>#</th>\n                    <th>Username</th>\n                    <th>Scope</th>\n                </tr>\n            </thead>\n            <tbody>\n                ';
+ for(var i=0; i<users.length; i++) { ;
+__p += '\n                <tr>\n                    <th scope="row">' +
+((__t = ( place[i] )) == null ? '' : __t) +
+'</th>\n                    <th>' +
+((__t = ( users[i] )) == null ? '' : __t) +
+'</th>\n                    <th>' +
+((__t = ( score[i] )) == null ? '' : __t) +
+'</th>\n                </tr>\n                ';
+ } ;
+__p += '\n                <tr>\n                    <th scope="row">' +
+((__t = ( userplace )) == null ? '' : __t) +
+'</th>\n                    <th>YOU</th>\n                    <th>' +
+((__t = ( userscore )) == null ? '' : __t) +
+'</th>\n                </tr>\n            </tbody>\n        </table>\n    </div>\n</div>\n<!-- SCORES -->\n';
+
+}
+return __p
+}
 
 /***/ })
 /******/ ]);
