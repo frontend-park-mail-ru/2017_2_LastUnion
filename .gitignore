@@ -2,3 +2,12 @@ node_modules/
 public/components
 .nyc_output
 .sass-cache
+bower.json
+bundle.js
+gulpfile.js
+package-lock.json
+webpack.config.js
+.bowerrc
+.editorconfig
+.yo-rc.json
+public/bundle.js
