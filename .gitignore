@@ -5,7 +5,6 @@ public/components
 bower.json
 bundle.js
 gulpfile.js
-package.json
 package-lock.json
 webpack.config.js
 .bowerrc
