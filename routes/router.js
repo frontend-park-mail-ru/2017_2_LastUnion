@@ -22,7 +22,6 @@ class Router {
   }
 
   loadPage(url) {
-    console.log(url);
     if (!url || typeof url === 'undefined')
       url = null;
     if(url == null) {
@@ -41,12 +40,13 @@ class Router {
       return (urlObj.url == url);
     })[0];
 
-    console.log(route);
     if(this.CurrentRoute) {
-      this.CurrentRoute.destroy();
+      this.CurrentRoute.Destroy();
+      console.log("Destroyed previous page");
     }
 
     route.Load();
+    console.log("Loaded new page");
     this.CurrentRoute = route;
   }
 }
