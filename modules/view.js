@@ -7,17 +7,21 @@ class View {
 
   constructor() {
     this.dom = new DOM();
-    this.body = this.dom.gTAG('body')[0];
+    this.body = this.dom.gTAG(null, 'body')[0];
   }
 
   ListenLinks() {
     const SelEvent = [];
-    const Links = this.dom.gTAG("a");
-    for(let I=0; I < Links.length; I++)
-    {
-      SelEvent.push({'selector': Links[I], 'route' : Links[I].getAttribute("href")});
+    for(var obj in this.dom.loadedBlocks) {
+      if(!this.dom.loadedBlocks[obj].listened) {
+        const Links = this.dom.gTAG(this.dom.loadedBlocks[obj].html, "a");
+        for(let I=0; I < Links.length; I++)
+        {
+          SelEvent.push({'selector': Links[I], 'route' : Links[I].getAttribute("href")});
+        }
+        this.dom.loadedBlocks[obj].listened = true;
+      }
     }
-
     this.SetEvent(SelEvent);
   }
 

@@ -15,7 +15,7 @@ class DOM {
     if (!this.loadedBlocks[id] || typeof this.loadedBlocks[id] === 'undefined') {
       elem.hidden = 'true';
       parent.appendChild(elem);
-      this.loadedBlocks[id] = elem;
+      this.loadedBlocks[id] = { 'html' : elem, 'listened' : false };
       console.log("Loaded " + id + " in DOM");
     }
   }
@@ -24,8 +24,11 @@ class DOM {
     return document.getElementById(id);
   }
 
-  gTAG(tag) {
-    return document.getElementsByTagName(tag);
+  gTAG(parent, tag) {
+    if(!parent || typeof parent == 'undefined') {
+      parent = document;
+    }
+    return parent.getElementsByTagName(tag);
   }
 
 }
