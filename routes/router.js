@@ -42,11 +42,11 @@ class Router {
 
     if(this.CurrentRoute) {
       this.CurrentRoute.Destroy();
-      console.log("Destroyed previous page");
+      console.log("Destroyed page " + this.CurrentRoute.url);
     }
 
     route.Load();
-    console.log("Loaded new page");
+    console.log("Loaded new page: " + url);
     this.CurrentRoute = route;
   }
 }

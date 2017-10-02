@@ -112,11 +112,11 @@ class Router {
 
     if(this.CurrentRoute) {
       this.CurrentRoute.Destroy();
-      console.log("Destroyed previous page");
+      console.log("Destroyed page " + this.CurrentRoute.url);
     }
 
     route.Load();
-    console.log("Loaded new page");
+    console.log("Loaded new page: " + url);
     this.CurrentRoute = route;
   }
 }
@@ -138,17 +138,21 @@ class View {
 
   constructor() {
     this.dom = new DOM();
-    this.body = this.dom.gTAG('body')[0];
+    this.body = this.dom.gTAG(null, 'body')[0];
   }
 
   ListenLinks() {
     const SelEvent = [];
-    const Links = this.dom.gTAG("a");
-    for(let I=0; I < Links.length; I++)
-    {
-      SelEvent.push({'selector': Links[I], 'route' : Links[I].getAttribute("href")});
+    for(var obj in this.dom.loadedBlocks) {
+      if(!this.dom.loadedBlocks[obj].listened) {
+        const Links = this.dom.gTAG(this.dom.loadedBlocks[obj].html, "a");
+        for(let I=0; I < Links.length; I++)
+        {
+          SelEvent.push({'selector': Links[I], 'route' : Links[I].getAttribute("href")});
+        }
+        this.dom.loadedBlocks[obj].listened = true;
+      }
     }
-
     this.SetEvent(SelEvent);
   }
 
@@ -276,13 +280,13 @@ class GameView extends View {
 
   ConstructPage() {
     //console.log(this.dom.loadedBlocks['Header']);
-    this.dom.loadedBlocks['Header'].hidden = false;
-    this.dom.loadedBlocks['Game'].hidden = false;
+    this.dom.loadedBlocks['Header'].html.hidden = false;
+    this.dom.loadedBlocks['Game'].html.hidden = false;
   }
 
   DestroyPage() {
-    this.dom.loadedBlocks['Header'].hidden = 'true';
-    this.dom.loadedBlocks['Game'].hidden = 'true';
+    this.dom.loadedBlocks['Header'].html.hidden = 'true';
+    this.dom.loadedBlocks['Game'].html.hidden = 'true';
   }
 
 }
@@ -312,7 +316,7 @@ class DOM {
     if (!this.loadedBlocks[id] || typeof this.loadedBlocks[id] === 'undefined') {
       elem.hidden = 'true';
       parent.appendChild(elem);
-      this.loadedBlocks[id] = elem;
+      this.loadedBlocks[id] = { 'html' : elem, 'listened' : false };
       console.log("Loaded " + id + " in DOM");
     }
   }
@@ -321,8 +325,11 @@ class DOM {
     return document.getElementById(id);
   }
 
-  gTAG(tag) {
-    return document.getElementsByTagName(tag);
+  gTAG(parent, tag) {
+    if(!parent || typeof parent == 'undefined') {
+      parent = document;
+    }
+    return parent.getElementsByTagName(tag);
   }
 
 }
@@ -415,13 +422,13 @@ class ScoresView extends View {
   }
 
   ConstructPage() {
-    this.dom.loadedBlocks['Header'].hidden = false;
-    this.dom.loadedBlocks['Scores'].hidden = false;
+    this.dom.loadedBlocks['Header'].html.hidden = false;
+    this.dom.loadedBlocks['Scores'].html.hidden = false;
   }
 
   DestroyPage() {
-    this.dom.loadedBlocks['Header'].hidden = 'true';
-    this.dom.loadedBlocks['Scores'].hidden = 'true';
+    this.dom.loadedBlocks['Header'].html.hidden = 'true';
+    this.dom.loadedBlocks['Scores'].html.hidden = 'true';
   }
 
 }

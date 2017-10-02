@@ -19,13 +19,13 @@ class GameView extends View {
 
   ConstructPage() {
     //console.log(this.dom.loadedBlocks['Header']);
-    this.dom.loadedBlocks['Header'].hidden = false;
-    this.dom.loadedBlocks['Game'].hidden = false;
+    this.dom.loadedBlocks['Header'].html.hidden = false;
+    this.dom.loadedBlocks['Game'].html.hidden = false;
   }
 
   DestroyPage() {
-    this.dom.loadedBlocks['Header'].hidden = 'true';
-    this.dom.loadedBlocks['Game'].hidden = 'true';
+    this.dom.loadedBlocks['Header'].html.hidden = 'true';
+    this.dom.loadedBlocks['Game'].html.hidden = 'true';
   }
 
 }

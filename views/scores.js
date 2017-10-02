@@ -24,13 +24,13 @@ class ScoresView extends View {
   }
 
   ConstructPage() {
-    this.dom.loadedBlocks['Header'].hidden = false;
-    this.dom.loadedBlocks['Scores'].hidden = false;
+    this.dom.loadedBlocks['Header'].html.hidden = false;
+    this.dom.loadedBlocks['Scores'].html.hidden = false;
   }
 
   DestroyPage() {
-    this.dom.loadedBlocks['Header'].hidden = 'true';
-    this.dom.loadedBlocks['Scores'].hidden = 'true';
+    this.dom.loadedBlocks['Header'].html.hidden = 'true';
+    this.dom.loadedBlocks['Scores'].html.hidden = 'true';
   }
 
 }
