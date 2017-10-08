@@ -1,8 +1,8 @@
 'use strict'
 
 const View = require('../modules/view');
-const Header = require('./templates/header/header');
 const Game = require('./templates/game/game');
+const Header = require('../views/templates/header/header');
 
 class GameView extends View {
 
@@ -12,20 +12,22 @@ class GameView extends View {
       return GameView._instance;
     }
     GameView._instance = this;
-    this.dom.insertDom(this.body, Header.rend({loggedin : false}), 'Header');
+
+    this.dom.insertDom(this.body, Header.rend({
+      loggedin : this.user.isAuth()
+    }), 'Header');
     this.dom.insertDom(this.body, Game.rend({}), 'Game');
     this.ListenLinks();
   }
 
   ConstructPage() {
-    //console.log(this.dom.loadedBlocks['Header']);
-    this.dom.loadedBlocks['Header'].html.hidden = false;
-    this.dom.loadedBlocks['Game'].html.hidden = false;
+    this.Show('Header');
+    this.Show('Game');
   }
 
   DestroyPage() {
-    this.dom.loadedBlocks['Header'].html.hidden = 'true';
-    this.dom.loadedBlocks['Game'].html.hidden = 'true';
+    this.Hide('Header');
+    this.Hide('Game');
   }
 
 }

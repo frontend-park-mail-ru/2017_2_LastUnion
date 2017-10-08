@@ -1,8 +1,8 @@
 'use strict'
 
 const View = require('../modules/view');
-const Header = require('./templates/header/header');
 const Scores = require('../views/templates/scores/scores');
+const Header = require('../views/templates/header/header');
 
 class ScoresView extends View {
 
@@ -12,7 +12,13 @@ class ScoresView extends View {
       return ScoresView._instance;
     }
     ScoresView._instance = this;
-    this.dom.insertDom(this.body, Header.rend({loggedin : false}), 'Header');
+
+    this.dom.insertDom(this.body, Header.rend({
+      loggedin : this.user.isAuth()
+    }), 'Header');
+  }
+
+  InitLeaderBoard() {
     this.dom.insertDom(this.body, Scores.rend({
       'users' : ['John','Mike','Bredd','Jarel','Jane'],
       'place' : ['1','2','3','4','5'],
@@ -24,13 +30,20 @@ class ScoresView extends View {
   }
 
   ConstructPage() {
-    this.dom.loadedBlocks['Header'].html.hidden = false;
-    this.dom.loadedBlocks['Scores'].html.hidden = false;
+    this.Show('Header');
+    if (!this.user.isAuth()) {
+      console.error("Access denied.");
+      window.history.pushState({},'','/signin/');
+      this.router.loadPage('/signin/');
+    } else {
+      this.InitLeaderBoard();
+      this.Show('Scores');
+    }
   }
 
   DestroyPage() {
-    this.dom.loadedBlocks['Header'].html.hidden = 'true';
-    this.dom.loadedBlocks['Scores'].html.hidden = 'true';
+    this.Hide('Header');
+    this.Hide('Scores');
   }
 
 }
