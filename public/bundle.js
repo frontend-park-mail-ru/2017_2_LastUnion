@@ -60,7 +60,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 3);
+/******/ 	return __webpack_require__(__webpack_require__.s = 2);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -70,7 +70,68 @@
 "use strict";
 
 
-const urlcom = __webpack_require__(4);
+const Router = __webpack_require__(1);
+const DOM = __webpack_require__(5);
+const User = __webpack_require__(20);
+
+class View {
+
+  constructor() {
+    this.dom = new DOM();
+    this.user = new User();
+    this.router = new Router();
+    this.body = this.dom.gTAG(null, 'body')[0];
+  }
+
+
+  ListenLinks() {
+    const _this = this;
+    const SelEvent = [];
+    for(var obj in this.dom.loadedBlocks) {
+      if(!this.dom.loadedBlocks[obj].listened) {
+        const Links = this.dom.gTAG(this.dom.loadedBlocks[obj].html, "a");
+        for(let i=0; i < Links.length; i++)
+        {
+          Links[i].addEventListener('click', event => {
+            event.preventDefault();
+            //const router = new Router();
+            const route = Links[i].getAttribute("href");
+            window.history.pushState({},'',route);
+            _this.router.loadPage(route);
+          });
+        }
+        this.dom.loadedBlocks[obj].listened = true;
+      }
+    }
+  }
+
+  Hide(obj) {
+    const elem = this.dom.loadedBlocks[obj];
+    if(elem && typeof elem !== 'undefined') {
+      elem.html.hidden = 'true';
+    }
+  }
+
+  Show(obj) {
+    const elem = this.dom.loadedBlocks[obj];
+    if(elem && typeof elem !== 'undefined') {
+      elem.html.hidden = false;
+    }
+  }
+
+}
+
+module.exports = View;
+
+
+/***/ }),
+/* 1 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+const urlcom = __webpack_require__(3);
 
 class Router {
 
@@ -102,7 +163,6 @@ class Router {
       url = url.substring(0, url.length - 1);
     }
 
-
     const route = this.urls.filter(function(urlObj) {
       // later better use regular expression
       // but here we just compare 2 strings
@@ -114,10 +174,9 @@ class Router {
       this.CurrentRoute.Destroy();
       console.log("Destroyed page " + this.CurrentRoute.url);
     }
-
-    route.Load();
-    console.log("Loaded new page: " + url);
     this.CurrentRoute = route;
+    console.log("Loaded new page: " + url);
+    route.Load();
   }
 }
 
@@ -125,104 +184,29 @@ module.exports = Router;
 
 
 /***/ }),
-/* 1 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-const Router = __webpack_require__(0);
-const DOM = __webpack_require__(6);
-
-class View {
-
-  constructor() {
-    this.dom = new DOM();
-    this.body = this.dom.gTAG(null, 'body')[0];
-  }
-
-  ListenLinks() {
-    const SelEvent = [];
-    for(var obj in this.dom.loadedBlocks) {
-      if(!this.dom.loadedBlocks[obj].listened) {
-        const Links = this.dom.gTAG(this.dom.loadedBlocks[obj].html, "a");
-        for(let I=0; I < Links.length; I++)
-        {
-          SelEvent.push({'selector': Links[I], 'route' : Links[I].getAttribute("href")});
-        }
-        this.dom.loadedBlocks[obj].listened = true;
-      }
-    }
-    this.SetEvent(SelEvent);
-  }
-
-  SetEvent(links) {
-    links.forEach(link => {
-      link.selector.addEventListener('click', event => {
-        event.preventDefault();
-        const router = new Router();
-        window.history.pushState({},'',link.route);
-        router.loadPage(link.route);
-      });
-    });
-  }
-
-  ConstructPage() {
-
-  }
-
-  DestroyPage() {
-
-  }
-
-}
-
-module.exports = View;
-
-
-/***/ }),
 /* 2 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = {
-  rend : function(params){
-    var template = __webpack_require__(7);
-    let html = template(params);
-    const elem = document.createElement('div');
-    elem.innerHTML = html;
-    return elem;
-  }
-}
-
-
-/***/ }),
-/* 3 */
-/***/ (function(module, exports, __webpack_require__) {
-
-const router = __webpack_require__(0);
+const router = __webpack_require__(1);
 const R = new router();
 
 //const MenuView = require('./views/menu');
-const GameView = __webpack_require__(5);
+const GameView = __webpack_require__(4);
 const ScoresView = __webpack_require__(10);
-// class SigninView {}
-// class SignupView {}
-// class AboutView {}
-// class PlayView {}
-// class ScoresView {}
+const MenuView = __webpack_require__(13);
+const SignInView = __webpack_require__(16);
 
-R.addUrl('/', GameView);
-// R.addUrl('/signin', SigninView);
-// R.addUrl('/signup', SignupView);
-// R.addUrl('/about', AboutView);
-// R.addUrl('/play', PlayView);
+R.addUrl('/', MenuView);
+R.addUrl('/play', GameView);
 R.addUrl('/scores', ScoresView);
+R.addUrl('/menu', MenuView);
+R.addUrl('/signin', SignInView);
 
 R.loadPage();
 
 
 /***/ }),
-/* 4 */
+/* 3 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -255,15 +239,15 @@ module.exports = UrlCom;
 
 
 /***/ }),
-/* 5 */
+/* 4 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-const View = __webpack_require__(1);
-const Header = __webpack_require__(2);
+const View = __webpack_require__(0);
 const Game = __webpack_require__(8);
+const Header = __webpack_require__(6);
 
 class GameView extends View {
 
@@ -273,20 +257,22 @@ class GameView extends View {
       return GameView._instance;
     }
     GameView._instance = this;
-    this.dom.insertDom(this.body, Header.rend({loggedin : false}), 'Header');
+
+    this.dom.insertDom(this.body, Header.rend({
+      loggedin : this.user.isAuth()
+    }), 'Header');
     this.dom.insertDom(this.body, Game.rend({}), 'Game');
     this.ListenLinks();
   }
 
   ConstructPage() {
-    //console.log(this.dom.loadedBlocks['Header']);
-    this.dom.loadedBlocks['Header'].html.hidden = false;
-    this.dom.loadedBlocks['Game'].html.hidden = false;
+    this.Show('Header');
+    this.Show('Game');
   }
 
   DestroyPage() {
-    this.dom.loadedBlocks['Header'].html.hidden = 'true';
-    this.dom.loadedBlocks['Game'].html.hidden = 'true';
+    this.Hide('Header');
+    this.Hide('Game');
   }
 
 }
@@ -295,7 +281,7 @@ module.exports = GameView;
 
 
 /***/ }),
-/* 6 */
+/* 5 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -312,12 +298,15 @@ class DOM {
     this.loadedBlocks = {};
   }
 
-  insertDom(parent, elem, id) {
-    if (!this.loadedBlocks[id] || typeof this.loadedBlocks[id] === 'undefined') {
+  insertDom(parent, elem, id, upd) {
+    if (!this.loadedBlocks[id] ||
+      typeof this.loadedBlocks[id] === 'undefined' ||
+      upd == true) {
       elem.hidden = 'true';
       parent.appendChild(elem);
       this.loadedBlocks[id] = { 'html' : elem, 'listened' : false };
       console.log("Loaded " + id + " in DOM");
+      return this.loadedBlocks[id];
     }
   }
 
@@ -338,6 +327,21 @@ module.exports = DOM;
 
 
 /***/ }),
+/* 6 */
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports = {
+  rend : function(params){
+    var template = __webpack_require__(7);
+    let html = template(params);
+    const elem = document.createElement('div');
+    elem.innerHTML = html;
+    return elem;
+  }
+}
+
+
+/***/ }),
 /* 7 */
 /***/ (function(module, exports) {
 
@@ -350,7 +354,7 @@ __p += '<!-- HEADER -->\n<div class="container">\n    <nav class="navbar navbar-
  if (loggedin) { ;
 __p += '\n                    <p class="nav navbar-nav navbar-text">You scope is: 2517</p>\n                  ';
  } ;
-__p += '\n\n                    <li><a href="/scores">Top gamers</a></li>\n\n                </ul>\n                <ul class="nav navbar-nav navbar-right">\n                    ';
+__p += '\n\n                    <li><a href="/menu">Menu</a></li>\n\n                </ul>\n                <ul class="nav navbar-nav navbar-right">\n                    ';
  if (loggedin) { ;
 __p += '\n                      <li><a href="/logout">Log out</a></li>\n                    ';
  } else { ;
@@ -398,9 +402,9 @@ return __p
 "use strict";
 
 
-const View = __webpack_require__(1);
-const Header = __webpack_require__(2);
+const View = __webpack_require__(0);
 const Scores = __webpack_require__(11);
+const Header = __webpack_require__(6);
 
 class ScoresView extends View {
 
@@ -410,7 +414,13 @@ class ScoresView extends View {
       return ScoresView._instance;
     }
     ScoresView._instance = this;
-    this.dom.insertDom(this.body, Header.rend({loggedin : false}), 'Header');
+
+    this.dom.insertDom(this.body, Header.rend({
+      loggedin : this.user.isAuth()
+    }), 'Header');
+  }
+
+  InitLeaderBoard() {
     this.dom.insertDom(this.body, Scores.rend({
       'users' : ['John','Mike','Bredd','Jarel','Jane'],
       'place' : ['1','2','3','4','5'],
@@ -422,13 +432,20 @@ class ScoresView extends View {
   }
 
   ConstructPage() {
-    this.dom.loadedBlocks['Header'].html.hidden = false;
-    this.dom.loadedBlocks['Scores'].html.hidden = false;
+    this.Show('Header');
+    if (!this.user.isAuth()) {
+      console.error("Access denied.");
+      window.history.pushState({},'','/signin/');
+      this.router.loadPage('/signin/');
+    } else {
+      this.InitLeaderBoard();
+      this.Show('Scores');
+    }
   }
 
   DestroyPage() {
-    this.dom.loadedBlocks['Header'].html.hidden = 'true';
-    this.dom.loadedBlocks['Scores'].html.hidden = 'true';
+    this.Hide('Header');
+    this.Hide('Scores');
   }
 
 }
@@ -479,6 +496,306 @@ __p += '\n                <tr>\n                    <th scope="row">' +
 }
 return __p
 }
+
+/***/ }),
+/* 13 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+const View = __webpack_require__(0);
+const Menu = __webpack_require__(14);
+const Header = __webpack_require__(6);
+
+class MenuView extends View {
+
+  constructor() {
+    super();
+    if(MenuView._instance) {
+      return MenuView._instance;
+    }
+    MenuView._instance = this;
+
+    this.dom.insertDom(this.body, Header.rend({
+      loggedin : this.user.isAuth()
+    }), 'Header');
+    this.dom.insertDom(this.body, Menu.rend({
+      'menuitems' : ['Play', 'About us', 'Scores'],
+      'links' : ['/play/', '/about/', '/scores/'],
+    }), 'Menu');
+    this.ListenLinks();
+  }
+
+  ConstructPage() {
+    this.Show('Header');
+    this.Show('Menu');
+  }
+
+  DestroyPage() {
+    this.Hide('Header');
+    this.Hide('Menu');
+  }
+
+}
+
+module.exports = MenuView;
+
+
+/***/ }),
+/* 14 */
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports = {
+  rend : function(params){
+    var template = __webpack_require__(15);
+    let html = template(params);
+    const elem = document.createElement('div');
+    elem.innerHTML = html;
+    return elem;
+  }
+}
+
+
+/***/ }),
+/* 15 */
+/***/ (function(module, exports) {
+
+module.exports = function (obj) {
+obj || (obj = {});
+var __t, __p = '', __j = Array.prototype.join;
+function print() { __p += __j.call(arguments, '') }
+with (obj) {
+__p += '<!-- MENU -->\n<div class="container">\n    <ul>\n      ';
+ for(var i = 0; i<menuitems.length; i++) { ;
+__p += '\n      <li><a href="' +
+((__t = ( links[i] )) == null ? '' : __t) +
+'">' +
+((__t = ( menuitems[i] )) == null ? '' : __t) +
+'</a>\n      ';
+ } ;
+__p += '\n    </ul>\n</div>\n<!-- MENU -->\n';
+
+}
+return __p
+}
+
+/***/ }),
+/* 16 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+const View = __webpack_require__(0);
+const Form = __webpack_require__(17);
+const Header = __webpack_require__(6);
+
+class SignInView extends View {
+
+  constructor() {
+    super();
+    if(SignInView._instance) {
+      return SignInView._instance;
+    }
+    SignInView._instance = this;
+
+    this.dom.insertDom(this.body, Header.rend({
+      loggedin : this.user.isAuth()
+    }), 'Header');
+    this.form = Form.rend({
+      'title' : 'Enter the cave!',
+      'inputs' : [
+        {
+          'label' : 'Login',
+          'type' : 'text',
+          'placeholder' : 'Your login'
+        },
+        {
+          'label' : 'Password',
+          'type' : 'password',
+          'placeholder' : '**********',
+        }
+      ],
+      'button' : 'Let me run!'
+    });
+    this.dom.insertDom(this.body, this.form, 'LoginForm');
+    this.ListenLinks();
+    this.ListenSubmit();
+  }
+
+  ListenSubmit() {
+    this.dom.gTAG(this.form, "button")[0].addEventListener('click', event => {
+      event.preventDefault();
+
+      let login = this.dom.gID("Login");
+      let passw = this.dom.gID("Password");
+
+      if(login.value.length < 4) {
+        console.log("err login");
+        Form.err('Login', 'Login is at least 4 characters.');
+      }
+      if(passw.value.length < 6) {
+        Form.err('Password', 'Password is at least 6 characters.');
+      }
+      this.user.login(login, passw);
+    });
+  }
+
+  ConstructPage() {
+    this.Show('Header');
+    this.Show('LoginForm');
+  }
+
+  DestroyPage() {
+    this.Hide('Header');
+    this.Hide('LoginForm');
+  }
+
+}
+
+module.exports = SignInView;
+
+
+/***/ }),
+/* 17 */
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports = {
+  rend : function(params) {
+    var template = __webpack_require__(18);
+    let html = template(params);
+    const elem = document.createElement('div');
+    elem.innerHTML = html;
+    const inputs = elem.getElementsByTagName("input");
+    for(let i=0; i < inputs.length; i++)
+    {
+      let id = inputs[i].getAttribute("id");
+      inputs[i].addEventListener('focus', event => {
+        document.getElementById(id + '_err').hidden = 'true';
+      });
+    }
+    return elem;
+  },
+
+  err : function(id, msg) {
+    const span = document.getElementById(id + '_err');
+    console.log(span);
+    span.innerHTML = msg;
+    span.hidden = false;
+  },
+
+  ok : function(id) {
+    document.getElementById(id + '_form').hidden = 'true';
+  }
+}
+
+
+/***/ }),
+/* 18 */
+/***/ (function(module, exports) {
+
+module.exports = function (obj) {
+obj || (obj = {});
+var __t, __p = '', __j = Array.prototype.join;
+function print() { __p += __j.call(arguments, '') }
+with (obj) {
+__p += '<!-- MENU -->\n<div class="container">\n  ' +
+((__t = ( title )) == null ? '' : __t) +
+'\n  <form>\n    ';
+ for(var i = 0; i<inputs.length; i++) { ;
+__p += '\n    <div class="form-group">\n      <label class="control-label" for="' +
+((__t = (inputs[i].label )) == null ? '' : __t) +
+'">\n        ' +
+((__t = ( inputs[i].label )) == null ? '' : __t) +
+'\n      </label>\n      <input type="' +
+((__t = ( inputs[i].type )) == null ? '' : __t) +
+'" id="' +
+((__t = ( inputs[i].label )) == null ? '' : __t) +
+'" placeholder="' +
+((__t = ( inputs[i].placeholder )) == null ? '' : __t) +
+'">\n      <span id="' +
+((__t = ( inputs[i].label )) == null ? '' : __t) +
+'_err" class="error-message"></span>\n    </div>\n    ';
+ } ;
+__p += '\n    <button class="btn btn-default">' +
+((__t = ( button )) == null ? '' : __t) +
+'</button>\n  </form>\n</div>\n<!-- MENU -->\n';
+
+}
+return __p
+}
+
+/***/ }),
+/* 19 */,
+/* 20 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+const API = __webpack_require__(21);
+
+const DEMO_MODE = true;
+
+class User {
+
+  constructor() {
+    this._loggedin = false;
+    this._proto = {};
+  }
+
+  isAuth() {
+    return this._loggedin;
+  }
+
+  login(login, password) {
+    if(DEMO_MODE) {
+      this._proto.login = 'Demo';
+      this._loggedin = true;
+      return true;
+    }
+  }
+
+  signup(login, password, email) {
+    if(DEMO_MODE) {
+      this.login(login, password);
+    }
+  }
+
+  logout() {
+    if(DEMO_MODE) {
+      this._proto = {};
+      this._loggedin = false;
+    }
+  }
+
+}
+
+module.exports = User;
+
+
+/***/ }),
+/* 21 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+class API {
+
+  constructor() {
+    this._host = 'server.com';
+  }
+
+  call() {
+
+  }
+
+}
+
+module.exports = API;
+
 
 /***/ })
 /******/ ]);

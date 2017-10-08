@@ -11,12 +11,15 @@ class DOM {
     this.loadedBlocks = {};
   }
 
-  insertDom(parent, elem, id) {
-    if (!this.loadedBlocks[id] || typeof this.loadedBlocks[id] === 'undefined') {
+  insertDom(parent, elem, id, upd) {
+    if (!this.loadedBlocks[id] ||
+      typeof this.loadedBlocks[id] === 'undefined' ||
+      upd == true) {
       elem.hidden = 'true';
       parent.appendChild(elem);
       this.loadedBlocks[id] = { 'html' : elem, 'listened' : false };
       console.log("Loaded " + id + " in DOM");
+      return this.loadedBlocks[id];
     }
   }
 

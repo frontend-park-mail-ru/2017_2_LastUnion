@@ -32,7 +32,6 @@ class Router {
       url = url.substring(0, url.length - 1);
     }
 
-
     const route = this.urls.filter(function(urlObj) {
       // later better use regular expression
       // but here we just compare 2 strings
@@ -44,10 +43,9 @@ class Router {
       this.CurrentRoute.Destroy();
       console.log("Destroyed page " + this.CurrentRoute.url);
     }
-
-    route.Load();
-    console.log("Loaded new page: " + url);
     this.CurrentRoute = route;
+    console.log("Loaded new page: " + url);
+    route.Load();
   }
 }
 

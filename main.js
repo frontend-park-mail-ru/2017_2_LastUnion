@@ -4,17 +4,13 @@ const R = new router();
 //const MenuView = require('./views/menu');
 const GameView = require('./views/game');
 const ScoresView = require('./views/scores');
-// class SigninView {}
-// class SignupView {}
-// class AboutView {}
-// class PlayView {}
-// class ScoresView {}
+const MenuView = require('./views/menu');
+const SignInView = require('./views/signin');
 
-R.addUrl('/', GameView);
-// R.addUrl('/signin', SigninView);
-// R.addUrl('/signup', SignupView);
-// R.addUrl('/about', AboutView);
-// R.addUrl('/play', PlayView);
+R.addUrl('/', MenuView);
+R.addUrl('/play', GameView);
 R.addUrl('/scores', ScoresView);
+R.addUrl('/menu', MenuView);
+R.addUrl('/signin', SignInView);
 
 R.loadPage();

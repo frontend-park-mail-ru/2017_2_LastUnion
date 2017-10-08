@@ -7,6 +7,7 @@ var logger = require('morgan');
 app.use(logger('dev'));
 const routes = [
   '/',
+  '/menu',
   '/signin',
   '/signup',
   '/about',
