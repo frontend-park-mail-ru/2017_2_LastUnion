@@ -4,11 +4,11 @@
   <form>
     <% for(var i = 0; i<inputs.length; i++) { %>
     <div class="form-group">
-      <label class="control-label" for="<%=inputs[i].label %>">
+      <label class="control-label" for="<%= formname %>_<%=inputs[i].label %>">
         <%= inputs[i].label %>
       </label>
-      <input type="<%= inputs[i].type %>" id="<%= inputs[i].label %>" placeholder="<%= inputs[i].placeholder %>">
-      <span id="<%= inputs[i].label %>_err" class="error-message"></span>
+      <input type="<%= inputs[i].type %>" id="<%= formname %>_<%= inputs[i].label %>" placeholder="<%= inputs[i].placeholder %>">
+      <span id="<%= formname %>_<%= inputs[i].label %>_err" class="error-message"></span>
     </div>
     <% } %>
     <button class="btn btn-default"><%= button %></button>

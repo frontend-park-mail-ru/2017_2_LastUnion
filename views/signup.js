@@ -4,26 +4,31 @@ const View = require('../modules/view');
 const Form = require('./templates/form/form');
 const Header = require('../views/templates/header/header');
 
-class SignInView extends View {
+class SignUpView extends View {
 
   constructor() {
     super();
-    if(SignInView._instance) {
-      return SignInView._instance;
+    if(SignUpView._instance) {
+      return SignUpView._instance;
     }
-    SignInView._instance = this;
+    SignUpView._instance = this;
 
     this.dom.insertDom(this.body, Header.rend({
       loggedin : this.user.isAuth()
     }), 'Header');
     this.form = Form.rend({
-      'formname' : 'LoginForm',
-      'title' : 'Enter the cave!',
+      'formname' : 'SignUpForm',
+      'title' : 'Birth of a necromancer!',
       'inputs' : [
         {
           'label' : 'Login',
           'type' : 'text',
-          'placeholder' : 'Your login'
+          'placeholder' : 'Your login',
+        },
+        {
+          'label' : 'Email',
+          'type' : 'text',
+          'placeholder' : 'necro@fast.me',
         },
         {
           'label' : 'Password',
@@ -31,9 +36,9 @@ class SignInView extends View {
           'placeholder' : '**********',
         }
       ],
-      'button' : 'Let me run!'
+      'button' : 'Birth!'
     });
-    this.dom.insertDom(this.body, this.form, 'LoginForm');
+    this.dom.insertDom(this.body, this.form, 'SignUpForm');
     this.ListenLinks();
     this.ListenSubmit();
   }
@@ -42,38 +47,40 @@ class SignInView extends View {
     this.dom.gTAG(this.form, "button")[0].addEventListener('click', event => {
       event.preventDefault();
 
-      let login = this.dom.gID("LoginForm_Login");
-      let passw = this.dom.gID("LoginForm_Password");
+      let login = this.dom.gID("SignUpForm_Login");
+      let email = this.dom.gID("SignUpForm_Email");
+      let passw = this.dom.gID("SignUpForm_Password");
 
-      if(this.Validate(login, passw)) {
-        this.user.login(login, passw);
+      if(this.Validate(login, passw, email)) {
+        //this.user.login(login, passw);
       }
     });
   }
 
-  Validate(login, passw) {
+  Validate(login, passw, email) {
     let valid = true;
     if(login.value.length < 4) {
-      Form.err('LoginForm_Login', 'Login is at least 4 characters.');
+      Form.err('SignUpForm_Login', 'Login is at least 4 characters.');
       valid = false;
     }
     if(passw.value.length < 6) {
-      Form.err('LoginForm_Password', 'Password is at least 6 characters.');
+      Form.err('SignUpForm_Password', 'Password is at least 6 characters.');
       valid = false;
     }
+
     return valid;
   }
 
   ConstructPage() {
     this.Show('Header');
-    this.Show('LoginForm');
+    this.Show('SignUpForm');
   }
 
   DestroyPage() {
     this.Hide('Header');
-    this.Hide('LoginForm');
+    this.Hide('SignUpForm');
   }
 
 }
 
-module.exports = SignInView;
+module.exports = SignUpView;
