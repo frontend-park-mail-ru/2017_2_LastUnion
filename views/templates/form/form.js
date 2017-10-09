@@ -23,6 +23,6 @@ module.exports = {
   },
 
   ok : function(id) {
-    document.getElementById(id + '_form').hidden = 'true';
+    document.getElementById(id + '_err').hidden = 'true';
   }
 }

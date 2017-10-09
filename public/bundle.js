@@ -195,12 +195,14 @@ const GameView = __webpack_require__(4);
 const ScoresView = __webpack_require__(10);
 const MenuView = __webpack_require__(13);
 const SignInView = __webpack_require__(16);
+const SignUpView = __webpack_require__(22);
 
 R.addUrl('/', MenuView);
 R.addUrl('/play', GameView);
 R.addUrl('/scores', ScoresView);
 R.addUrl('/menu', MenuView);
 R.addUrl('/signin', SignInView);
+R.addUrl('/signup', SignUpView);
 
 R.loadPage();
 
@@ -604,6 +606,7 @@ class SignInView extends View {
       loggedin : this.user.isAuth()
     }), 'Header');
     this.form = Form.rend({
+      'formname' : 'LoginForm',
       'title' : 'Enter the cave!',
       'inputs' : [
         {
@@ -628,18 +631,26 @@ class SignInView extends View {
     this.dom.gTAG(this.form, "button")[0].addEventListener('click', event => {
       event.preventDefault();
 
-      let login = this.dom.gID("Login");
-      let passw = this.dom.gID("Password");
+      let login = this.dom.gID("LoginForm_Login");
+      let passw = this.dom.gID("LoginForm_Password");
 
-      if(login.value.length < 4) {
-        console.log("err login");
-        Form.err('Login', 'Login is at least 4 characters.');
+      if(this.Validate(login, passw)) {
+        this.user.login(login, passw);
       }
-      if(passw.value.length < 6) {
-        Form.err('Password', 'Password is at least 6 characters.');
-      }
-      this.user.login(login, passw);
     });
+  }
+
+  Validate(login, passw) {
+    let valid = true;
+    if(login.value.length < 4) {
+      Form.err('LoginForm_Login', 'Login is at least 4 characters.');
+      valid = false;
+    }
+    if(passw.value.length < 6) {
+      Form.err('LoginForm_Password', 'Password is at least 6 characters.');
+      valid = false;
+    }
+    return valid;
   }
 
   ConstructPage() {
@@ -686,7 +697,7 @@ module.exports = {
   },
 
   ok : function(id) {
-    document.getElementById(id + '_form').hidden = 'true';
+    document.getElementById(id + '_err').hidden = 'true';
   }
 }
 
@@ -705,16 +716,22 @@ __p += '<!-- MENU -->\n<div class="container">\n  ' +
 '\n  <form>\n    ';
  for(var i = 0; i<inputs.length; i++) { ;
 __p += '\n    <div class="form-group">\n      <label class="control-label" for="' +
+((__t = ( formname )) == null ? '' : __t) +
+'_' +
 ((__t = (inputs[i].label )) == null ? '' : __t) +
 '">\n        ' +
 ((__t = ( inputs[i].label )) == null ? '' : __t) +
 '\n      </label>\n      <input type="' +
 ((__t = ( inputs[i].type )) == null ? '' : __t) +
 '" id="' +
+((__t = ( formname )) == null ? '' : __t) +
+'_' +
 ((__t = ( inputs[i].label )) == null ? '' : __t) +
 '" placeholder="' +
 ((__t = ( inputs[i].placeholder )) == null ? '' : __t) +
 '">\n      <span id="' +
+((__t = ( formname )) == null ? '' : __t) +
+'_' +
 ((__t = ( inputs[i].label )) == null ? '' : __t) +
 '_err" class="error-message"></span>\n    </div>\n    ';
  } ;
@@ -795,6 +812,99 @@ class API {
 }
 
 module.exports = API;
+
+
+/***/ }),
+/* 22 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+const View = __webpack_require__(0);
+const Form = __webpack_require__(17);
+const Header = __webpack_require__(6);
+
+class SignUpView extends View {
+
+  constructor() {
+    super();
+    if(SignUpView._instance) {
+      return SignUpView._instance;
+    }
+    SignUpView._instance = this;
+
+    this.dom.insertDom(this.body, Header.rend({
+      loggedin : this.user.isAuth()
+    }), 'Header');
+    this.form = Form.rend({
+      'formname' : 'SignUpForm',
+      'title' : 'Birth of a necromancer!',
+      'inputs' : [
+        {
+          'label' : 'Login',
+          'type' : 'text',
+          'placeholder' : 'Your login',
+        },
+        {
+          'label' : 'Email',
+          'type' : 'text',
+          'placeholder' : 'necro@fast.me',
+        },
+        {
+          'label' : 'Password',
+          'type' : 'password',
+          'placeholder' : '**********',
+        }
+      ],
+      'button' : 'Birth!'
+    });
+    this.dom.insertDom(this.body, this.form, 'SignUpForm');
+    this.ListenLinks();
+    this.ListenSubmit();
+  }
+
+  ListenSubmit() {
+    this.dom.gTAG(this.form, "button")[0].addEventListener('click', event => {
+      event.preventDefault();
+
+      let login = this.dom.gID("SignUpForm_Login");
+      let email = this.dom.gID("SignUpForm_Email");
+      let passw = this.dom.gID("SignUpForm_Password");
+
+      if(this.Validate(login, passw, email)) {
+        //this.user.login(login, passw);
+      }
+    });
+  }
+
+  Validate(login, passw, email) {
+    let valid = true;
+    if(login.value.length < 4) {
+      Form.err('SignUpForm_Login', 'Login is at least 4 characters.');
+      valid = false;
+    }
+    if(passw.value.length < 6) {
+      Form.err('SignUpForm_Password', 'Password is at least 6 characters.');
+      valid = false;
+    }
+
+    return valid;
+  }
+
+  ConstructPage() {
+    this.Show('Header');
+    this.Show('SignUpForm');
+  }
+
+  DestroyPage() {
+    this.Hide('Header');
+    this.Hide('SignUpForm');
+  }
+
+}
+
+module.exports = SignUpView;
 
 
 /***/ })
