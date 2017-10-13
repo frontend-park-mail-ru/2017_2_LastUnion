@@ -753,11 +753,15 @@ return __p
 
 const API = __webpack_require__(21);
 
-const DEMO_MODE = true;
-
 class User {
 
   constructor() {
+    if(User._instance) {
+      return User._instance;
+    }
+    User._instance = this;
+
+    this.api = new API;
     this._loggedin = false;
     this._proto = {};
   }
@@ -767,24 +771,31 @@ class User {
   }
 
   login(login, password) {
-    if(DEMO_MODE) {
-      this._proto.login = 'Demo';
+    this.api.call('login', 'POST', {
+      login: login,
+      password: password
+    }).then(function(response) {
+      console.log(response);
+      this._proto.login = login;
       this._loggedin = true;
-      return true;
-    }
+    });
   }
 
   signup(login, password, email) {
-    if(DEMO_MODE) {
+    this.api.call('signup', 'POST', {
+      login: login,
+      password: password,
+      email: email
+    }).then(function(response) {
       this.login(login, password);
-    }
+    });
   }
 
   logout() {
-    if(DEMO_MODE) {
+    this.api.call('logout', 'POST').then(function(response) {
       this._proto = {};
       this._loggedin = false;
-    }
+    });
   }
 
 }
@@ -805,8 +816,31 @@ class API {
     this._host = 'server.com';
   }
 
-  call() {
+  call(method, httpMethod, params) {
+    const url = 'https://' + this._host + '/api/' + method;
+    const httpRequest = {
+      method: httpMethod,
+      headers: {
+        'Content-type': 'application/json'
+      },
+      mode: 'cors',
+      credentials: 'include'
+    };
 
+    if(httpMethod === 'POST' && typeof params !== 'undefined') {
+      httpRequest.body = JSON.stringify(data);
+    }
+
+    return fetch(url, httpRequest).then(
+      function(response) {
+        console.log("Success");
+        return response.json();
+      },
+      function(response) {
+        console.error("Connection issues");
+        alert("We didn't get response from server. Please check your internet connection!");
+        console.log(response);
+      })
   }
 
 }
@@ -881,11 +915,11 @@ class SignUpView extends View {
   Validate(login, passw, email) {
     let valid = true;
     if(login.value.length < 4) {
-      Form.err('SignUpForm_Login', 'Login is at least 4 characters.');
+      Form.err('SignUpForm_Login', 'Login has to be at least 4 characters.');
       valid = false;
     }
     if(passw.value.length < 6) {
-      Form.err('SignUpForm_Password', 'Password is at least 6 characters.');
+      Form.err('SignUpForm_Password', 'Password has to be at least 6 characters.');
       valid = false;
     }
 

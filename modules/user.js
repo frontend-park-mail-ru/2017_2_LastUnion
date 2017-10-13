@@ -2,11 +2,15 @@
 
 const API = require('./api.js');
 
-const DEMO_MODE = true;
-
 class User {
 
   constructor() {
+    if(User._instance) {
+      return User._instance;
+    }
+    User._instance = this;
+
+    this.api = new API;
     this._loggedin = false;
     this._proto = {};
   }
@@ -16,24 +20,31 @@ class User {
   }
 
   login(login, password) {
-    if(DEMO_MODE) {
-      this._proto.login = 'Demo';
+    this.api.call('login', 'POST', {
+      login: login,
+      password: password
+    }).then(function(response) {
+      console.log(response);
+      this._proto.login = login;
       this._loggedin = true;
-      return true;
-    }
+    });
   }
 
   signup(login, password, email) {
-    if(DEMO_MODE) {
+    this.api.call('signup', 'POST', {
+      login: login,
+      password: password,
+      email: email
+    }).then(function(response) {
       this.login(login, password);
-    }
+    });
   }
 
   logout() {
-    if(DEMO_MODE) {
+    this.api.call('logout', 'POST').then(function(response) {
       this._proto = {};
       this._loggedin = false;
-    }
+    });
   }
 
 }

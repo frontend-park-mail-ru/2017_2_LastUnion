@@ -60,11 +60,11 @@ class SignUpView extends View {
   Validate(login, passw, email) {
     let valid = true;
     if(login.value.length < 4) {
-      Form.err('SignUpForm_Login', 'Login is at least 4 characters.');
+      Form.err('SignUpForm_Login', 'Login has to be at least 4 characters.');
       valid = false;
     }
     if(passw.value.length < 6) {
-      Form.err('SignUpForm_Password', 'Password is at least 6 characters.');
+      Form.err('SignUpForm_Password', 'Password has to be at least 6 characters.');
       valid = false;
     }
 
