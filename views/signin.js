@@ -46,7 +46,14 @@ class SignInView extends View {
       let passw = this.dom.gID("LoginForm_Password");
 
       if(this.Validate(login, passw)) {
-        this.user.login(login, passw);
+        this.user.login(login, passw)
+        .then(function() {
+          this.dom.removeDOM('LoginForm');
+          this.dom.removeDOM('SignUpForm');
+        })
+        .catch(function(e) {
+          alert(e);
+        });
       }
     });
   }

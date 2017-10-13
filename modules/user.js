@@ -19,29 +19,38 @@ class User {
     return this._loggedin;
   }
 
+  checkResponse(response) {
+    if(respose.status !== 'OK') {
+      throw new Error(response.msg);
+    }
+    return response.data;
+  }
+
   login(login, password) {
-    this.api.call('login', 'POST', {
+    return this.api.call('login', 'POST', {
       login: login,
       password: password
     }).then(function(response) {
-      console.log(response);
+      this.checkResponse(response);
       this._proto.login = login;
       this._loggedin = true;
     });
   }
 
   signup(login, password, email) {
-    this.api.call('signup', 'POST', {
+    return this.api.call('signup', 'POST', {
       login: login,
       password: password,
       email: email
     }).then(function(response) {
+      this.checkResponse(response);
       this.login(login, password);
     });
   }
 
   logout() {
-    this.api.call('logout', 'POST').then(function(response) {
+    return this.api.call('logout', 'POST').then(function(response) {
+      this.checkResponse(response);
       this._proto = {};
       this._loggedin = false;
     });

@@ -23,6 +23,14 @@ class DOM {
     }
   }
 
+  removeDOM(id) {
+    if(!this.loadedBlocks[id] || typeof this.loadedBlocks[id] === 'undefined') {
+      return false;
+    }
+    this.loadedBlocks[id].remove();
+    delete this.loadedBlocks[id];
+  }
+
   gID(id) {
     return document.getElementById(id);
   }

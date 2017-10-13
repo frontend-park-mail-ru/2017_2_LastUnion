@@ -312,6 +312,14 @@ class DOM {
     }
   }
 
+  removeDOM(id) {
+    if(!this.loadedBlocks[id] || typeof this.loadedBlocks[id] === 'undefined') {
+      return false;
+    }
+    this.loadedBlocks[id].remove();
+    delete this.loadedBlocks[id];
+  }
+
   gID(id) {
     return document.getElementById(id);
   }
@@ -635,7 +643,14 @@ class SignInView extends View {
       let passw = this.dom.gID("LoginForm_Password");
 
       if(this.Validate(login, passw)) {
-        this.user.login(login, passw);
+        this.user.login(login, passw)
+        .then(function() {
+          this.dom.removeDOM('LoginForm');
+          this.dom.removeDOM('SignUpForm');
+        })
+        .catch(function(e) {
+          alert(e);
+        });
       }
     });
   }
@@ -770,29 +785,38 @@ class User {
     return this._loggedin;
   }
 
+  checkResponse(response) {
+    if(respose.status !== 'OK') {
+      throw new Error(response.msg);
+    }
+    return response.data;
+  }
+
   login(login, password) {
-    this.api.call('login', 'POST', {
+    return this.api.call('login', 'POST', {
       login: login,
       password: password
     }).then(function(response) {
-      console.log(response);
+      this.checkResponse(response);
       this._proto.login = login;
       this._loggedin = true;
     });
   }
 
   signup(login, password, email) {
-    this.api.call('signup', 'POST', {
+    return this.api.call('signup', 'POST', {
       login: login,
       password: password,
       email: email
     }).then(function(response) {
+      this.checkResponse(response);
       this.login(login, password);
     });
   }
 
   logout() {
-    this.api.call('logout', 'POST').then(function(response) {
+    return this.api.call('logout', 'POST').then(function(response) {
+      this.checkResponse(response);
       this._proto = {};
       this._loggedin = false;
     });
@@ -813,7 +837,7 @@ module.exports = User;
 class API {
 
   constructor() {
-    this._host = 'server.com';
+    this._host = 'boiling-bastion-61743.herokuapp.com';
   }
 
   call(method, httpMethod, params) {
@@ -907,7 +931,14 @@ class SignUpView extends View {
       let passw = this.dom.gID("SignUpForm_Password");
 
       if(this.Validate(login, passw, email)) {
-        //this.user.login(login, passw);
+        this.user.signup(login, passw, email)
+        .then(function() {
+          this.dom.removeDOM('LoginForm');
+          this.dom.removeDOM('SignUpForm');
+        })
+        .catch(function(e) {
+          alert(e);
+        });
       }
     });
   }

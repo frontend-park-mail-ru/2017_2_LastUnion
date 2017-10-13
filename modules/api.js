@@ -3,7 +3,7 @@
 class API {
 
   constructor() {
-    this._host = 'server.com';
+    this._host = 'boiling-bastion-61743.herokuapp.com';
   }
 
   call(method, httpMethod, params) {
