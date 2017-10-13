@@ -1,0 +1,30 @@
+<!-- HEADER -->
+<div class="container">
+    <nav class="navbar navbar-default" role="navigation" align="center">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <a class="navbar-brand" href="/">LastUnion GAME</a>
+            </div>
+            <div class="navbar-default">
+                <ul class="nav navbar-nav">
+                  <% if (loggedin) { %>
+                    <p class="nav navbar-nav navbar-text">You scope is: 2517</p>
+                  <% } %>
+
+                    <li><a href="/menu">Menu</a></li>
+
+                </ul>
+                <ul class="nav navbar-nav navbar-right">
+                    <% if (loggedin) { %>
+                      <li><a href="/logout">Log out</a></li>
+                    <% } else { %>
+                      <li><a href="/signin">Sign IN</a></li>
+                      <p class="nav navbar-nav navbar-text">or</p>
+                      <li><a href="/signup">Sign UP</a></li>
+                    <% } %>
+                </ul>
+            </div>
+         </div>
+    </nav>
+</div>
+<!-- HEADER -->
