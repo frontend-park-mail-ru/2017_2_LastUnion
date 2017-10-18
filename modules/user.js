@@ -27,7 +27,7 @@ class User {
     if(typeof response.result === 'undefined') {
       throw new Error(response);
     }
-    if(respose.result !== true) {
+    if(response.result !== true) {
       throw new Error(String(response.responseMessage));
     }
     return response.data;
