@@ -366,7 +366,7 @@ class DOM {
     if(!this.loadedBlocks[id] || typeof this.loadedBlocks[id] === 'undefined') {
       return false;
     }
-    this.loadedBlocks[id].remove();
+    this.loadedBlocks[id].html.remove();
     delete this.loadedBlocks[id];
   }
 
@@ -551,7 +551,7 @@ var __t, __p = '', __j = Array.prototype.join;
 function print() { __p += __j.call(arguments, '') }
 with (obj) {
 __p += '<!-- HEADER -->\r\n<header>\r\n    <nav class="navbar navbar-default" role="navigation" align="center">\r\n        <div class="container-fluid">\r\n            <div class="navbar-header">\r\n                <a class="navbar-brand" href="/">\r\n                    <img src="img/logo.png" alt="Logo" />\r\n                    <span>LastUnion GAME</span>\r\n                </a>\r\n            </div>\r\n            <div class="navbar-default">\r\n                <ul class="nav navbar-nav">\r\n                  ';
- if (!loggedin) { ;
+ if (loggedin) { ;
 __p += '\r\n                    <li class="nav navbar-nav navbar-text">Your score is: ' +
 ((__t = ( score )) == null ? '' : __t) +
 '</li>\r\n                  ';

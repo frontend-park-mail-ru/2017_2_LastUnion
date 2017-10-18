@@ -10,7 +10,7 @@
             </div>
             <div class="navbar-default">
                 <ul class="nav navbar-nav">
-                  <% if (!loggedin) { %>
+                  <% if (loggedin) { %>
                     <li class="nav navbar-nav navbar-text">Your score is: <%= score %></li>
                   <% } %>
                 </ul>

@@ -27,7 +27,7 @@ class DOM {
     if(!this.loadedBlocks[id] || typeof this.loadedBlocks[id] === 'undefined') {
       return false;
     }
-    this.loadedBlocks[id].remove();
+    this.loadedBlocks[id].html.remove();
     delete this.loadedBlocks[id];
   }
 
