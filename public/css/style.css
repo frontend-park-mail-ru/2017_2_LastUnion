@@ -1,5 +1,4 @@
 body {
-  padding: 50px;
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
 }
 a {
@@ -7,4 +6,24 @@ a {
 }
 .loading {
   color: #ccc;
+}
+
+header, header nav {
+  width: 100%;
+}
+
+nav {
+  border: 2px solid #3f4340 !important;
+  border-radius: 0px !important;
+}
+
+.navbar-brand span {
+  display: inline-block;
+  font-size: 26px !important;
+  color: #491e19 !important;
+}
+
+.navbar-brand img {
+  height: 50px;
+  display: inline-block;
 }

@@ -1,25 +1,25 @@
-'use strict'
+'use strict';
 
 class UrlCom {
 
-  constructor(url, view) {
-    this.url = url;
-    this.view = view;
-    this.instance = null;
-  }
+	constructor(url, view) {
+		this.url = url;
+		this.view = view;
+		this.instance = null;
+	}
 
-  Load() {
-    if(!this.instance) {
-      this.instance = new this.view();
-    }
+	Load() {
+		if(!this.instance) {
+			this.instance = new this.view();
+		}
 
-    this.instance.ConstructPage();
-  }
+		this.instance.ConstructPage();
+	}
 
-  Destroy() {
-    this.instance.DestroyPage();
-    this.instance = null;
-  }
+	Destroy() {
+		this.instance.DestroyPage();
+		this.instance = null;
+	}
 
 }
 

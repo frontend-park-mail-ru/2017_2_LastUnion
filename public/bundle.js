@@ -76,48 +76,48 @@ const User = __webpack_require__(8);
 
 class View {
 
-  constructor() {
-    this.dom = new DOM();
-    this.user = new User();
-    this.router = new Router();
-    this.body = this.dom.gTAG(null, 'body')[0];
-  }
+	constructor() {
+		this.dom = new DOM();
+		this.user = new User();
+		this.router = new Router();
+		this.body = this.dom.gTAG(null, 'body')[0];
+	}
 
 
-  ListenLinks() {
-    const _this = this;
-    const SelEvent = [];
-    for(var obj in this.dom.loadedBlocks) {
-      if(!this.dom.loadedBlocks[obj].listened) {
-        const Links = this.dom.gTAG(this.dom.loadedBlocks[obj].html, "a");
-        for(let i=0; i < Links.length; i++)
-        {
-          Links[i].addEventListener('click', event => {
-            event.preventDefault();
-            //const router = new Router();
-            const route = Links[i].getAttribute("href");
-            window.history.pushState({},'',route);
-            _this.router.loadPage(route);
-          });
-        }
-        this.dom.loadedBlocks[obj].listened = true;
-      }
-    }
-  }
+	ListenLinks() {
+		const _this = this;
+		const SelEvent = [];
+		for(var obj in this.dom.loadedBlocks) {
+			if(!this.dom.loadedBlocks[obj].listened) {
+				const Links = this.dom.gTAG(this.dom.loadedBlocks[obj].html, 'a');
+				for(let i=0; i < Links.length; i++)
+				{
+					Links[i].addEventListener('click', event => {
+						event.preventDefault();
+						//const router = new Router();
+						const route = Links[i].getAttribute('href');
+						window.history.pushState({},'',route);
+						_this.router.loadPage(route);
+					});
+				}
+				this.dom.loadedBlocks[obj].listened = true;
+			}
+		}
+	}
 
-  Hide(obj) {
-    const elem = this.dom.loadedBlocks[obj];
-    if(elem && typeof elem !== 'undefined') {
-      elem.html.hidden = 'true';
-    }
-  }
+	Hide(obj) {
+		const elem = this.dom.loadedBlocks[obj];
+		if(elem && typeof elem !== 'undefined') {
+			elem.html.hidden = 'true';
+		}
+	}
 
-  Show(obj) {
-    const elem = this.dom.loadedBlocks[obj];
-    if(elem && typeof elem !== 'undefined') {
-      elem.html.hidden = false;
-    }
-  }
+	Show(obj) {
+		const elem = this.dom.loadedBlocks[obj];
+		if(elem && typeof elem !== 'undefined') {
+			elem.html.hidden = false;
+		}
+	}
 
 }
 
@@ -129,14 +129,14 @@ module.exports = View;
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports = {
-  rend : function(params){
-    var template = __webpack_require__(12);
-    let html = template(params);
-    const elem = document.createElement('div');
-    elem.innerHTML = html;
-    return elem;
-  }
-}
+	rend : function(params){
+		var template = __webpack_require__(12);
+		let html = template(params);
+		const elem = document.createElement('div');
+		elem.innerHTML = html;
+		return elem;
+	}
+};
 
 
 /***/ }),
@@ -150,49 +150,49 @@ const urlcom = __webpack_require__(5);
 
 class Router {
 
-  constructor() {
-    if(Router._instance) {
-      return Router._instance;
-    }
-    Router._instance = this;
-    this.urls = [];
-  }
+	constructor() {
+		if(Router._instance) {
+			return Router._instance;
+		}
+		Router._instance = this;
+		this.urls = [];
+	}
 
-  addUrl(url, view) {
-    const Url = new urlcom(url, view);
-    this.urls.push(Url);
-  }
+	addUrl(url, view) {
+		const Url = new urlcom(url, view);
+		this.urls.push(Url);
+	}
 
-  getUrl() {
-    return window.location.pathname;
-  }
+	getUrl() {
+		return window.location.pathname;
+	}
 
-  loadPage(url) {
-    if (!url || typeof url === 'undefined')
-      url = null;
-    if(url == null) {
-      url = this.getUrl();
-    }
+	loadPage(url) {
+		if (!url || typeof url === 'undefined')
+			url = null;
+		if(url == null) {
+			url = this.getUrl();
+		}
 
-    if(url != '/' && url[url.length - 1] == '/') {
-      url = url.substring(0, url.length - 1);
-    }
+		if(url != '/' && url[url.length - 1] == '/') {
+			url = url.substring(0, url.length - 1);
+		}
 
-    const route = this.urls.filter(function(urlObj) {
-      // later better use regular expression
-      // but here we just compare 2 strings
-      // console.log(urlObj.url, url, urlObj.url == url);
-      return (urlObj.url == url);
-    })[0];
+		const route = this.urls.filter(function(urlObj) {
+			// later better use regular expression
+			// but here we just compare 2 strings
+			// console.log(urlObj.url, url, urlObj.url == url);
+			return (urlObj.url == url);
+		})[0];
 
-    if(this.CurrentRoute) {
-      this.CurrentRoute.Destroy();
-      console.log("Destroyed page " + this.CurrentRoute.url);
-    }
-    this.CurrentRoute = route;
-    console.log("Loaded new page: " + url);
-    route.Load();
-  }
+		if(this.CurrentRoute) {
+			this.CurrentRoute.Destroy();
+			console.log('Destroyed page ' + this.CurrentRoute.url);
+		}
+		this.CurrentRoute = route;
+		console.log('Loaded new page: ' + url);
+		route.Load();
+	}
 }
 
 module.exports = Router;
@@ -203,38 +203,42 @@ module.exports = Router;
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports = {
-  rend : function(params) {
-    var template = __webpack_require__(20);
-    let html = template(params);
-    const elem = document.createElement('div');
-    elem.innerHTML = html;
-    const inputs = elem.getElementsByTagName("input");
-    for(let i=0; i < inputs.length; i++)
-    {
-      let id = inputs[i].getAttribute("id");
-      inputs[i].addEventListener('focus', event => {
-        document.getElementById(id + '_err').hidden = 'true';
-      });
-    }
-    return elem;
-  },
+	rend : function(params) {
+		var template = __webpack_require__(20);
+		let html = template(params);
+		const elem = document.createElement('div');
+		elem.innerHTML = html;
+		const inputs = elem.getElementsByTagName('input');
+		for(let i=0; i < inputs.length; i++)
+		{
+			let id = inputs[i].getAttribute('id');
+			inputs[i].addEventListener('focus', event => {
+				document.getElementById(id + '_err').hidden = 'true';
+			});
+		}
+		return elem;
+	},
 
-  err : function(id, msg) {
-    const span = document.getElementById(id + '_err');
-    console.log(span);
-    span.innerHTML = msg;
-    span.hidden = false;
-  },
+	err : function(id, msg) {
+		const span = document.getElementById(id + '_err');
+		console.log(span);
+		span.innerHTML = msg;
+		span.hidden = false;
+	},
 
-  ok : function(id) {
-    document.getElementById(id + '_err').hidden = 'true';
-  }
-}
+	ok : function(id) {
+		document.getElementById(id + '_err').hidden = 'true';
+	}
+};
 
 
 /***/ }),
 /* 4 */
 /***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/* global require */
+
 
 const router = __webpack_require__(2);
 const R = new router();
@@ -245,6 +249,7 @@ const ScoresView = __webpack_require__(13);
 const MenuView = __webpack_require__(16);
 const SignInView = __webpack_require__(19);
 const SignUpView = __webpack_require__(21);
+const LogoutView = __webpack_require__(22);
 
 R.addUrl('/', MenuView);
 R.addUrl('/play', GameView);
@@ -252,6 +257,7 @@ R.addUrl('/scores', ScoresView);
 R.addUrl('/menu', MenuView);
 R.addUrl('/signin', SignInView);
 R.addUrl('/signup', SignUpView);
+R.addUrl('/logout', LogoutView);
 
 R.loadPage();
 
@@ -265,24 +271,24 @@ R.loadPage();
 
 class UrlCom {
 
-  constructor(url, view) {
-    this.url = url;
-    this.view = view;
-    this.instance = null;
-  }
+	constructor(url, view) {
+		this.url = url;
+		this.view = view;
+		this.instance = null;
+	}
 
-  Load() {
-    if(!this.instance) {
-      this.instance = new this.view();
-    }
+	Load() {
+		if(!this.instance) {
+			this.instance = new this.view();
+		}
 
-    this.instance.ConstructPage();
-  }
+		this.instance.ConstructPage();
+	}
 
-  Destroy() {
-    this.instance.DestroyPage();
-    this.instance = null;
-  }
+	Destroy() {
+		this.instance.DestroyPage();
+		this.instance = null;
+	}
 
 }
 
@@ -302,29 +308,30 @@ const Header = __webpack_require__(1);
 
 class GameView extends View {
 
-  constructor() {
-    super();
-    if(GameView._instance) {
-      return GameView._instance;
-    }
-    GameView._instance = this;
+	constructor() {
+		super();
+		if(GameView._instance) {
+			return GameView._instance;
+		}
+		GameView._instance = this;
 
-    this.dom.insertDom(this.body, Header.rend({
-      loggedin : this.user.isAuth()
-    }), 'Header');
-    this.dom.insertDom(this.body, Game.rend({}), 'Game');
-    this.ListenLinks();
-  }
+		this.dom.insertDom(this.body, Header.rend({
+			loggedin : this.user.isAuth(),
+			score: this.user.getScore()
+		}), 'Header');
+		this.dom.insertDom(this.body, Game.rend({}), 'Game');
+		this.ListenLinks();
+	}
 
-  ConstructPage() {
-    this.Show('Header');
-    this.Show('Game');
-  }
+	ConstructPage() {
+		this.Show('Header');
+		this.Show('Game');
+	}
 
-  DestroyPage() {
-    this.Hide('Header');
-    this.Hide('Game');
-  }
+	DestroyPage() {
+		this.Hide('Header');
+		this.Hide('Game');
+	}
 
 }
 
@@ -340,45 +347,50 @@ module.exports = GameView;
 
 class DOM {
 
-  constructor() {
-    if(DOM._instance) {
-      return DOM._instance;
-    }
-    DOM._instance = this;
+	constructor() {
+		if(DOM._instance) {
+			return DOM._instance;
+		}
+		DOM._instance = this;
 
-    this.loadedBlocks = {};
-  }
+		this.loadedBlocks = {};
+	}
 
-  insertDom(parent, elem, id, upd) {
-    if (!this.loadedBlocks[id] ||
+	insertDom(parent, elem, id, upd) {
+		if (!this.loadedBlocks[id] ||
       typeof this.loadedBlocks[id] === 'undefined' ||
       upd == true) {
-      elem.hidden = 'true';
-      parent.appendChild(elem);
-      this.loadedBlocks[id] = { 'html' : elem, 'listened' : false };
-      console.log("Loaded " + id + " in DOM");
-      return this.loadedBlocks[id];
-    }
-  }
+			if(upd) {
+				console.log('Reloading ' + id + ' in DOM');
+			}
+			elem.hidden = 'true';
+			parent.appendChild(elem);
+			this.loadedBlocks[id] = { 'html' : elem, 'listened' : false };
+			console.log('Loaded ' + id + ' in DOM');
+			return this.loadedBlocks[id];
+		}
+	}
 
-  removeDOM(id) {
-    if(!this.loadedBlocks[id] || typeof this.loadedBlocks[id] === 'undefined') {
-      return false;
-    }
-    this.loadedBlocks[id].remove();
-    delete this.loadedBlocks[id];
-  }
+	removeDOM(id) {
+		if(!this.loadedBlocks[id] || typeof this.loadedBlocks[id] === 'undefined') {
+			console.log('Can\'t remove ' + id + ' from DOM. Item not exists.');
+			return false;
+		}
+		this.loadedBlocks[id].html.remove();
+		delete this.loadedBlocks[id];
+		console.log('Removed ' + id + ' from DOM');
+	}
 
-  gID(id) {
-    return document.getElementById(id);
-  }
+	gID(id) {
+		return document.getElementById(id);
+	}
 
-  gTAG(parent, tag) {
-    if(!parent || typeof parent == 'undefined') {
-      parent = document;
-    }
-    return parent.getElementsByTagName(tag);
-  }
+	gTAG(parent, tag) {
+		if(!parent || typeof parent == 'undefined') {
+			parent = document;
+		}
+		return parent.getElementsByTagName(tag);
+	}
 
 }
 
@@ -396,58 +408,66 @@ const API = __webpack_require__(9);
 
 class User {
 
-  constructor() {
-    if(User._instance) {
-      return User._instance;
-    }
-    User._instance = this;
+	constructor() {
+		if(User._instance) {
+			return User._instance;
+		}
+		User._instance = this;
 
-    this.api = new API;
-    this._loggedin = false;
-    this._proto = {};
-  }
+		this.api = new API;
+		this._loggedin = false;
+		this._proto = {};
+	}
 
-  isAuth() {
-    return this._loggedin;
-  }
+	isAuth() {
+		return this._loggedin;
+	}
 
-  checkResponse(response) {
-    if(respose.status !== 'OK') {
-      throw new Error(response.msg);
-    }
-    return response.data;
-  }
+	getScore() {
+		return 322;
+	}
 
-  login(login, password) {
-    const _this = this;
-    return this.api.call('signin', 'POST', {
-      userName: login,
-      userPassword: password
-    }).then(function(response) {
-      _this.checkResponse(response);
-      _this._proto.login = login;
-      _this._loggedin = true;
-    });
-  }
+	checkResponse(response) {
+		if(typeof response.result === 'undefined') {
+			throw new Error(response);
+		}
+		if(response.result !== true) {
+			throw new Error(String(response.responseMessage));
+		}
+		return response.data;
+	}
 
-  signup(login, password, email) {
-    return this.api.call('signup', 'POST', {
-      login: login,
-      password: password,
-      email: email
-    }).then(function(response) {
-      this.checkResponse(response);
-      this.login(login, password);
-    });
-  }
+	login(login, password) {
+		const _this = this;
+		return this.api.call('user/signin', 'POST', {
+			userName: login,
+			userPassword: password
+		}).then(function(response) {
+			_this.checkResponse(response);
+			_this._proto.login = login;
+			_this._loggedin = true;
+		});
+	}
 
-  logout() {
-    return this.api.call('logout', 'POST').then(function(response) {
-      this.checkResponse(response);
-      this._proto = {};
-      this._loggedin = false;
-    });
-  }
+	signup(login, password, email) {
+		const _this = this;
+		return this.api.call('user/signup', 'POST', {
+			userName: login,
+			userPassword: password,
+			userEmail: email
+		}).then(function(response) {
+			_this.checkResponse(response);
+		});
+	}
+
+	logout() {
+		const _this = this;
+		return this.api.call('user/logout', 'POST').then(function(response) {
+			_this.checkResponse(response);
+			_this._proto = {};
+			_this._loggedin = false;
+		});
+	}
 
 }
 
@@ -459,43 +479,46 @@ module.exports = User;
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
+/* global module */
+
 
 
 class API {
 
-  constructor() {
-    this._host = 'lastunion.herokuapp.com';
-  }
+	constructor() {
+		this._host = 'lastunion.herokuapp.com';
+	}
 
-  call(method, httpMethod, params) {
-    const url = 'https://' + this._host + '/api/' + method;
-    const httpRequest = {
-      method: httpMethod,
-      headers: {
-        'Content-type': 'application/json'
-      },
-      mode: 'cors',
-      credentials: 'include',
-      body: null
-    };
+	call(method, httpMethod, params) {
+		const url = 'https://' + this._host + '/api/' + method;
+		const httpRequest = {
+			method: httpMethod,
+			headers: {
+				'Content-type': 'application/json',
+				'Access-Control-Request-Method': httpMethod
+			},
+			mode: 'cors',
+			credentials: 'include',
+			body: null
+		};
 
-    console.log(method, httpMethod, params);
-    if(httpMethod === 'POST' && typeof params !== 'undefined') {
-      httpRequest.body = JSON.stringify(params);
-    }
+		console.log(method, httpMethod, params);
+		if(httpMethod === 'POST' && typeof params !== 'undefined') {
+			httpRequest.body = JSON.stringify(params);
+		}
 
-    console.log(httpRequest);
+		console.log(httpRequest);
 
-    return fetch(url, httpRequest).then(
-      function(response) {
-        console.log("Success");
-        return response.json();
-      },
-      function(response) {
-        console.error("Connection issues: ", response);
-        return response;
-      })
-  }
+		return fetch(url, httpRequest).then(
+			function(response) {
+				console.log('Success');
+				return response.json();
+			},
+			function(response) {
+				console.error('Connection issues: ', response);
+				return response;
+			});
+	}
 
 }
 
@@ -507,14 +530,14 @@ module.exports = API;
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports = {
-  rend : function(params){
-    var template = __webpack_require__(11);
-    let html = template(params);
-    const elem = document.createElement('div');
-    elem.innerHTML = html;
-    return elem;
-  }
-}
+	rend : function(params){
+		var template = __webpack_require__(11);
+		let html = template(params);
+		const elem = document.createElement('div');
+		elem.innerHTML = html;
+		return elem;
+	}
+};
 
 
 /***/ }),
@@ -540,17 +563,19 @@ obj || (obj = {});
 var __t, __p = '', __j = Array.prototype.join;
 function print() { __p += __j.call(arguments, '') }
 with (obj) {
-__p += '<!-- HEADER -->\r\n<div class="container">\r\n    <nav class="navbar navbar-default" role="navigation" align="center">\r\n        <div class="container-fluid">\r\n            <div class="navbar-header">\r\n                <a class="navbar-brand" href="/">LastUnion GAME</a>\r\n            </div>\r\n            <div class="navbar-default">\r\n                <ul class="nav navbar-nav">\r\n                  ';
+__p += '<!-- HEADER -->\r\n<header>\r\n    <nav class="navbar navbar-default" role="navigation" align="center">\r\n        <div class="container-fluid">\r\n            <div class="navbar-header">\r\n                <a class="navbar-brand" href="/">\r\n                    <img src="img/logo.png" alt="Logo" />\r\n                    <span>LastUnion GAME</span>\r\n                </a>\r\n            </div>\r\n            <div class="navbar-default">\r\n                <ul class="nav navbar-nav">\r\n                  ';
  if (loggedin) { ;
-__p += '\r\n                    <p class="nav navbar-nav navbar-text">You scope is: 2517</p>\r\n                  ';
+__p += '\r\n                    <li class="nav navbar-nav navbar-text">Your score is: ' +
+((__t = ( score )) == null ? '' : __t) +
+'</li>\r\n                  ';
  } ;
-__p += '\r\n\r\n                    <li><a href="/menu">Menu</a></li>\r\n\r\n                </ul>\r\n                <ul class="nav navbar-nav navbar-right">\r\n                    ';
+__p += '\r\n                </ul>\r\n                <ul class="nav navbar-nav navbar-right">\r\n                    ';
  if (loggedin) { ;
 __p += '\r\n                      <li><a href="/logout">Log out</a></li>\r\n                    ';
  } else { ;
 __p += '\r\n                      <li><a href="/signin">Sign IN</a></li>\r\n                      <p class="nav navbar-nav navbar-text">or</p>\r\n                      <li><a href="/signup">Sign UP</a></li>\r\n                    ';
  } ;
-__p += '\r\n                </ul>\r\n            </div>\r\n         </div>\r\n    </nav>\r\n</div>\r\n<!-- HEADER -->\r\n';
+__p += '\r\n                </ul>\r\n            </div>\r\n         </div>\r\n    </nav>\r\n</header>\r\n<!-- HEADER -->\r\n';
 
 }
 return __p
@@ -569,45 +594,46 @@ const Header = __webpack_require__(1);
 
 class ScoresView extends View {
 
-  constructor() {
-    super();
-    if(ScoresView._instance) {
-      return ScoresView._instance;
-    }
-    ScoresView._instance = this;
+	constructor() {
+		super();
+		if(ScoresView._instance) {
+			return ScoresView._instance;
+		}
+		ScoresView._instance = this;
 
-    this.dom.insertDom(this.body, Header.rend({
-      loggedin : this.user.isAuth()
-    }), 'Header');
-  }
+		this.dom.insertDom(this.body, Header.rend({
+			loggedin : this.user.isAuth(),
+			score: this.user.getScore()
+		}), 'Header');
+	}
 
-  InitLeaderBoard() {
-    this.dom.insertDom(this.body, Scores.rend({
-      'users' : ['John','Mike','Bredd','Jarel','Jane'],
-      'place' : ['1','2','3','4','5'],
-      'score' : ['999','888','777','666','555'],
-      'userplace' : '999',
-      'userscore' : '0',
-    }), 'Scores');
-    this.ListenLinks();
-  }
+	InitLeaderBoard() {
+		this.dom.insertDom(this.body, Scores.rend({
+			'users' : ['John','Mike','Bredd','Jarel','Jane'],
+			'place' : ['1','2','3','4','5'],
+			'score' : ['999','888','777','666','555'],
+			'userplace' : '999',
+			'userscore' : '0',
+		}), 'Scores');
+		this.ListenLinks();
+	}
 
-  ConstructPage() {
-    this.Show('Header');
-    if (!this.user.isAuth()) {
-      console.error("Access denied.");
-      window.history.pushState({},'','/signin/');
-      this.router.loadPage('/signin/');
-    } else {
-      this.InitLeaderBoard();
-      this.Show('Scores');
-    }
-  }
+	ConstructPage() {
+		this.Show('Header');
+		if (!this.user.isAuth()) {
+			console.error('Access denied.');
+			window.history.pushState({},'','/signin/');
+			this.router.loadPage('/signin/');
+		} else {
+			this.InitLeaderBoard();
+			this.Show('Scores');
+		}
+	}
 
-  DestroyPage() {
-    this.Hide('Header');
-    this.Hide('Scores');
-  }
+	DestroyPage() {
+		this.Hide('Header');
+		this.Hide('Scores');
+	}
 
 }
 
@@ -619,14 +645,14 @@ module.exports = ScoresView;
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports = {
-  rend : function(params){
-    var template = __webpack_require__(15);
-    let html = template(params);
-    const elem = document.createElement('div');
-    elem.innerHTML = html;
-    return elem;
-  }
-}
+	rend : function(params){
+		var template = __webpack_require__(15);
+		let html = template(params);
+		const elem = document.createElement('div');
+		elem.innerHTML = html;
+		return elem;
+	}
+};
 
 
 /***/ }),
@@ -671,32 +697,33 @@ const Header = __webpack_require__(1);
 
 class MenuView extends View {
 
-  constructor() {
-    super();
-    if(MenuView._instance) {
-      return MenuView._instance;
-    }
-    MenuView._instance = this;
+	constructor() {
+		super();
+		if(MenuView._instance) {
+			return MenuView._instance;
+		}
+		MenuView._instance = this;
 
-    this.dom.insertDom(this.body, Header.rend({
-      loggedin : this.user.isAuth()
-    }), 'Header');
-    this.dom.insertDom(this.body, Menu.rend({
-      'menuitems' : ['Play', 'About us', 'Scores'],
-      'links' : ['/play/', '/about/', '/scores/'],
-    }), 'Menu');
-    this.ListenLinks();
-  }
+		this.dom.insertDom(this.body, Header.rend({
+			loggedin : this.user.isAuth(),
+			score: this.user.getScore()
+		}), 'Header');
+		this.dom.insertDom(this.body, Menu.rend({
+			'menuitems' : ['Play', 'About us', 'Scores'],
+			'links' : ['/play/', '/about/', '/scores/'],
+		}), 'Menu');
+		this.ListenLinks();
+	}
 
-  ConstructPage() {
-    this.Show('Header');
-    this.Show('Menu');
-  }
+	ConstructPage() {
+		this.Show('Header');
+		this.Show('Menu');
+	}
 
-  DestroyPage() {
-    this.Hide('Header');
-    this.Hide('Menu');
-  }
+	DestroyPage() {
+		this.Hide('Header');
+		this.Hide('Menu');
+	}
 
 }
 
@@ -708,14 +735,14 @@ module.exports = MenuView;
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports = {
-  rend : function(params){
-    var template = __webpack_require__(18);
-    let html = template(params);
-    const elem = document.createElement('div');
-    elem.innerHTML = html;
-    return elem;
-  }
-}
+	rend : function(params){
+		var template = __webpack_require__(18);
+		let html = template(params);
+		const elem = document.createElement('div');
+		elem.innerHTML = html;
+		return elem;
+	}
+};
 
 
 /***/ }),
@@ -754,80 +781,88 @@ const Header = __webpack_require__(1);
 
 class SignInView extends View {
 
-  constructor() {
-    super();
-    if(SignInView._instance) {
-      return SignInView._instance;
-    }
-    SignInView._instance = this;
+	constructor() {
+		super();
+		if(SignInView._instance) {
+			return SignInView._instance;
+		}
+		SignInView._instance = this;
 
-    this.dom.insertDom(this.body, Header.rend({
-      loggedin : this.user.isAuth()
-    }), 'Header');
-    this.form = Form.rend({
-      'formname' : 'LoginForm',
-      'title' : 'Enter the cave!',
-      'inputs' : [
-        {
-          'label' : 'Login',
-          'type' : 'text',
-          'placeholder' : 'Your login'
-        },
-        {
-          'label' : 'Password',
-          'type' : 'password',
-          'placeholder' : '**********',
-        }
-      ],
-      'button' : 'Let me run!'
-    });
-    this.dom.insertDom(this.body, this.form, 'LoginForm');
-    this.ListenLinks();
-    this.ListenSubmit();
-  }
+		this.dom.insertDom(this.body, Header.rend({
+			loggedin : this.user.isAuth(),
+			score: this.user.getScore()
+		}), 'Header');
+		this.form = Form.rend({
+			'formname' : 'LoginForm',
+			'title' : 'Enter the cave!',
+			'inputs' : [
+				{
+					'label' : 'Login',
+					'type' : 'text',
+					'placeholder' : 'Your login'
+				},
+				{
+					'label' : 'Password',
+					'type' : 'password',
+					'placeholder' : '**********',
+				}
+			],
+			'button' : 'Let me run!'
+		});
+		this.dom.insertDom(this.body, this.form, 'LoginForm');
+		this.ListenLinks();
+		this.ListenSubmit();
+	}
 
-  ListenSubmit() {
-    this.dom.gTAG(this.form, "button")[0].addEventListener('click', event => {
-      event.preventDefault();
+	ListenSubmit() {
+		this.dom.gTAG(this.form, 'button')[0].addEventListener('click', event => {
+			event.preventDefault();
 
-      let login = this.dom.gID("LoginForm_Login");
-      let passw = this.dom.gID("LoginForm_Password");
+			let login = this.dom.gID('LoginForm_Login');
+			let passw = this.dom.gID('LoginForm_Password');
 
-      if(this.Validate(login, passw)) {
-        this.user.login(login.value, passw.value)
-        .then(function() {
-          this.dom.removeDOM('LoginForm');
-          this.dom.removeDOM('SignUpForm');
-        })
-        .catch(function(e) {
-          alert(e);
-        });
-      }
-    });
-  }
+			if(this.Validate(login, passw)) {
+				const _this = this;
+				this.user.login(login.value, passw.value)
+					.then(function() {
+						_this.dom.removeDOM('LoginForm');
+						_this.dom.removeDOM('SignUpForm');
+						_this.Hide('Header');
+						_this.dom.insertDom(this.body, Header.rend({
+							loggedin : this.user.isAuth(),
+							score: this.user.getScore()
+						}), 'Header', true);
+						_this.Show('Header');
+					})
+					.catch(function(e) {
+						alert(e);
+					});
+			}
+		});
+	}
 
-  Validate(login, passw) {
-    let valid = true;
-    if(login.value.length < 4) {
-      Form.err('LoginForm_Login', 'Login is at least 4 characters.');
-      valid = false;
-    }
-    if(passw.value.length < 6) {
-      Form.err('LoginForm_Password', 'Password is at least 6 characters.');
-      valid = false;
-    }
-    return valid;
-  }
+	Validate(login, passw) {
+		let valid = true;
+		if(login.value.length < 4) {
+			Form.err('LoginForm_Login', 'Login is at least 4 characters.');
+			valid = false;
+		}
+		if(passw.value.length < 6) {
+			Form.err('LoginForm_Password', 'Password is at least 6 characters.');
+			valid = false;
+		}
+		return valid;
+	}
 
-  ConstructPage() {
-    this.Show('Header');
-    this.Show('LoginForm');
-  }
+	ConstructPage() {
+		this.Show('Header');
+		this.Show('LoginForm');
+	}
 
-  DestroyPage() {
-    this.Hide('Header');
-    this.Hide('LoginForm');
-  }
+	DestroyPage() {
+		this.Hide('Header');
+		this.Hide('LoginForm');
+	}
 
 }
 
@@ -888,91 +923,145 @@ const Header = __webpack_require__(1);
 
 class SignUpView extends View {
 
-  constructor() {
-    super();
-    if(SignUpView._instance) {
-      return SignUpView._instance;
-    }
-    SignUpView._instance = this;
+	constructor() {
+		super();
+		if(SignUpView._instance) {
+			return SignUpView._instance;
+		}
+		SignUpView._instance = this;
 
-    this.dom.insertDom(this.body, Header.rend({
-      loggedin : this.user.isAuth()
-    }), 'Header');
-    this.form = Form.rend({
-      'formname' : 'SignUpForm',
-      'title' : 'Birth of a necromancer!',
-      'inputs' : [
-        {
-          'label' : 'Login',
-          'type' : 'text',
-          'placeholder' : 'Your login',
-        },
-        {
-          'label' : 'Email',
-          'type' : 'text',
-          'placeholder' : 'necro@fast.me',
-        },
-        {
-          'label' : 'Password',
-          'type' : 'password',
-          'placeholder' : '**********',
-        }
-      ],
-      'button' : 'Birth!'
-    });
-    this.dom.insertDom(this.body, this.form, 'SignUpForm');
-    this.ListenLinks();
-    this.ListenSubmit();
-  }
+		this.dom.insertDom(this.body, Header.rend({
+			loggedin : this.user.isAuth(),
+			score: this.user.getScore()
+		}), 'Header');
+		this.form = Form.rend({
+			'formname' : 'SignUpForm',
+			'title' : 'Birth of a necromancer!',
+			'inputs' : [
+				{
+					'label' : 'Login',
+					'type' : 'text',
+					'placeholder' : 'Your login',
+				},
+				{
+					'label' : 'Email',
+					'type' : 'text',
+					'placeholder' : 'necro@fast.me',
+				},
+				{
+					'label' : 'Password',
+					'type' : 'password',
+					'placeholder' : '**********',
+				}
+			],
+			'button' : 'Birth!'
+		});
+		this.dom.insertDom(this.body, this.form, 'SignUpForm');
+		this.ListenLinks();
+		this.ListenSubmit();
+	}
 
-  ListenSubmit() {
-    this.dom.gTAG(this.form, "button")[0].addEventListener('click', event => {
-      event.preventDefault();
+	ListenSubmit() {
+		this.dom.gTAG(this.form, 'button')[0].addEventListener('click', event => {
+			event.preventDefault();
 
-      let login = this.dom.gID("SignUpForm_Login");
-      let email = this.dom.gID("SignUpForm_Email");
-      let passw = this.dom.gID("SignUpForm_Password");
+			let login = this.dom.gID('SignUpForm_Login');
+			let email = this.dom.gID('SignUpForm_Email');
+			let passw = this.dom.gID('SignUpForm_Password');
 
-      if(this.Validate(login, passw, email)) {
-        this.user.signup(login, passw, email)
-        .then(function() {
-          this.dom.removeDOM('LoginForm');
-          this.dom.removeDOM('SignUpForm');
-        })
-        .catch(function(e) {
-          alert(e);
-        });
-      }
-    });
-  }
+			if(this.Validate(login, passw, email)) {
+				const _this = this;
+				this.user.signup(login.value, passw.value, email.value)
+					.then(function() {
+						console.log('User ' + login.value + ' registered successfully!');
+						_this.user.login(login.value, passw.value)
+							.then(function() {
+								_this.dom.removeDOM('LoginForm');
+								_this.dom.removeDOM('SignUpForm');
+								_this.Hide('Header');
+								_this.dom.insertDom(_this.body, Header.rend({
+									loggedin : _this.user.isAuth(),
+									score: _this.user.getScore()
+								}), 'Header', true);
+								_this.Show('Header');
+							});
+					})
+					.catch(function(e) {
+						alert(e);
+					});
+			}
+		});
+	}
 
-  Validate(login, passw, email) {
-    let valid = true;
-    if(login.value.length < 4) {
-      Form.err('SignUpForm_Login', 'Login has to be at least 4 characters.');
-      valid = false;
-    }
-    if(passw.value.length < 6) {
-      Form.err('SignUpForm_Password', 'Password has to be at least 6 characters.');
-      valid = false;
-    }
+	Validate(login, passw, email) {
+		let valid = true;
+		if(login.value.length < 4) {
+			Form.err('SignUpForm_Login', 'Login has to be at least 4 characters.');
+			valid = false;
+		}
+		if(passw.value.length < 6) {
+			Form.err('SignUpForm_Password', 'Password has to be at least 6 characters.');
+			valid = false;
+		}
 
-    return valid;
-  }
+		return valid;
+	}
 
-  ConstructPage() {
-    this.Show('Header');
-    this.Show('SignUpForm');
-  }
+	ConstructPage() {
+		this.Show('Header');
+		this.Show('SignUpForm');
+	}
 
-  DestroyPage() {
-    this.Hide('Header');
-    this.Hide('SignUpForm');
-  }
+	DestroyPage() {
+		this.Hide('Header');
+		this.Hide('SignUpForm');
+	}
 
 }
 
 module.exports = SignUpView;
+
+
+/***/ }),
+/* 22 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+const View = __webpack_require__(0);
+const Header = __webpack_require__(1);
+
+class LogoutView extends View {
+
+	constructor() {
+		super();
+		if(LogoutView._instance) {
+			return LogoutView._instance;
+		}
+		LogoutView._instance = this;
+
+		this.user.logout();
+
+		this.Hide('Header');
+		this.dom.insertDom(this.body, Header.rend({
+			loggedin : this.user.isAuth(),
+			score: this.user.getScore()
+		}), 'Header', true);
+	}
+
+	ConstructPage() {
+		window.history.pushState({},'','/menu/');
+		this.router.loadPage('/menu/');
+	}
+
+	DestroyPage() {
+
+	}
+
+}
+
+module.exports = LogoutView;
 
 
 /***/ })
