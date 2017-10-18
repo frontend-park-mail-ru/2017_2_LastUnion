@@ -57,14 +57,13 @@ class SignUpView extends View {
         this.user.signup(login.value, passw.value, email.value)
         .then(function() {
           console.log("User " + login.value + " registered successfully!")
-          if(_this.user.login(login.value, passw.value)) {
-            _this.dom.removeDOM('LoginForm');
-            _this.dom.removeDOM('SignUpForm');
-            _this.dom.insertDom(_this.body, Header.rend({
-              loggedin : _this.user.isAuth(),
-              score: _this.user.getScore()
-            }), 'Header', true);
-          }
+          _this.user.login(login.value, passw.value);
+          _this.dom.removeDOM('LoginForm');
+          _this.dom.removeDOM('SignUpForm');
+          _this.dom.insertDom(_this.body, Header.rend({
+            loggedin : _this.user.isAuth(),
+            score: _this.user.getScore()
+          }), 'Header', true);
         })
         .catch(function(e) {
           alert(e);
