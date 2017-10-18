@@ -417,7 +417,7 @@ class User {
   }
 
   checkResponse(response) {
-    if(typeof response.status === 'undefined') {
+    if(typeof response.result === 'undefined') {
       throw new Error(response);
     }
     if(respose.result !== true) {
