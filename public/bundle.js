@@ -970,9 +970,9 @@ class SignUpView extends View {
           if(_this.user.login(login.value, passw.value)) {
             _this.dom.removeDOM('LoginForm');
             _this.dom.removeDOM('SignUpForm');
-            this.dom.insertDom(this.body, Header.rend({
-              loggedin : this.user.isAuth(),
-              score: this.user.getScore()
+            _this.dom.insertDom(_this.body, Header.rend({
+              loggedin : _this.user.isAuth(),
+              score: _this.user.getScore()
             }), 'Header', true);
           }
         })
