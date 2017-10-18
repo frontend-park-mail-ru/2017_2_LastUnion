@@ -52,12 +52,12 @@ class SignInView extends View {
 					.then(function() {
 						_this.dom.removeDOM('LoginForm');
 						_this.dom.removeDOM('SignUpForm');
-						this.Hide('Header');
-						this.dom.insertDom(this.body, Header.rend({
+						_this.Hide('Header');
+						_this.dom.insertDom(this.body, Header.rend({
 							loggedin : this.user.isAuth(),
 							score: this.user.getScore()
 						}), 'Header', true);
-						this.Show('Header');
+						_this.Show('Header');
 					})
 					.catch(function(e) {
 						alert(e);
