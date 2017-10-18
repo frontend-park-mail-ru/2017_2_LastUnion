@@ -46,7 +46,7 @@ class SignInView extends View {
       let passw = this.dom.gID("LoginForm_Password");
 
       if(this.Validate(login, passw)) {
-        this.user.login(login, passw)
+        this.user.login(login.value, passw.value)
         .then(function() {
           this.dom.removeDOM('LoginForm');
           this.dom.removeDOM('SignUpForm');
