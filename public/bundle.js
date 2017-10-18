@@ -440,9 +440,9 @@ class User {
 
   signup(login, password, email) {
     return this.api.call('user/signup', 'POST', {
-      login: login,
-      password: password,
-      email: email
+      userName: login,
+      userPassword: password,
+      userEmail: email
     }).then(function(response) {
       this.checkResponse(response);
       this.login(login, password);
