@@ -20,6 +20,9 @@ class User {
   }
 
   checkResponse(response) {
+    if(typeof response.status === 'undefined') {
+      throw new Error(response);
+    }
     if(respose.status !== 'OK') {
       throw new Error(response.msg);
     }
