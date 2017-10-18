@@ -417,13 +417,13 @@ class User {
   }
 
   checkResponse(response) {
-    if(typeof response['result'] === 'undefined') {
+    if(typeof response.result === 'undefined') {
       throw new Error(response);
     }
-    if(respose['result'] !== true) {
-      throw new Error(String(response['responseMessage']));
+    if(respose.result !== true) {
+      throw new Error(String(response.responseMessage));
     }
-    return response['data'];
+    return response.data;
   }
 
   login(login, password) {
