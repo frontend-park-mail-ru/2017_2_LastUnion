@@ -28,7 +28,7 @@ class User {
       throw new Error(response);
     }
     if(respose.result !== true) {
-      throw new Error(response.responseMessage);
+      throw new Error(String(response.responseMessage));
     }
     return response.data;
   }
