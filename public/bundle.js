@@ -1042,7 +1042,7 @@ class LogoutView extends View {
 
 }
 
-module.exports = ScoresView;
+module.exports = LogoutView;
 
 
 /***/ })
