@@ -3,7 +3,7 @@
 class API {
 
   constructor() {
-    this._host = 'boiling-bastion-61743.herokuapp.com';
+    this._host = 'lastunion.herokuapp.com';
   }
 
   call(method, httpMethod, params) {
@@ -14,12 +14,16 @@ class API {
         'Content-type': 'application/json'
       },
       mode: 'cors',
-      credentials: 'include'
+      credentials: 'include',
+      body: null
     };
 
+    console.log(method, httpMethod, params);
     if(httpMethod === 'POST' && typeof params !== 'undefined') {
-      httpRequest.body = JSON.stringify(data);
+      httpRequest.body = JSON.stringify(params);
     }
+
+    console.log(httpRequest);
 
     return fetch(url, httpRequest).then(
       function(response) {
@@ -27,9 +31,8 @@ class API {
         return response.json();
       },
       function(response) {
-        console.error("Connection issues");
-        alert("We didn't get response from server. Please check your internet connection!");
-        console.log(response);
+        console.error("Connection issues: ", response);
+        return response;
       })
   }
 

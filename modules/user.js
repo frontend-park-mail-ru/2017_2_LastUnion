@@ -27,13 +27,14 @@ class User {
   }
 
   login(login, password) {
-    return this.api.call('login', 'POST', {
-      login: login,
-      password: password
+    const _this = this;
+    return this.api.call('signin', 'POST', {
+      userName: login,
+      userPassword: password
     }).then(function(response) {
-      this.checkResponse(response);
-      this._proto.login = login;
-      this._loggedin = true;
+      _this.checkResponse(response);
+      _this._proto.login = login;
+      _this._loggedin = true;
     });
   }
 
