@@ -809,10 +809,11 @@ class SignInView extends View {
       let passw = this.dom.gID("LoginForm_Password");
 
       if(this.Validate(login, passw)) {
+        const _this = this;
         this.user.login(login.value, passw.value)
         .then(function() {
-          this.dom.removeDOM('LoginForm');
-          this.dom.removeDOM('SignUpForm');
+          _this.dom.removeDOM('LoginForm');
+          _this.dom.removeDOM('SignUpForm');
         })
         .catch(function(e) {
           alert(e);
@@ -950,10 +951,11 @@ class SignUpView extends View {
       let passw = this.dom.gID("SignUpForm_Password");
 
       if(this.Validate(login, passw, email)) {
+        const _this = this;
         this.user.signup(login.value, passw.value, email.value)
         .then(function() {
-          this.dom.removeDOM('LoginForm');
-          this.dom.removeDOM('SignUpForm');
+          _this.dom.removeDOM('LoginForm');
+          _this.dom.removeDOM('SignUpForm');
         })
         .catch(function(e) {
           alert(e);
