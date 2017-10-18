@@ -13,6 +13,7 @@ const routes = [
   '/about',
   '/play',
   '/scores',
+  '/logout'
 ];
 
 routes.forEach(r => {
