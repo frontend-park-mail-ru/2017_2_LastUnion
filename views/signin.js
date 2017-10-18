@@ -52,6 +52,10 @@ class SignInView extends View {
         .then(function() {
           _this.dom.removeDOM('LoginForm');
           _this.dom.removeDOM('SignUpForm');
+          this.dom.insertDom(this.body, Header.rend({
+            loggedin : this.user.isAuth(),
+            score: this.user.getScore()
+          }), 'Header', true);
         })
         .catch(function(e) {
           alert(e);

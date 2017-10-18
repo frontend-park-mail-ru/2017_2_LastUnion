@@ -15,6 +15,9 @@ class DOM {
     if (!this.loadedBlocks[id] ||
       typeof this.loadedBlocks[id] === 'undefined' ||
       upd == true) {
+      if(upd) {
+        console.log("Reloading " + id + " in DOM");
+      }
       elem.hidden = 'true';
       parent.appendChild(elem);
       this.loadedBlocks[id] = { 'html' : elem, 'listened' : false };
@@ -25,10 +28,12 @@ class DOM {
 
   removeDOM(id) {
     if(!this.loadedBlocks[id] || typeof this.loadedBlocks[id] === 'undefined') {
+      console.log("Can't remove " + id + " from DOM. Item not exists.");
       return false;
     }
     this.loadedBlocks[id].html.remove();
     delete this.loadedBlocks[id];
+    console.log("Removed " + id + " from DOM");
   }
 
   gID(id) {

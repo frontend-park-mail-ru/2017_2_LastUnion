@@ -56,8 +56,7 @@ class SignUpView extends View {
         const _this = this;
         this.user.signup(login.value, passw.value, email.value)
         .then(function() {
-          _this.dom.removeDOM('LoginForm');
-          _this.dom.removeDOM('SignUpForm');
+          console.log("User " + login.value + " registered successfully!")
         })
         .catch(function(e) {
           alert(e);

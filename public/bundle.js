@@ -245,6 +245,7 @@ const ScoresView = __webpack_require__(13);
 const MenuView = __webpack_require__(16);
 const SignInView = __webpack_require__(19);
 const SignUpView = __webpack_require__(21);
+const LogoutView = __webpack_require__(22);
 
 R.addUrl('/', MenuView);
 R.addUrl('/play', GameView);
@@ -252,6 +253,7 @@ R.addUrl('/scores', ScoresView);
 R.addUrl('/menu', MenuView);
 R.addUrl('/signin', SignInView);
 R.addUrl('/signup', SignUpView);
+R.addUrl('/logout', LogoutView);
 
 R.loadPage();
 
@@ -354,6 +356,9 @@ class DOM {
     if (!this.loadedBlocks[id] ||
       typeof this.loadedBlocks[id] === 'undefined' ||
       upd == true) {
+      if(upd) {
+        console.log("Reloading " + id + " in DOM");
+      }
       elem.hidden = 'true';
       parent.appendChild(elem);
       this.loadedBlocks[id] = { 'html' : elem, 'listened' : false };
@@ -364,10 +369,12 @@ class DOM {
 
   removeDOM(id) {
     if(!this.loadedBlocks[id] || typeof this.loadedBlocks[id] === 'undefined') {
+      console.log("Can't remove " + id + " from DOM. Item not exists.");
       return false;
     }
     this.loadedBlocks[id].html.remove();
     delete this.loadedBlocks[id];
+    console.log("Removed " + id + " from DOM");
   }
 
   gID(id) {
@@ -451,10 +458,11 @@ class User {
   }
 
   logout() {
+    const _this = this;
     return this.api.call('user/logout', 'POST').then(function(response) {
-      this.checkResponse(response);
-      this._proto = {};
-      this._loggedin = false;
+      _this.checkResponse(response);
+      _this._proto = {};
+      _this._loggedin = false;
     });
   }
 
@@ -814,6 +822,10 @@ class SignInView extends View {
         .then(function() {
           _this.dom.removeDOM('LoginForm');
           _this.dom.removeDOM('SignUpForm');
+          this.dom.insertDom(this.body, Header.rend({
+            loggedin : this.user.isAuth(),
+            score: this.user.getScore()
+          }), 'Header', true);
         })
         .catch(function(e) {
           alert(e);
@@ -954,8 +966,7 @@ class SignUpView extends View {
         const _this = this;
         this.user.signup(login.value, passw.value, email.value)
         .then(function() {
-          _this.dom.removeDOM('LoginForm');
-          _this.dom.removeDOM('SignUpForm');
+          console.log("User " + login.value + " registered successfully!")
         })
         .catch(function(e) {
           alert(e);
@@ -991,6 +1002,47 @@ class SignUpView extends View {
 }
 
 module.exports = SignUpView;
+
+
+/***/ }),
+/* 22 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+const View = __webpack_require__(0);
+const Header = __webpack_require__(1);
+
+class LogoutView extends View {
+
+  constructor() {
+    super();
+    if(LogoutView._instance) {
+      return LogoutView._instance;
+    }
+    LogoutView._instance = this;
+
+    this.user.logout();
+
+    this.dom.insertDom(this.body, Header.rend({
+      loggedin : this.user.isAuth(),
+      score: this.user.getScore()
+    }), 'Header', true);
+  }
+
+  ConstructPage() {
+    window.history.pushState({},'','/menu/');
+    this.router.loadPage('/menu/');
+  }
+
+  DestroyPage() {
+
+  }
+
+}
+
+module.exports = ScoresView;
 
 
 /***/ })

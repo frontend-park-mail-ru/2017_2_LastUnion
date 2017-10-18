@@ -58,10 +58,11 @@ class User {
   }
 
   logout() {
+    const _this = this;
     return this.api.call('user/logout', 'POST').then(function(response) {
-      this.checkResponse(response);
-      this._proto = {};
-      this._loggedin = false;
+      _this.checkResponse(response);
+      _this._proto = {};
+      _this._loggedin = false;
     });
   }
 
