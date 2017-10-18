@@ -11,7 +11,8 @@ class API {
     const httpRequest = {
       method: httpMethod,
       headers: {
-        'Content-type': 'application/json'
+        'Content-type': 'application/json',
+        'Access-Control-Allow-Origin': '*'
       },
       mode: 'cors',
       credentials: 'include',
