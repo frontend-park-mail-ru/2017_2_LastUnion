@@ -420,8 +420,8 @@ class User {
     if(typeof response.status === 'undefined') {
       throw new Error(response);
     }
-    if(respose.status !== 'OK') {
-      throw new Error(response.msg);
+    if(respose.result !== true) {
+      throw new Error(response.responseMessage);
     }
     return response.data;
   }
@@ -549,7 +549,7 @@ obj || (obj = {});
 var __t, __p = '', __j = Array.prototype.join;
 function print() { __p += __j.call(arguments, '') }
 with (obj) {
-__p += '<!-- HEADER -->\r\n<header>\r\n    <nav class="navbar navbar-default" role="navigation" align="center">\r\n        <div class="container-fluid">\r\n            <div class="navbar-header">\r\n                <a class="navbar-brand" href="/"><img src="img/logo.png" alt="Logo" /> LastUnion GAME</a>\r\n            </div>\r\n            <div class="navbar-default">\r\n                <ul class="nav navbar-nav">\r\n                  ';
+__p += '<!-- HEADER -->\r\n<header>\r\n    <nav class="navbar navbar-default" role="navigation" align="center">\r\n        <div class="container-fluid">\r\n            <div class="navbar-header">\r\n                <a class="navbar-brand" href="/">\r\n                    <img src="img/logo.png" alt="Logo" />\r\n                    <span>LastUnion GAME</span>\r\n                </a>\r\n            </div>\r\n            <div class="navbar-default">\r\n                <ul class="nav navbar-nav">\r\n                  ';
  if (!loggedin) { ;
 __p += '\r\n                    <li class="nav navbar-nav navbar-text">Your score is: ' +
 ((__t = ( score )) == null ? '' : __t) +

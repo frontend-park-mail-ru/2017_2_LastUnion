@@ -17,11 +17,13 @@ nav {
   border-radius: 0px !important;
 }
 
-.navbar-brand {
+.navbar-brand span {
+  display: inline-block;
   font-size: 26px !important;
   color: #491e19 !important;
 }
 
 .navbar-brand img {
   height: 50px;
+  display: inline-block;
 }

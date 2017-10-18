@@ -27,8 +27,8 @@ class User {
     if(typeof response.status === 'undefined') {
       throw new Error(response);
     }
-    if(respose.status !== 'OK') {
-      throw new Error(response.msg);
+    if(respose.result !== true) {
+      throw new Error(response.responseMessage);
     }
     return response.data;
   }
