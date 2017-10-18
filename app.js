@@ -1,23 +1,27 @@
+/* global require */
+/* global __dirname */
+/* global module */
+/* global process */
+
 var express = require('express');
 var app = express();
-var glob = require('glob');
 var main = './public/';
 var bootstrap = './node_modules/bootstrap/dist/';
 var logger = require('morgan');
 app.use(logger('dev'));
 const routes = [
-  '/',
-  '/menu',
-  '/signin',
-  '/signup',
-  '/about',
-  '/play',
-  '/scores',
-  '/logout'
+	'/',
+	'/menu',
+	'/signin',
+	'/signup',
+	'/about',
+	'/play',
+	'/scores',
+	'/logout'
 ];
 
 routes.forEach(r => {
-  app.use(r, express.static(main));
+	app.use(r, express.static(main));
 });
 
 app.use('/css', express.static(bootstrap + 'css'));
@@ -41,9 +45,9 @@ app.set('view engine', 'ejs');
 
 /// catch 404 and forward to error handler
 app.use(function(req, res, next) {
-    var err = new Error('Not Found');
-    err.status = 404;
-    next(err);
+	var err = new Error('Not Found');
+	err.status = 404;
+	next(err);
 });
 
 /// error handlers
@@ -52,25 +56,25 @@ app.use(function(req, res, next) {
 // will print stacktrace
 
 if (app.get('env') === 'development') {
-    app.use(function(err, req, res, next) {
-        res.status(err.status || 500);
-        res.render('error', {
-            message: err.message,
-            error: err,
-            title: 'error'
-        });
-    });
+	app.use(function(err, req, res) {
+		res.status(err.status || 500);
+		res.render('error', {
+			message: err.message,
+			error: err,
+			title: 'error'
+		});
+	});
 }
 
 // production error handler
 // no stacktraces leaked to user
-app.use(function(err, req, res, next) {
-    res.status(err.status || 500);
-    res.render('error', {
-        message: err.message,
-        error: {},
-        title: 'error'
-    });
+app.use(function(err, req, res) {
+	res.status(err.status || 500);
+	res.render('error', {
+		message: err.message,
+		error: {},
+		title: 'error'
+	});
 });
 
 

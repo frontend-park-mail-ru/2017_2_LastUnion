@@ -1,3 +1,6 @@
+/* global require */
+'use strict';
+
 const router = require('./routes/router');
 const R = new router();
 
