@@ -481,7 +481,7 @@ class API {
       method: httpMethod,
       headers: {
         'Content-type': 'application/json',
-        'Access-Control-Allow-Origin': '*'
+        'Access-Control-Request-Method': httpMethod
       },
       mode: 'cors',
       credentials: 'include',
