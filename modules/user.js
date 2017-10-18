@@ -42,6 +42,7 @@ class User {
       _this.checkResponse(response);
       _this._proto.login = login;
       _this._loggedin = true;
+      return true;
     });
   }
 
