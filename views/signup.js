@@ -57,6 +57,7 @@ class SignUpView extends View {
         this.user.signup(login.value, passw.value, email.value)
         .then(function() {
           console.log("User " + login.value + " registered successfully!")
+          _this.user.login(login.value, passw.value);
         })
         .catch(function(e) {
           alert(e);

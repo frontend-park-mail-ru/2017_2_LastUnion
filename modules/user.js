@@ -53,7 +53,6 @@ class User {
       userEmail: email
     }).then(function(response) {
       _this.checkResponse(response);
-      _this.login(login, password);
     });
   }
 
