@@ -310,7 +310,8 @@ class GameView extends View {
     GameView._instance = this;
 
     this.dom.insertDom(this.body, Header.rend({
-      loggedin : this.user.isAuth()
+      loggedin : this.user.isAuth(),
+      score: this.user.getScore()
     }), 'Header');
     this.dom.insertDom(this.body, Game.rend({}), 'Game');
     this.ListenLinks();
@@ -411,6 +412,10 @@ class User {
     return this._loggedin;
   }
 
+  getScore() {
+    return 322;
+  }
+
   checkResponse(response) {
     if(typeof response.status === 'undefined') {
       throw new Error(response);
@@ -423,7 +428,7 @@ class User {
 
   login(login, password) {
     const _this = this;
-    return this.api.call('signin', 'POST', {
+    return this.api.call('user/signin', 'POST', {
       userName: login,
       userPassword: password
     }).then(function(response) {
@@ -434,7 +439,7 @@ class User {
   }
 
   signup(login, password, email) {
-    return this.api.call('signup', 'POST', {
+    return this.api.call('user/signup', 'POST', {
       login: login,
       password: password,
       email: email
@@ -445,7 +450,7 @@ class User {
   }
 
   logout() {
-    return this.api.call('logout', 'POST').then(function(response) {
+    return this.api.call('user/logout', 'POST').then(function(response) {
       this.checkResponse(response);
       this._proto = {};
       this._loggedin = false;
@@ -544,17 +549,19 @@ obj || (obj = {});
 var __t, __p = '', __j = Array.prototype.join;
 function print() { __p += __j.call(arguments, '') }
 with (obj) {
-__p += '<!-- HEADER -->\r\n<div class="container">\r\n    <nav class="navbar navbar-default" role="navigation" align="center">\r\n        <div class="container-fluid">\r\n            <div class="navbar-header">\r\n                <a class="navbar-brand" href="/">LastUnion GAME</a>\r\n            </div>\r\n            <div class="navbar-default">\r\n                <ul class="nav navbar-nav">\r\n                  ';
- if (loggedin) { ;
-__p += '\r\n                    <p class="nav navbar-nav navbar-text">You scope is: 2517</p>\r\n                  ';
+__p += '<!-- HEADER -->\r\n<header>\r\n    <nav class="navbar navbar-default" role="navigation" align="center">\r\n        <div class="container-fluid">\r\n            <div class="navbar-header">\r\n                <a class="navbar-brand" href="/"><img src="img/logo.png" alt="Logo" /> LastUnion GAME</a>\r\n            </div>\r\n            <div class="navbar-default">\r\n                <ul class="nav navbar-nav">\r\n                  ';
+ if (!loggedin) { ;
+__p += '\r\n                    <li class="nav navbar-nav navbar-text">Your score is: ' +
+((__t = ( score )) == null ? '' : __t) +
+'</li>\r\n                  ';
  } ;
-__p += '\r\n\r\n                    <li><a href="/menu">Menu</a></li>\r\n\r\n                </ul>\r\n                <ul class="nav navbar-nav navbar-right">\r\n                    ';
+__p += '\r\n                </ul>\r\n                <ul class="nav navbar-nav navbar-right">\r\n                    ';
  if (loggedin) { ;
 __p += '\r\n                      <li><a href="/logout">Log out</a></li>\r\n                    ';
  } else { ;
 __p += '\r\n                      <li><a href="/signin">Sign IN</a></li>\r\n                      <p class="nav navbar-nav navbar-text">or</p>\r\n                      <li><a href="/signup">Sign UP</a></li>\r\n                    ';
  } ;
-__p += '\r\n                </ul>\r\n            </div>\r\n         </div>\r\n    </nav>\r\n</div>\r\n<!-- HEADER -->\r\n';
+__p += '\r\n                </ul>\r\n            </div>\r\n         </div>\r\n    </nav>\r\n</header>\r\n<!-- HEADER -->\r\n';
 
 }
 return __p
@@ -581,7 +588,8 @@ class ScoresView extends View {
     ScoresView._instance = this;
 
     this.dom.insertDom(this.body, Header.rend({
-      loggedin : this.user.isAuth()
+      loggedin : this.user.isAuth(),
+      score: this.user.getScore()
     }), 'Header');
   }
 
@@ -683,7 +691,8 @@ class MenuView extends View {
     MenuView._instance = this;
 
     this.dom.insertDom(this.body, Header.rend({
-      loggedin : this.user.isAuth()
+      loggedin : this.user.isAuth(),
+      score: this.user.getScore()
     }), 'Header');
     this.dom.insertDom(this.body, Menu.rend({
       'menuitems' : ['Play', 'About us', 'Scores'],
@@ -766,7 +775,8 @@ class SignInView extends View {
     SignInView._instance = this;
 
     this.dom.insertDom(this.body, Header.rend({
-      loggedin : this.user.isAuth()
+      loggedin : this.user.isAuth(),
+      score: this.user.getScore()
     }), 'Header');
     this.form = Form.rend({
       'formname' : 'LoginForm',
@@ -900,7 +910,8 @@ class SignUpView extends View {
     SignUpView._instance = this;
 
     this.dom.insertDom(this.body, Header.rend({
-      loggedin : this.user.isAuth()
+      loggedin : this.user.isAuth(),
+      score: this.user.getScore()
     }), 'Header');
     this.form = Form.rend({
       'formname' : 'SignUpForm',

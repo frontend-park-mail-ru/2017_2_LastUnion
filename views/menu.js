@@ -14,7 +14,8 @@ class MenuView extends View {
     MenuView._instance = this;
 
     this.dom.insertDom(this.body, Header.rend({
-      loggedin : this.user.isAuth()
+      loggedin : this.user.isAuth(),
+      score: this.user.getScore()
     }), 'Header');
     this.dom.insertDom(this.body, Menu.rend({
       'menuitems' : ['Play', 'About us', 'Scores'],

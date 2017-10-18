@@ -1,18 +1,15 @@
 <!-- HEADER -->
-<div class="container">
+<header>
     <nav class="navbar navbar-default" role="navigation" align="center">
         <div class="container-fluid">
             <div class="navbar-header">
-                <a class="navbar-brand" href="/">LastUnion GAME</a>
+                <a class="navbar-brand" href="/"><img src="img/logo.png" alt="Logo" /> LastUnion GAME</a>
             </div>
             <div class="navbar-default">
                 <ul class="nav navbar-nav">
-                  <% if (loggedin) { %>
-                    <p class="nav navbar-nav navbar-text">You scope is: 2517</p>
+                  <% if (!loggedin) { %>
+                    <li class="nav navbar-nav navbar-text">Your score is: <%= score %></li>
                   <% } %>
-
-                    <li><a href="/menu">Menu</a></li>
-
                 </ul>
                 <ul class="nav navbar-nav navbar-right">
                     <% if (loggedin) { %>
@@ -26,5 +23,5 @@
             </div>
          </div>
     </nav>
-</div>
+</header>
 <!-- HEADER -->

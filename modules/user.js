@@ -19,6 +19,10 @@ class User {
     return this._loggedin;
   }
 
+  getScore() {
+    return 322;
+  }
+
   checkResponse(response) {
     if(typeof response.status === 'undefined') {
       throw new Error(response);
@@ -31,7 +35,7 @@ class User {
 
   login(login, password) {
     const _this = this;
-    return this.api.call('signin', 'POST', {
+    return this.api.call('user/signin', 'POST', {
       userName: login,
       userPassword: password
     }).then(function(response) {
@@ -42,7 +46,7 @@ class User {
   }
 
   signup(login, password, email) {
-    return this.api.call('signup', 'POST', {
+    return this.api.call('user/signup', 'POST', {
       login: login,
       password: password,
       email: email
@@ -53,7 +57,7 @@ class User {
   }
 
   logout() {
-    return this.api.call('logout', 'POST').then(function(response) {
+    return this.api.call('user/logout', 'POST').then(function(response) {
       this.checkResponse(response);
       this._proto = {};
       this._loggedin = false;

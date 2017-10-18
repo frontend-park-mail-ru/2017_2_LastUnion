@@ -14,7 +14,8 @@ class GameView extends View {
     GameView._instance = this;
 
     this.dom.insertDom(this.body, Header.rend({
-      loggedin : this.user.isAuth()
+      loggedin : this.user.isAuth(),
+      score: this.user.getScore()
     }), 'Header');
     this.dom.insertDom(this.body, Game.rend({}), 'Game');
     this.ListenLinks();
