@@ -1,40 +1,69 @@
-'use strict'
+'use strict';
 
 const API = require('./api.js');
 
-const DEMO_MODE = true;
-
 class User {
 
-  constructor() {
-    this._loggedin = false;
-    this._proto = {};
-  }
+	constructor() {
+		if(User._instance) {
+			return User._instance;
+		}
+		User._instance = this;
 
-  isAuth() {
-    return this._loggedin;
-  }
+		this.api = new API;
+		this._loggedin = false;
+		this._proto = {};
+	}
 
-  login(login, password) {
-    if(DEMO_MODE) {
-      this._proto.login = 'Demo';
-      this._loggedin = true;
-      return true;
-    }
-  }
+	isAuth() {
+		return this._loggedin;
+	}
 
-  signup(login, password, email) {
-    if(DEMO_MODE) {
-      this.login(login, password);
-    }
-  }
+	getScore() {
+		return 322;
+	}
 
-  logout() {
-    if(DEMO_MODE) {
-      this._proto = {};
-      this._loggedin = false;
-    }
-  }
+	checkResponse(response) {
+		if(typeof response.result === 'undefined') {
+			throw new Error(response);
+		}
+		if(response.result !== true) {
+			throw new Error(String(response.responseMessage));
+		}
+		return response.data;
+	}
+
+	login(login, password) {
+		const _this = this;
+		return this.api.call('user/signin', 'POST', {
+			userName: login,
+			userPassword: password
+		}).then(function(response) {
+			_this.checkResponse(response);
+			_this._proto.login = login;
+			_this._loggedin = true;
+		});
+	}
+
+	signup(login, password, email) {
+		const _this = this;
+		return this.api.call('user/signup', 'POST', {
+			userName: login,
+			userPassword: password,
+			userEmail: email
+		}).then(function(response) {
+			_this.checkResponse(response);
+		});
+	}
+
+	logout() {
+		const _this = this;
+		return this.api.call('user/logout', 'POST').then(function(response) {
+			_this.checkResponse(response);
+			_this._proto = {};
+			_this._loggedin = false;
+		});
+	}
 
 }
 
