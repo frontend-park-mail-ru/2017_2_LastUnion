@@ -46,13 +46,14 @@ class User {
   }
 
   signup(login, password, email) {
+    const _this = this;
     return this.api.call('user/signup', 'POST', {
       userName: login,
       userPassword: password,
       userEmail: email
     }).then(function(response) {
-      this.checkResponse(response);
-      this.login(login, password);
+      _this.checkResponse(response);
+      _this.login(login, password);
     });
   }
 
