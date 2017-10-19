@@ -22,7 +22,7 @@ class LogoutView extends View {
 					loggedin : _this.user.isAuth(),
 					score: _this.user.getScore()
 				}), 'Header', true, true);
-				this.router.go('/menu/');
+				_this.router.go('/menu/');
 			})
 			.catch(function(e) {
 				alert(e);
