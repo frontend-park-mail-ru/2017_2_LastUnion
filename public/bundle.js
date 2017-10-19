@@ -1080,12 +1080,13 @@ class LogoutView extends View {
 		}
 		LogoutView._instance = this;
 
+		const _this = this;
 		this.user.logout()
 			.then(function() {
-				this.Hide('Header');
-				this.dom.insertDom(this.body, Header.rend({
-					loggedin : this.user.isAuth(),
-					score: this.user.getScore()
+				_this.Hide('Header');
+				_this.dom.insertDom(_this.body, Header.rend({
+					loggedin : _this.user.isAuth(),
+					score: _this.user.getScore()
 				}), 'Header', true, true);
 			})
 			.catch(function(e) {
@@ -1094,8 +1095,7 @@ class LogoutView extends View {
 	}
 
 	ConstructPage() {
-		window.history.pushState({},'','/menu/');
-		this.router.loadPage('/menu/');
+		this.router.go('/menu/');
 	}
 
 	DestroyPage() {
