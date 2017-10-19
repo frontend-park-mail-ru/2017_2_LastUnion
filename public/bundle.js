@@ -1079,7 +1079,9 @@ class LogoutView extends View {
 			return LogoutView._instance;
 		}
 		LogoutView._instance = this;
+	}
 
+	ConstructPage() {
 		const _this = this;
 		this.user.logout()
 			.then(function() {
@@ -1088,14 +1090,11 @@ class LogoutView extends View {
 					loggedin : _this.user.isAuth(),
 					score: _this.user.getScore()
 				}), 'Header', true, true);
+				this.router.go('/menu/');
 			})
 			.catch(function(e) {
 				alert(e);
 			});
-	}
-
-	ConstructPage() {
-		this.router.go('/menu/');
 	}
 
 	DestroyPage() {
