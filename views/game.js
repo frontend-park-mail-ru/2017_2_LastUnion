@@ -13,6 +13,10 @@ class GameView extends View {
 		}
 		GameView._instance = this;
 
+		this.init();
+	}
+
+	init() {
 		this.dom.insertDom(this.body, Header.rend({
 			loggedin : this.user.isAuth(),
 			score: this.user.getScore()
@@ -22,6 +26,7 @@ class GameView extends View {
 	}
 
 	ConstructPage() {
+		this.init();
 		this.Show('Header');
 		this.Show('Game');
 	}

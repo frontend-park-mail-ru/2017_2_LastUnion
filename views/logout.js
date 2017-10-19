@@ -11,19 +11,23 @@ class LogoutView extends View {
 			return LogoutView._instance;
 		}
 		LogoutView._instance = this;
-
-		this.user.logout();
-
-		this.Hide('Header');
-		this.dom.insertDom(this.body, Header.rend({
-			loggedin : this.user.isAuth(),
-			score: this.user.getScore()
-		}), 'Header', true);
 	}
 
 	ConstructPage() {
-		window.history.pushState({},'','/menu/');
-		this.router.loadPage('/menu/');
+		const _this = this;
+		this.user.logout()
+			.then(function() {
+				_this.dom.removeDOM('Scores');
+				_this.Hide('Header');
+				_this.dom.insertDom(_this.body, Header.rend({
+					loggedin : _this.user.isAuth(),
+					score: _this.user.getScore()
+				}), 'Header', true, true);
+				_this.router.go('/menu/');
+			})
+			.catch(function(e) {
+				alert(e);
+			});
 	}
 
 	DestroyPage() {

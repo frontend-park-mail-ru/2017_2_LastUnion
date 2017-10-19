@@ -13,10 +13,6 @@ class SignInView extends View {
 		}
 		SignInView._instance = this;
 
-		this.dom.insertDom(this.body, Header.rend({
-			loggedin : this.user.isAuth(),
-			score: this.user.getScore()
-		}), 'Header');
 		this.form = Form.rend({
 			'formname' : 'LoginForm',
 			'title' : 'Enter the cave!',
@@ -32,11 +28,22 @@ class SignInView extends View {
 					'placeholder' : '**********',
 				}
 			],
+			'labels_enable' : false,
 			'button' : 'Let me run!'
 		});
-		this.dom.insertDom(this.body, this.form, 'LoginForm');
+		
+		this.init();
+	}
+
+	init() {
+		this.dom.insertDom(this.body, Header.rend({
+			loggedin : this.user.isAuth(),
+			score: this.user.getScore()
+		}), 'Header');
+		if(this.dom.insertDom(this.body, this.form, 'LoginForm')) {
+			this.ListenSubmit();
+		}
 		this.ListenLinks();
-		this.ListenSubmit();
 	}
 
 	ListenSubmit() {
@@ -50,18 +57,21 @@ class SignInView extends View {
 				const _this = this;
 				this.user.login(login.value, passw.value)
 					.then(function() {
+						Form.revert('LoginForm');
 						_this.dom.removeDOM('LoginForm');
 						_this.dom.removeDOM('SignUpForm');
 						_this.Hide('Header');
-						_this.dom.insertDom(this.body, Header.rend({
-							loggedin : this.user.isAuth(),
-							score: this.user.getScore()
-						}), 'Header', true);
-						_this.Show('Header');
+						_this.dom.insertDom(_this.body, Header.rend({
+							loggedin : _this.user.isAuth(),
+							score: _this.user.getScore()
+						}), 'Header', true, true);
+						_this.ListenLinks();
+						_this.router.go('/menu/');
 					})
 					.catch(function(e) {
-						alert(e);
+						Form.err('LoginForm', 'Global', e);
 					});
+				Form.submit('LoginForm');
 			}
 		});
 	}
@@ -69,17 +79,18 @@ class SignInView extends View {
 	Validate(login, passw) {
 		let valid = true;
 		if(login.value.length < 4) {
-			Form.err('LoginForm_Login', 'Login is at least 4 characters.');
+			Form.err('LoginForm', 'Login', 'Login is at least 4 characters.');
 			valid = false;
 		}
 		if(passw.value.length < 6) {
-			Form.err('LoginForm_Password', 'Password is at least 6 characters.');
+			Form.err('LoginForm', 'Password', 'Password is at least 6 characters.');
 			valid = false;
 		}
 		return valid;
 	}
 
 	ConstructPage() {
+		this.init();
 		this.Show('Header');
 		this.Show('LoginForm');
 	}
