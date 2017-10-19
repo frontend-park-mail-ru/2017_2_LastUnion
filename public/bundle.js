@@ -94,10 +94,8 @@ class View {
 				{
 					Links[i].addEventListener('click', event => {
 						event.preventDefault();
-						//const router = new Router();
 						const route = Links[i].getAttribute('href');
-						window.history.pushState({},'',route);
-						_this.router.loadPage(route);
+						_this.router.go(route);
 					});
 				}
 				this.dom.loadedBlocks[obj].listened = true;
@@ -109,6 +107,8 @@ class View {
 		const elem = this.dom.loadedBlocks[obj];
 		if(elem && typeof elem !== 'undefined') {
 			elem.html.hidden = 'true';
+		} else {
+			console.error('Can\'t hide. No such element: ' + obj);
 		}
 	}
 
@@ -116,6 +116,8 @@ class View {
 		const elem = this.dom.loadedBlocks[obj];
 		if(elem && typeof elem !== 'undefined') {
 			elem.html.hidden = false;
+		} else {
+			console.error('Can\'t show. No such element: ' + obj);
 		}
 	}
 
@@ -156,6 +158,11 @@ class Router {
 		}
 		Router._instance = this;
 		this.urls = [];
+
+		const _this = this;
+		window.addEventListener("popstate", function(e) {
+			_this.loadPage(location.pathname);
+		}, false)
 	}
 
 	addUrl(url, view) {
@@ -165,6 +172,14 @@ class Router {
 
 	getUrl() {
 		return window.location.pathname;
+	}
+
+	go(url) {
+		if (window.location.pathname === url) {
+            return;
+        }
+        window.history.pushState({}, '', url);
+        this.loadPage(url);
 	}
 
 	loadPage(url) {
@@ -219,16 +234,29 @@ module.exports = {
 		return elem;
 	},
 
-	err : function(id, msg) {
-		const span = document.getElementById(id + '_err');
-		console.log(span);
+	err : function(form, input, msg) {
+		const span = document.getElementById(form + '_' + input + '_err');
 		span.innerHTML = msg;
 		span.hidden = false;
+		document.getElementById(form + '_loader').hidden = 'true';
+		document.getElementById(form + '_btn').style.display = 'inline-block';
 	},
 
 	ok : function(id) {
 		document.getElementById(id + '_err').hidden = 'true';
+	},
+
+	revert : function(form) {
+		document.getElementById(form + '_loader').hidden = 'true';
+		document.getElementById(form + '_btn').style.display = 'inline-block';
+	},
+
+	submit : function(form) {
+		document.getElementById(form + '_btn').style.display = 'none'
+		document.getElementById(form + '_loader').hidden = false;
+		document.getElementById(form + '_Global_err').innerHTML = "";
 	}
+
 };
 
 
@@ -315,6 +343,10 @@ class GameView extends View {
 		}
 		GameView._instance = this;
 
+		this.init();
+	}
+
+	init() {
 		this.dom.insertDom(this.body, Header.rend({
 			loggedin : this.user.isAuth(),
 			score: this.user.getScore()
@@ -324,6 +356,7 @@ class GameView extends View {
 	}
 
 	ConstructPage() {
+		this.init();
 		this.Show('Header');
 		this.Show('Game');
 	}
@@ -356,19 +389,21 @@ class DOM {
 		this.loadedBlocks = {};
 	}
 
-	insertDom(parent, elem, id, upd) {
+	insertDom(parent, elem, id, upd, first) {
 		if (!this.loadedBlocks[id] ||
       typeof this.loadedBlocks[id] === 'undefined' ||
       upd == true) {
 			if(upd) {
 				console.log('Reloading ' + id + ' in DOM');
+				this.removeDOM(id);
 			}
 			elem.hidden = 'true';
-			parent.appendChild(elem);
+			(typeof first === 'undefined' || first == false) ? parent.appendChild(elem) : parent.insertBefore(elem, parent.firstChild);
 			this.loadedBlocks[id] = { 'html' : elem, 'listened' : false };
 			console.log('Loaded ' + id + ' in DOM');
-			return this.loadedBlocks[id];
+			return true;
 		}
+		return false;
 	}
 
 	removeDOM(id) {
@@ -563,19 +598,19 @@ obj || (obj = {});
 var __t, __p = '', __j = Array.prototype.join;
 function print() { __p += __j.call(arguments, '') }
 with (obj) {
-__p += '<!-- HEADER -->\r\n<header>\r\n    <nav class="navbar navbar-default" role="navigation" align="center">\r\n        <div class="container-fluid">\r\n            <div class="navbar-header">\r\n                <a class="navbar-brand" href="/">\r\n                    <img src="img/logo.png" alt="Logo" />\r\n                    <span>LastUnion GAME</span>\r\n                </a>\r\n            </div>\r\n            <div class="navbar-default">\r\n                <ul class="nav navbar-nav">\r\n                  ';
+__p += '<!-- HEADER -->\r\n<header>\r\n    <nav class="navbar navbar-default" role="navigation" align="center">\r\n        <div class="container-fluid">\r\n            <div class="navbar-header">\r\n                <a class="navbar-brand" href="/">\r\n                    <img src="img/logo.png" alt="Logo" />\r\n                    <span>LastUnion GAME</span>\r\n                </a>\r\n                ';
  if (loggedin) { ;
-__p += '\r\n                    <li class="nav navbar-nav navbar-text">Your score is: ' +
+__p += '\r\n                <span class="nav navbar-nav navbar-text navbar-scores">Your score is: ' +
 ((__t = ( score )) == null ? '' : __t) +
-'</li>\r\n                  ';
+'</span>\r\n                ';
  } ;
-__p += '\r\n                </ul>\r\n                <ul class="nav navbar-nav navbar-right">\r\n                    ';
+__p += '\r\n                <ul class="nav navbar-nav navbar-right user-menu">\r\n                    ';
  if (loggedin) { ;
 __p += '\r\n                      <li><a href="/logout">Log out</a></li>\r\n                    ';
  } else { ;
 __p += '\r\n                      <li><a href="/signin">Sign IN</a></li>\r\n                      <p class="nav navbar-nav navbar-text">or</p>\r\n                      <li><a href="/signup">Sign UP</a></li>\r\n                    ';
  } ;
-__p += '\r\n                </ul>\r\n            </div>\r\n         </div>\r\n    </nav>\r\n</header>\r\n<!-- HEADER -->\r\n';
+__p += '\r\n                </ul>\r\n            </div>  \r\n         </div>\r\n    </nav>\r\n</header>\r\n<!-- HEADER -->\r\n';
 
 }
 return __p
@@ -622,8 +657,7 @@ class ScoresView extends View {
 		this.Show('Header');
 		if (!this.user.isAuth()) {
 			console.error('Access denied.');
-			window.history.pushState({},'','/signin/');
-			this.router.loadPage('/signin/');
+			this.router.go('/signin/');
 		} else {
 			this.InitLeaderBoard();
 			this.Show('Scores');
@@ -704,18 +738,23 @@ class MenuView extends View {
 		}
 		MenuView._instance = this;
 
+		this.init();
+	}
+
+	init() {
 		this.dom.insertDom(this.body, Header.rend({
 			loggedin : this.user.isAuth(),
 			score: this.user.getScore()
 		}), 'Header');
 		this.dom.insertDom(this.body, Menu.rend({
-			'menuitems' : ['Play', 'About us', 'Scores'],
+			'menuitems' : ['Play', 'About us (404)', 'Scores'],
 			'links' : ['/play/', '/about/', '/scores/'],
 		}), 'Menu');
 		this.ListenLinks();
 	}
 
 	ConstructPage() {
+		this.init();
 		this.Show('Header');
 		this.Show('Menu');
 	}
@@ -754,7 +793,7 @@ obj || (obj = {});
 var __t, __p = '', __j = Array.prototype.join;
 function print() { __p += __j.call(arguments, '') }
 with (obj) {
-__p += '<!-- MENU -->\r\n<div class="container">\r\n    <ul>\r\n      ';
+__p += '<!-- MENU -->\r\n<div class="container bnek">\r\n  <div class="menu">\r\n    <ul>\r\n      ';
  for(var i = 0; i<menuitems.length; i++) { ;
 __p += '\r\n      <li><a href="' +
 ((__t = ( links[i] )) == null ? '' : __t) +
@@ -762,7 +801,7 @@ __p += '\r\n      <li><a href="' +
 ((__t = ( menuitems[i] )) == null ? '' : __t) +
 '</a>\r\n      ';
  } ;
-__p += '\r\n    </ul>\r\n</div>\r\n<!-- MENU -->\r\n';
+__p += '\r\n    </ul>\r\n  </div>\r\n</div>\r\n<!-- MENU -->\r\n';
 
 }
 return __p
@@ -788,10 +827,6 @@ class SignInView extends View {
 		}
 		SignInView._instance = this;
 
-		this.dom.insertDom(this.body, Header.rend({
-			loggedin : this.user.isAuth(),
-			score: this.user.getScore()
-		}), 'Header');
 		this.form = Form.rend({
 			'formname' : 'LoginForm',
 			'title' : 'Enter the cave!',
@@ -807,11 +842,22 @@ class SignInView extends View {
 					'placeholder' : '**********',
 				}
 			],
+			'labels_enable' : false,
 			'button' : 'Let me run!'
 		});
-		this.dom.insertDom(this.body, this.form, 'LoginForm');
+		
+		this.init();
+	}
+
+	init() {
+		this.dom.insertDom(this.body, Header.rend({
+			loggedin : this.user.isAuth(),
+			score: this.user.getScore()
+		}), 'Header');
+		if(this.dom.insertDom(this.body, this.form, 'LoginForm')) {
+			this.ListenSubmit();
+		}
 		this.ListenLinks();
-		this.ListenSubmit();
 	}
 
 	ListenSubmit() {
@@ -825,18 +871,21 @@ class SignInView extends View {
 				const _this = this;
 				this.user.login(login.value, passw.value)
 					.then(function() {
+						Form.revert('LoginForm');
 						_this.dom.removeDOM('LoginForm');
 						_this.dom.removeDOM('SignUpForm');
 						_this.Hide('Header');
-						_this.dom.insertDom(this.body, Header.rend({
-							loggedin : this.user.isAuth(),
-							score: this.user.getScore()
-						}), 'Header', true);
-						_this.Show('Header');
+						_this.dom.insertDom(_this.body, Header.rend({
+							loggedin : _this.user.isAuth(),
+							score: _this.user.getScore()
+						}), 'Header', true, true);
+						_this.ListenLinks();
+						_this.router.go('/menu/');
 					})
 					.catch(function(e) {
-						alert(e);
+						Form.err('LoginForm', 'Global', e);
 					});
+				Form.submit('LoginForm');
 			}
 		});
 	}
@@ -844,17 +893,18 @@ class SignInView extends View {
 	Validate(login, passw) {
 		let valid = true;
 		if(login.value.length < 4) {
-			Form.err('LoginForm_Login', 'Login is at least 4 characters.');
+			Form.err('LoginForm', 'Login', 'Login is at least 4 characters.');
 			valid = false;
 		}
 		if(passw.value.length < 6) {
-			Form.err('LoginForm_Password', 'Password is at least 6 characters.');
+			Form.err('LoginForm', 'Password', 'Password is at least 6 characters.');
 			valid = false;
 		}
 		return valid;
 	}
 
 	ConstructPage() {
+		this.init();
 		this.Show('Header');
 		this.Show('LoginForm');
 	}
@@ -878,17 +928,21 @@ obj || (obj = {});
 var __t, __p = '', __j = Array.prototype.join;
 function print() { __p += __j.call(arguments, '') }
 with (obj) {
-__p += '<!-- MENU -->\r\n<div class="container">\r\n  ' +
+__p += '<!-- FORM -->\r\n<div class="container form">\r\n  <form>\r\n    <span class="title">' +
 ((__t = ( title )) == null ? '' : __t) +
-'\r\n  <form>\r\n    ';
+'</span>\r\n    ';
  for(var i = 0; i<inputs.length; i++) { ;
-__p += '\r\n    <div class="form-group">\r\n      <label class="control-label" for="' +
+__p += '\r\n    <div class="form-group">\r\n      ';
+ if(labels_enable) { ;
+__p += '\r\n      <label class="control-label" for="' +
 ((__t = ( formname )) == null ? '' : __t) +
 '_' +
 ((__t = (inputs[i].label )) == null ? '' : __t) +
 '">\r\n        ' +
 ((__t = ( inputs[i].label )) == null ? '' : __t) +
-'\r\n      </label>\r\n      <input type="' +
+'\r\n      </label>\r\n      ';
+ } ;
+__p += '\r\n      <input type="' +
 ((__t = ( inputs[i].type )) == null ? '' : __t) +
 '" id="' +
 ((__t = ( formname )) == null ? '' : __t) +
@@ -902,9 +956,15 @@ __p += '\r\n    <div class="form-group">\r\n      <label class="control-label" f
 ((__t = ( inputs[i].label )) == null ? '' : __t) +
 '_err" class="error-message"></span>\r\n    </div>\r\n    ';
  } ;
-__p += '\r\n    <button class="btn btn-default">' +
+__p += '\r\n    <button id="' +
+((__t = ( formname )) == null ? '' : __t) +
+'_btn" class="btn btn-default">' +
 ((__t = ( button )) == null ? '' : __t) +
-'</button>\r\n  </form>\r\n</div>\r\n<!-- MENU -->\r\n';
+'</button>\r\n    <div id="' +
+((__t = ( formname )) == null ? '' : __t) +
+'_loader" class="loader" hidden></div>\r\n    <span id="' +
+((__t = ( formname )) == null ? '' : __t) +
+'_Global_err" class="global error-message"></span>\r\n  </form>\r\n</div>\r\n<!-- FORM -->\r\n';
 
 }
 return __p
@@ -930,10 +990,6 @@ class SignUpView extends View {
 		}
 		SignUpView._instance = this;
 
-		this.dom.insertDom(this.body, Header.rend({
-			loggedin : this.user.isAuth(),
-			score: this.user.getScore()
-		}), 'Header');
 		this.form = Form.rend({
 			'formname' : 'SignUpForm',
 			'title' : 'Birth of a necromancer!',
@@ -954,11 +1010,22 @@ class SignUpView extends View {
 					'placeholder' : '**********',
 				}
 			],
+			'labels_enable' : false,
 			'button' : 'Birth!'
 		});
-		this.dom.insertDom(this.body, this.form, 'SignUpForm');
+
+		this.init();
+	}
+
+	init() {
+		this.dom.insertDom(this.body, Header.rend({
+			loggedin : this.user.isAuth(),
+			score: this.user.getScore()
+		}), 'Header');
+		if(this.dom.insertDom(this.body, this.form, 'SignUpForm')) {
+			this.ListenSubmit();
+		}
 		this.ListenLinks();
-		this.ListenSubmit();
 	}
 
 	ListenSubmit() {
@@ -973,6 +1040,7 @@ class SignUpView extends View {
 				const _this = this;
 				this.user.signup(login.value, passw.value, email.value)
 					.then(function() {
+						Form.revert('SignUpForm');
 						console.log('User ' + login.value + ' registered successfully!');
 						_this.user.login(login.value, passw.value)
 							.then(function() {
@@ -982,13 +1050,15 @@ class SignUpView extends View {
 								_this.dom.insertDom(_this.body, Header.rend({
 									loggedin : _this.user.isAuth(),
 									score: _this.user.getScore()
-								}), 'Header', true);
-								_this.Show('Header');
+								}), 'Header', true, true);
+								_this.ListenLinks();
+								_this.router.go('/menu/');
 							});
 					})
 					.catch(function(e) {
-						alert(e);
+						Form.err('SignUpForm', 'Global', e);
 					});
+				Form.submit('SignUpForm');
 			}
 		});
 	}
@@ -996,18 +1066,23 @@ class SignUpView extends View {
 	Validate(login, passw, email) {
 		let valid = true;
 		if(login.value.length < 4) {
-			Form.err('SignUpForm_Login', 'Login has to be at least 4 characters.');
+			Form.err('SignUpForm', 'Login', 'Login has to be at least 4 characters.');
 			valid = false;
 		}
 		if(passw.value.length < 6) {
-			Form.err('SignUpForm_Password', 'Password has to be at least 6 characters.');
+			Form.err('SignUpForm', 'Password', 'Password has to be at least 6 characters.');
 			valid = false;
 		}
 
+		if (!/^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(email.value)) {
+			Form.err('SignUpForm', 'Email', 'This is not valid email.');
+			valid = false;
+		}
 		return valid;
 	}
 
 	ConstructPage() {
+		this.init();
 		this.Show('Header');
 		this.Show('SignUpForm');
 	}
@@ -1040,19 +1115,23 @@ class LogoutView extends View {
 			return LogoutView._instance;
 		}
 		LogoutView._instance = this;
-
-		this.user.logout();
-
-		this.Hide('Header');
-		this.dom.insertDom(this.body, Header.rend({
-			loggedin : this.user.isAuth(),
-			score: this.user.getScore()
-		}), 'Header', true);
 	}
 
 	ConstructPage() {
-		window.history.pushState({},'','/menu/');
-		this.router.loadPage('/menu/');
+		const _this = this;
+		this.user.logout()
+			.then(function() {
+				_this.dom.removeDOM('Scores');
+				_this.Hide('Header');
+				_this.dom.insertDom(_this.body, Header.rend({
+					loggedin : _this.user.isAuth(),
+					score: _this.user.getScore()
+				}), 'Header', true, true);
+				_this.router.go('/menu/');
+			})
+			.catch(function(e) {
+				alert(e);
+			});
 	}
 
 	DestroyPage() {

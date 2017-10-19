@@ -15,14 +15,27 @@ module.exports = {
 		return elem;
 	},
 
-	err : function(id, msg) {
-		const span = document.getElementById(id + '_err');
-		console.log(span);
+	err : function(form, input, msg) {
+		const span = document.getElementById(form + '_' + input + '_err');
 		span.innerHTML = msg;
 		span.hidden = false;
+		document.getElementById(form + '_loader').hidden = 'true';
+		document.getElementById(form + '_btn').style.display = 'inline-block';
 	},
 
 	ok : function(id) {
 		document.getElementById(id + '_err').hidden = 'true';
+	},
+
+	revert : function(form) {
+		document.getElementById(form + '_loader').hidden = 'true';
+		document.getElementById(form + '_btn').style.display = 'inline-block';
+	},
+
+	submit : function(form) {
+		document.getElementById(form + '_btn').style.display = 'none'
+		document.getElementById(form + '_loader').hidden = false;
+		document.getElementById(form + '_Global_err').innerHTML = "";
 	}
+
 };

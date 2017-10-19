@@ -34,8 +34,7 @@ class ScoresView extends View {
 		this.Show('Header');
 		if (!this.user.isAuth()) {
 			console.error('Access denied.');
-			window.history.pushState({},'','/signin/');
-			this.router.loadPage('/signin/');
+			this.router.go('/signin/');
 		} else {
 			this.InitLeaderBoard();
 			this.Show('Scores');
