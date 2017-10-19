@@ -375,15 +375,16 @@ class DOM {
 		this.loadedBlocks = {};
 	}
 
-	insertDom(parent, elem, id, upd) {
+	insertDom(parent, elem, id, upd, first) {
 		if (!this.loadedBlocks[id] ||
       typeof this.loadedBlocks[id] === 'undefined' ||
       upd == true) {
 			if(upd) {
 				console.log('Reloading ' + id + ' in DOM');
 			}
+			this.removeDOM(id);
 			elem.hidden = 'true';
-			parent.appendChild(elem);
+			(typeof first === 'undefined' || first == false) ? parent.appendChild(elem) : parent.insertBefore(elem, parent.firstChild);
 			this.loadedBlocks[id] = { 'html' : elem, 'listened' : false };
 			console.log('Loaded ' + id + ' in DOM');
 			return this.loadedBlocks[id];
@@ -850,7 +851,8 @@ class SignInView extends View {
 						_this.dom.insertDom(_this.body, Header.rend({
 							loggedin : _this.user.isAuth(),
 							score: _this.user.getScore()
-						}), 'Header', true);
+						}), 'Header', true, true);
+						this.ListenLinks();
 						_this.router.go('/menu/');
 					})
 					.catch(function(e) {
@@ -1013,8 +1015,9 @@ class SignUpView extends View {
 								_this.dom.insertDom(_this.body, Header.rend({
 									loggedin : _this.user.isAuth(),
 									score: _this.user.getScore()
-								}), 'Header', true);
-								_this.Show('Header');
+								}), 'Header', true, true);
+								this.ListenLinks();
+								_this.router.go('/menu/');
 							});
 					})
 					.catch(function(e) {

@@ -57,7 +57,8 @@ class SignInView extends View {
 						_this.dom.insertDom(_this.body, Header.rend({
 							loggedin : _this.user.isAuth(),
 							score: _this.user.getScore()
-						}), 'Header', true);
+						}), 'Header', true, true);
+						this.ListenLinks();
 						_this.router.go('/menu/');
 					})
 					.catch(function(e) {
