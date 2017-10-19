@@ -26,8 +26,7 @@ class View {
 						event.preventDefault();
 						//const router = new Router();
 						const route = Links[i].getAttribute('href');
-						window.history.pushState({},'',route);
-						_this.router.loadPage(route);
+						_this.router.go(route);
 					});
 				}
 				this.dom.loadedBlocks[obj].listened = true;

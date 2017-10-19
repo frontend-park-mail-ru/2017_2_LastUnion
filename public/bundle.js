@@ -96,8 +96,7 @@ class View {
 						event.preventDefault();
 						//const router = new Router();
 						const route = Links[i].getAttribute('href');
-						window.history.pushState({},'',route);
-						_this.router.loadPage(route);
+						_this.router.go(route);
 					});
 				}
 				this.dom.loadedBlocks[obj].listened = true;
@@ -156,6 +155,11 @@ class Router {
 		}
 		Router._instance = this;
 		this.urls = [];
+
+		const _this = this;
+		window.addEventListener("popstate", function(e) {
+			_this.loadPage(location.pathname);
+		}, false)
 	}
 
 	addUrl(url, view) {
@@ -165,6 +169,14 @@ class Router {
 
 	getUrl() {
 		return window.location.pathname;
+	}
+
+	go(url) {
+		if (window.location.pathname === url) {
+            return;
+        }
+        window.history.pushState({}, '', url);
+        this.loadPage(url);
 	}
 
 	loadPage(url) {
@@ -629,8 +641,7 @@ class ScoresView extends View {
 		this.Show('Header');
 		if (!this.user.isAuth()) {
 			console.error('Access denied.');
-			window.history.pushState({},'','/signin/');
-			this.router.loadPage('/signin/');
+			this.router.go('/signin/');
 		} else {
 			this.InitLeaderBoard();
 			this.Show('Scores');
@@ -836,11 +847,11 @@ class SignInView extends View {
 						_this.dom.removeDOM('LoginForm');
 						_this.dom.removeDOM('SignUpForm');
 						_this.Hide('Header');
-						_this.dom.insertDom(this.body, Header.rend({
-							loggedin : this.user.isAuth(),
-							score: this.user.getScore()
+						_this.dom.insertDom(_this.body, Header.rend({
+							loggedin : _this.user.isAuth(),
+							score: _this.user.getScore()
 						}), 'Header', true);
-						_this.Show('Header');
+						_this.router.go('/menu/');
 					})
 					.catch(function(e) {
 						Form.err('LoginForm', 'Global', e);

@@ -54,11 +54,11 @@ class SignInView extends View {
 						_this.dom.removeDOM('LoginForm');
 						_this.dom.removeDOM('SignUpForm');
 						_this.Hide('Header');
-						_this.dom.insertDom(this.body, Header.rend({
-							loggedin : this.user.isAuth(),
-							score: this.user.getScore()
+						_this.dom.insertDom(_this.body, Header.rend({
+							loggedin : _this.user.isAuth(),
+							score: _this.user.getScore()
 						}), 'Header', true);
-						_this.Show('Header');
+						_this.router.go('/menu/');
 					})
 					.catch(function(e) {
 						Form.err('LoginForm', 'Global', e);

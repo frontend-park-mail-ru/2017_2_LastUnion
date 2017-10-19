@@ -10,6 +10,11 @@ class Router {
 		}
 		Router._instance = this;
 		this.urls = [];
+
+		const _this = this;
+		window.addEventListener("popstate", function(e) {
+			_this.loadPage(location.pathname);
+		}, false)
 	}
 
 	addUrl(url, view) {
@@ -19,6 +24,14 @@ class Router {
 
 	getUrl() {
 		return window.location.pathname;
+	}
+
+	go(url) {
+		if (window.location.pathname === url) {
+            return;
+        }
+        window.history.pushState({}, '', url);
+        this.loadPage(url);
 	}
 
 	loadPage(url) {
