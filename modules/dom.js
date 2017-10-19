@@ -15,10 +15,10 @@ class DOM {
 		if (!this.loadedBlocks[id] ||
       typeof this.loadedBlocks[id] === 'undefined' ||
       upd == true) {
-			if(upd) {
+			if(typeof upd !== 'undefined' && upd) {
 				console.log('Reloading ' + id + ' in DOM');
+				this.removeDOM(id);
 			}
-			this.removeDOM(id);
 			elem.hidden = 'true';
 			(typeof first === 'undefined' || first == false) ? parent.appendChild(elem) : parent.insertBefore(elem, parent.firstChild);
 			this.loadedBlocks[id] = { 'html' : elem, 'listened' : false };
