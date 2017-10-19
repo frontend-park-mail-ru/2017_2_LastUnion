@@ -1080,13 +1080,17 @@ class LogoutView extends View {
 		}
 		LogoutView._instance = this;
 
-		this.user.logout();
-
-		this.Hide('Header');
-		this.dom.insertDom(this.body, Header.rend({
-			loggedin : this.user.isAuth(),
-			score: this.user.getScore()
-		}), 'Header', true);
+		this.user.logout()
+			.then(function() {
+				this.Hide('Header');
+				this.dom.insertDom(this.body, Header.rend({
+					loggedin : this.user.isAuth(),
+					score: this.user.getScore()
+				}), 'Header', true, true);
+			})
+			.catch(function(e) {
+				alert(e);
+			});
 	}
 
 	ConstructPage() {
