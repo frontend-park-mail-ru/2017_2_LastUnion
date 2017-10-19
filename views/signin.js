@@ -32,6 +32,7 @@ class SignInView extends View {
 					'placeholder' : '**********',
 				}
 			],
+			'labels_enable' : false,
 			'button' : 'Let me run!'
 		});
 		this.dom.insertDom(this.body, this.form, 'LoginForm');
@@ -60,8 +61,9 @@ class SignInView extends View {
 						_this.Show('Header');
 					})
 					.catch(function(e) {
-						alert(e);
+						Form.err('LoginForm', 'Global', e);
 					});
+				Form.submit('LoginForm');
 			}
 		});
 	}
@@ -69,11 +71,11 @@ class SignInView extends View {
 	Validate(login, passw) {
 		let valid = true;
 		if(login.value.length < 4) {
-			Form.err('LoginForm_Login', 'Login is at least 4 characters.');
+			Form.err('LoginForm', 'Login', 'Login is at least 4 characters.');
 			valid = false;
 		}
 		if(passw.value.length < 6) {
-			Form.err('LoginForm_Password', 'Password is at least 6 characters.');
+			Form.err('LoginForm', 'Password', 'Password is at least 6 characters.');
 			valid = false;
 		}
 		return valid;

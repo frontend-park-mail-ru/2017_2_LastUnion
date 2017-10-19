@@ -1,17 +1,21 @@
-<!-- MENU -->
-<div class="container">
-  <%= title %>
+<!-- FORM -->
+<div class="container form">
   <form>
+    <span class="title"><%= title %></span>
     <% for(var i = 0; i<inputs.length; i++) { %>
     <div class="form-group">
+      <% if(labels_enable) { %>
       <label class="control-label" for="<%= formname %>_<%=inputs[i].label %>">
         <%= inputs[i].label %>
       </label>
+      <% } %>
       <input type="<%= inputs[i].type %>" id="<%= formname %>_<%= inputs[i].label %>" placeholder="<%= inputs[i].placeholder %>">
       <span id="<%= formname %>_<%= inputs[i].label %>_err" class="error-message"></span>
     </div>
     <% } %>
-    <button class="btn btn-default"><%= button %></button>
+    <button id="<%= formname %>_btn" class="btn btn-default"><%= button %></button>
+    <div id="<%= formname %>_loader" class="loader" hidden></div>
+    <span id="<%= formname %>_Global_err" class="global error-message"></span>
   </form>
 </div>
-<!-- MENU -->
+<!-- FORM -->
