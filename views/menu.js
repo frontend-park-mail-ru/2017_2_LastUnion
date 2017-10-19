@@ -18,7 +18,7 @@ class MenuView extends View {
 			score: this.user.getScore()
 		}), 'Header');
 		this.dom.insertDom(this.body, Menu.rend({
-			'menuitems' : ['Play', 'About us', 'Scores'],
+			'menuitems' : ['Play', 'About us (404)', 'Scores'],
 			'links' : ['/play/', '/about/', '/scores/'],
 		}), 'Menu');
 		this.ListenLinks();

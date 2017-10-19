@@ -570,13 +570,13 @@ obj || (obj = {});
 var __t, __p = '', __j = Array.prototype.join;
 function print() { __p += __j.call(arguments, '') }
 with (obj) {
-__p += '<!-- HEADER -->\r\n<header>\r\n    <nav class="navbar navbar-default" role="navigation" align="center">\r\n        <div class="container-fluid">\r\n            <div class="navbar-header">\r\n                <a class="navbar-brand" href="/">\r\n                    <img src="img/logo.png" alt="Logo" />\r\n                    <span>LastUnion GAME</span>\r\n                </a>\r\n            \r\n                <ul class="nav navbar-nav">\r\n                  ';
+__p += '<!-- HEADER -->\r\n<header>\r\n    <nav class="navbar navbar-default" role="navigation" align="center">\r\n        <div class="container-fluid">\r\n            <div class="navbar-header">\r\n                <a class="navbar-brand" href="/">\r\n                    <img src="img/logo.png" alt="Logo" />\r\n                    <span>LastUnion GAME</span>\r\n                </a>\r\n                ';
  if (loggedin) { ;
-__p += '\r\n                    <li class="nav navbar-nav navbar-text">Your score is: ' +
+__p += '\r\n                <span class="nav navbar-nav navbar-text navbar-scores">Your score is: ' +
 ((__t = ( score )) == null ? '' : __t) +
-'</li>\r\n                  ';
+'</span>\r\n                ';
  } ;
-__p += '\r\n                </ul>\r\n                <ul class="nav navbar-nav navbar-right user-menu">\r\n                    ';
+__p += '\r\n                <ul class="nav navbar-nav navbar-right user-menu">\r\n                    ';
  if (loggedin) { ;
 __p += '\r\n                      <li><a href="/logout">Log out</a></li>\r\n                    ';
  } else { ;
@@ -716,7 +716,7 @@ class MenuView extends View {
 			score: this.user.getScore()
 		}), 'Header');
 		this.dom.insertDom(this.body, Menu.rend({
-			'menuitems' : ['Play', 'About us', 'Scores'],
+			'menuitems' : ['Play', 'About us (404)', 'Scores'],
 			'links' : ['/play/', '/about/', '/scores/'],
 		}), 'Menu');
 		this.ListenLinks();
@@ -761,7 +761,7 @@ obj || (obj = {});
 var __t, __p = '', __j = Array.prototype.join;
 function print() { __p += __j.call(arguments, '') }
 with (obj) {
-__p += '<!-- MENU -->\r\n<div class="container">\r\n    <ul>\r\n      ';
+__p += '<!-- MENU -->\r\n<div class="container bnek">\r\n  <div class="menu">\r\n    <ul>\r\n      ';
  for(var i = 0; i<menuitems.length; i++) { ;
 __p += '\r\n      <li><a href="' +
 ((__t = ( links[i] )) == null ? '' : __t) +
@@ -769,7 +769,7 @@ __p += '\r\n      <li><a href="' +
 ((__t = ( menuitems[i] )) == null ? '' : __t) +
 '</a>\r\n      ';
  } ;
-__p += '\r\n    </ul>\r\n</div>\r\n<!-- MENU -->\r\n';
+__p += '\r\n    </ul>\r\n  </div>\r\n</div>\r\n<!-- MENU -->\r\n';
 
 }
 return __p
