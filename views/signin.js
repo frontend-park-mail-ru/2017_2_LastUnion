@@ -58,7 +58,7 @@ class SignInView extends View {
 							loggedin : _this.user.isAuth(),
 							score: _this.user.getScore()
 						}), 'Header', true, true);
-						this.ListenLinks();
+						_this.ListenLinks();
 						_this.router.go('/menu/');
 					})
 					.catch(function(e) {
