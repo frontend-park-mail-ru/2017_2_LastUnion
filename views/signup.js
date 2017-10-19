@@ -13,10 +13,6 @@ class SignUpView extends View {
 		}
 		SignUpView._instance = this;
 
-		this.dom.insertDom(this.body, Header.rend({
-			loggedin : this.user.isAuth(),
-			score: this.user.getScore()
-		}), 'Header');
 		this.form = Form.rend({
 			'formname' : 'SignUpForm',
 			'title' : 'Birth of a necromancer!',
@@ -40,9 +36,19 @@ class SignUpView extends View {
 			'labels_enable' : false,
 			'button' : 'Birth!'
 		});
-		this.dom.insertDom(this.body, this.form, 'SignUpForm');
+
+		this.init();
+	}
+
+	init() {
+		this.dom.insertDom(this.body, Header.rend({
+			loggedin : this.user.isAuth(),
+			score: this.user.getScore()
+		}), 'Header');
+		if(this.dom.insertDom(this.body, this.form, 'SignUpForm')) {
+			this.ListenSubmit();
+		}
 		this.ListenLinks();
-		this.ListenSubmit();
 	}
 
 	ListenSubmit() {
@@ -98,6 +104,7 @@ class SignUpView extends View {
 	}
 
 	ConstructPage() {
+		this.init();
 		this.Show('Header');
 		this.Show('SignUpForm');
 	}

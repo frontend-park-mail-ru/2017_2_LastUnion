@@ -94,7 +94,6 @@ class View {
 				{
 					Links[i].addEventListener('click', event => {
 						event.preventDefault();
-						//const router = new Router();
 						const route = Links[i].getAttribute('href');
 						_this.router.go(route);
 					});
@@ -108,6 +107,8 @@ class View {
 		const elem = this.dom.loadedBlocks[obj];
 		if(elem && typeof elem !== 'undefined') {
 			elem.html.hidden = 'true';
+		} else {
+			console.error('Can\'t hide. No such element: ' + obj);
 		}
 	}
 
@@ -115,6 +116,8 @@ class View {
 		const elem = this.dom.loadedBlocks[obj];
 		if(elem && typeof elem !== 'undefined') {
 			elem.html.hidden = false;
+		} else {
+			console.error('Can\'t show. No such element: ' + obj);
 		}
 	}
 
@@ -334,6 +337,10 @@ class GameView extends View {
 		}
 		GameView._instance = this;
 
+		this.init();
+	}
+
+	init() {
 		this.dom.insertDom(this.body, Header.rend({
 			loggedin : this.user.isAuth(),
 			score: this.user.getScore()
@@ -343,6 +350,7 @@ class GameView extends View {
 	}
 
 	ConstructPage() {
+		this.init();
 		this.Show('Header');
 		this.Show('Game');
 	}
@@ -379,7 +387,7 @@ class DOM {
 		if (!this.loadedBlocks[id] ||
       typeof this.loadedBlocks[id] === 'undefined' ||
       upd == true) {
-			if(typeof upd !== 'undefined' && upd) {
+			if(upd) {
 				console.log('Reloading ' + id + ' in DOM');
 				this.removeDOM(id);
 			}
@@ -387,8 +395,9 @@ class DOM {
 			(typeof first === 'undefined' || first == false) ? parent.appendChild(elem) : parent.insertBefore(elem, parent.firstChild);
 			this.loadedBlocks[id] = { 'html' : elem, 'listened' : false };
 			console.log('Loaded ' + id + ' in DOM');
-			return this.loadedBlocks[id];
+			return true;
 		}
+		return false;
 	}
 
 	removeDOM(id) {
@@ -723,6 +732,10 @@ class MenuView extends View {
 		}
 		MenuView._instance = this;
 
+		this.init();
+	}
+
+	init() {
 		this.dom.insertDom(this.body, Header.rend({
 			loggedin : this.user.isAuth(),
 			score: this.user.getScore()
@@ -735,6 +748,7 @@ class MenuView extends View {
 	}
 
 	ConstructPage() {
+		this.init();
 		this.Show('Header');
 		this.Show('Menu');
 	}
@@ -807,10 +821,6 @@ class SignInView extends View {
 		}
 		SignInView._instance = this;
 
-		this.dom.insertDom(this.body, Header.rend({
-			loggedin : this.user.isAuth(),
-			score: this.user.getScore()
-		}), 'Header');
 		this.form = Form.rend({
 			'formname' : 'LoginForm',
 			'title' : 'Enter the cave!',
@@ -829,9 +839,19 @@ class SignInView extends View {
 			'labels_enable' : false,
 			'button' : 'Let me run!'
 		});
-		this.dom.insertDom(this.body, this.form, 'LoginForm');
+		
+		this.init();
+	}
+
+	init() {
+		this.dom.insertDom(this.body, Header.rend({
+			loggedin : this.user.isAuth(),
+			score: this.user.getScore()
+		}), 'Header');
+		if(this.dom.insertDom(this.body, this.form, 'LoginForm')) {
+			this.ListenSubmit();
+		}
 		this.ListenLinks();
-		this.ListenSubmit();
 	}
 
 	ListenSubmit() {
@@ -877,6 +897,7 @@ class SignInView extends View {
 	}
 
 	ConstructPage() {
+		this.init();
 		this.Show('Header');
 		this.Show('LoginForm');
 	}
@@ -962,10 +983,6 @@ class SignUpView extends View {
 		}
 		SignUpView._instance = this;
 
-		this.dom.insertDom(this.body, Header.rend({
-			loggedin : this.user.isAuth(),
-			score: this.user.getScore()
-		}), 'Header');
 		this.form = Form.rend({
 			'formname' : 'SignUpForm',
 			'title' : 'Birth of a necromancer!',
@@ -989,9 +1006,19 @@ class SignUpView extends View {
 			'labels_enable' : false,
 			'button' : 'Birth!'
 		});
-		this.dom.insertDom(this.body, this.form, 'SignUpForm');
+
+		this.init();
+	}
+
+	init() {
+		this.dom.insertDom(this.body, Header.rend({
+			loggedin : this.user.isAuth(),
+			score: this.user.getScore()
+		}), 'Header');
+		if(this.dom.insertDom(this.body, this.form, 'SignUpForm')) {
+			this.ListenSubmit();
+		}
 		this.ListenLinks();
-		this.ListenSubmit();
 	}
 
 	ListenSubmit() {
@@ -1047,6 +1074,7 @@ class SignUpView extends View {
 	}
 
 	ConstructPage() {
+		this.init();
 		this.Show('Header');
 		this.Show('SignUpForm');
 	}
@@ -1085,6 +1113,7 @@ class LogoutView extends View {
 		const _this = this;
 		this.user.logout()
 			.then(function() {
+				_this.dom.removeDOM('Scores');
 				_this.Hide('Header');
 				_this.dom.insertDom(_this.body, Header.rend({
 					loggedin : _this.user.isAuth(),

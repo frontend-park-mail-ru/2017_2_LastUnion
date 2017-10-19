@@ -13,10 +13,6 @@ class SignInView extends View {
 		}
 		SignInView._instance = this;
 
-		this.dom.insertDom(this.body, Header.rend({
-			loggedin : this.user.isAuth(),
-			score: this.user.getScore()
-		}), 'Header');
 		this.form = Form.rend({
 			'formname' : 'LoginForm',
 			'title' : 'Enter the cave!',
@@ -35,9 +31,19 @@ class SignInView extends View {
 			'labels_enable' : false,
 			'button' : 'Let me run!'
 		});
-		this.dom.insertDom(this.body, this.form, 'LoginForm');
+		
+		this.init();
+	}
+
+	init() {
+		this.dom.insertDom(this.body, Header.rend({
+			loggedin : this.user.isAuth(),
+			score: this.user.getScore()
+		}), 'Header');
+		if(this.dom.insertDom(this.body, this.form, 'LoginForm')) {
+			this.ListenSubmit();
+		}
 		this.ListenLinks();
-		this.ListenSubmit();
 	}
 
 	ListenSubmit() {
@@ -83,6 +89,7 @@ class SignInView extends View {
 	}
 
 	ConstructPage() {
+		this.init();
 		this.Show('Header');
 		this.Show('LoginForm');
 	}

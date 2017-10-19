@@ -15,7 +15,7 @@ class DOM {
 		if (!this.loadedBlocks[id] ||
       typeof this.loadedBlocks[id] === 'undefined' ||
       upd == true) {
-			if(typeof upd !== 'undefined' && upd) {
+			if(upd) {
 				console.log('Reloading ' + id + ' in DOM');
 				this.removeDOM(id);
 			}
@@ -23,8 +23,9 @@ class DOM {
 			(typeof first === 'undefined' || first == false) ? parent.appendChild(elem) : parent.insertBefore(elem, parent.firstChild);
 			this.loadedBlocks[id] = { 'html' : elem, 'listened' : false };
 			console.log('Loaded ' + id + ' in DOM');
-			return this.loadedBlocks[id];
+			return true;
 		}
+		return false;
 	}
 
 	removeDOM(id) {

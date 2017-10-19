@@ -13,6 +13,10 @@ class MenuView extends View {
 		}
 		MenuView._instance = this;
 
+		this.init();
+	}
+
+	init() {
 		this.dom.insertDom(this.body, Header.rend({
 			loggedin : this.user.isAuth(),
 			score: this.user.getScore()
@@ -25,6 +29,7 @@ class MenuView extends View {
 	}
 
 	ConstructPage() {
+		this.init();
 		this.Show('Header');
 		this.Show('Menu');
 	}

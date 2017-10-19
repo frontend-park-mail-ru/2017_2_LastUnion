@@ -24,7 +24,6 @@ class View {
 				{
 					Links[i].addEventListener('click', event => {
 						event.preventDefault();
-						//const router = new Router();
 						const route = Links[i].getAttribute('href');
 						_this.router.go(route);
 					});
@@ -38,6 +37,8 @@ class View {
 		const elem = this.dom.loadedBlocks[obj];
 		if(elem && typeof elem !== 'undefined') {
 			elem.html.hidden = 'true';
+		} else {
+			console.error('Can\'t hide. No such element: ' + obj);
 		}
 	}
 
@@ -45,6 +46,8 @@ class View {
 		const elem = this.dom.loadedBlocks[obj];
 		if(elem && typeof elem !== 'undefined') {
 			elem.html.hidden = false;
+		} else {
+			console.error('Can\'t show. No such element: ' + obj);
 		}
 	}
 
