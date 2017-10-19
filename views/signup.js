@@ -63,6 +63,7 @@ class SignUpView extends View {
 				const _this = this;
 				this.user.signup(login.value, passw.value, email.value)
 					.then(function() {
+						Form.revert('SignUpForm');
 						console.log('User ' + login.value + ' registered successfully!');
 						_this.user.login(login.value, passw.value)
 							.then(function() {

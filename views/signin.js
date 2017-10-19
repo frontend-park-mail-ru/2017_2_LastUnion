@@ -57,6 +57,7 @@ class SignInView extends View {
 				const _this = this;
 				this.user.login(login.value, passw.value)
 					.then(function() {
+						Form.revert('LoginForm');
 						_this.dom.removeDOM('LoginForm');
 						_this.dom.removeDOM('SignUpForm');
 						_this.Hide('Header');

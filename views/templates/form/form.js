@@ -27,9 +27,15 @@ module.exports = {
 		document.getElementById(id + '_err').hidden = 'true';
 	},
 
+	revert : function(form) {
+		document.getElementById(form + '_loader').hidden = 'true';
+		document.getElementById(form + '_btn').style.display = 'inline-block';
+	},
+
 	submit : function(form) {
 		document.getElementById(form + '_btn').style.display = 'none'
 		document.getElementById(form + '_loader').hidden = false;
 		document.getElementById(form + '_Global_err').innerHTML = "";
 	}
+
 };
