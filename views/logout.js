@@ -1,3 +1,6 @@
+/* global require */
+/* global module */
+
 'use strict';
 
 const View = require('../modules/view');
@@ -13,12 +16,12 @@ class LogoutView extends View {
 		LogoutView._instance = this;
 	}
 
-	ConstructPage() {
+	constructPage() {
 		const _this = this;
 		this.user.logout()
 			.then(function() {
 				_this.dom.removeDOM('Scores');
-				_this.Hide('Header');
+				_this.hide('Header');
 				_this.dom.insertDom(_this.body, Header.rend({
 					loggedin : _this.user.isAuth(),
 					score: _this.user.getScore()
@@ -30,7 +33,7 @@ class LogoutView extends View {
 			});
 	}
 
-	DestroyPage() {
+	destroyPage() {
 
 	}
 

@@ -2,13 +2,15 @@
 
 'use strict';
 
+const HOST = 'lastunion.herokuapp.com';
+
 class API {
 
 	constructor() {
-		this._host = 'lastunion.herokuapp.com';
+		this._host = HOST;
 	}
 
-	call(method, httpMethod, params) {
+	sendReq(method, httpMethod, params) {
 		const url = 'https://' + this._host + '/api/' + method;
 		const httpRequest = {
 			method: httpMethod,
@@ -21,12 +23,9 @@ class API {
 			body: null
 		};
 
-		console.log(method, httpMethod, params);
 		if(httpMethod === 'POST' && typeof params !== 'undefined') {
 			httpRequest.body = JSON.stringify(params);
 		}
-
-		console.log(httpRequest);
 
 		return fetch(url, httpRequest).then(
 			function(response) {

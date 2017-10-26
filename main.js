@@ -1,8 +1,8 @@
 /* global require */
 'use strict';
 
-const router = require('./routes/router');
-const R = new router();
+const Router = require('./routes/router');
+const R = new Router();
 
 //const MenuView = require('./views/menu');
 const GameView = require('./views/game');

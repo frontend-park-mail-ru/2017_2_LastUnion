@@ -1,3 +1,6 @@
+/* global require */
+/* global module */
+
 'use strict';
 
 const View = require('../modules/view');
@@ -46,20 +49,20 @@ class SignUpView extends View {
 			score: this.user.getScore()
 		}), 'Header');
 		if(this.dom.insertDom(this.body, this.form, 'SignUpForm')) {
-			this.ListenSubmit();
+			this.listenSubmit();
 		}
-		this.ListenLinks();
+		this.listenLinks();
 	}
 
-	ListenSubmit() {
-		this.dom.gTAG(this.form, 'button')[0].addEventListener('click', event => {
+	listenSubmit() {
+		this.form.getElementsByTagName('button')[0].addEventListener('click', event => {
 			event.preventDefault();
 
-			let login = this.dom.gID('SignUpForm_Login');
-			let email = this.dom.gID('SignUpForm_Email');
-			let passw = this.dom.gID('SignUpForm_Password');
+			let login = document.getElementById('SignUpForm_Login');
+			let email = document.getElementById('SignUpForm_Email');
+			let passw = document.getElementById('SignUpForm_Password');
 
-			if(this.Validate(login, passw, email)) {
+			if(this.validate(login, passw, email)) {
 				const _this = this;
 				this.user.signup(login.value, passw.value, email.value)
 					.then(function() {
@@ -69,12 +72,12 @@ class SignUpView extends View {
 							.then(function() {
 								_this.dom.removeDOM('LoginForm');
 								_this.dom.removeDOM('SignUpForm');
-								_this.Hide('Header');
+								_this.hide('Header');
 								_this.dom.insertDom(_this.body, Header.rend({
 									loggedin : _this.user.isAuth(),
 									score: _this.user.getScore()
 								}), 'Header', true, true);
-								_this.ListenLinks();
+								_this.listenLinks();
 								_this.router.go('/menu/');
 							});
 					})
@@ -86,7 +89,7 @@ class SignUpView extends View {
 		});
 	}
 
-	Validate(login, passw, email) {
+	validate(login, passw, email) {
 		let valid = true;
 		if(login.value.length < 4) {
 			Form.err('SignUpForm', 'Login', 'Login has to be at least 4 characters.');
@@ -97,22 +100,22 @@ class SignUpView extends View {
 			valid = false;
 		}
 
-		if (!/^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(email.value)) {
+		if (!/^(([^<>()\\.,;:\s@"]+(\.[^<>()\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(email.value)) {
 			Form.err('SignUpForm', 'Email', 'This is not valid email.');
 			valid = false;
 		}
 		return valid;
 	}
 
-	ConstructPage() {
+	constructPage() {
 		this.init();
-		this.Show('Header');
-		this.Show('SignUpForm');
+		this.show('Header');
+		this.show('SignUpForm');
 	}
 
-	DestroyPage() {
-		this.Hide('Header');
-		this.Hide('SignUpForm');
+	destroyPage() {
+		this.hide('Header');
+		this.hide('SignUpForm');
 	}
 
 }

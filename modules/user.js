@@ -1,3 +1,6 @@
+/* global require */
+/* global module */
+
 'use strict';
 
 const API = require('./api.js');
@@ -5,22 +8,9 @@ const API = require('./api.js');
 class User {
 
 	constructor() {
-		if(User._instance) {
-			return User._instance;
-		}
-		User._instance = this;
-
 		this.api = new API;
-		this._loggedin = false;
+		this._loggedin = true;
 		this._proto = {};
-	}
-
-	isAuth() {
-		return this._loggedin;
-	}
-
-	getScore() {
-		return 322;
 	}
 
 	checkResponse(response) {
@@ -31,6 +21,40 @@ class User {
 			throw new Error(String(response.responseMessage));
 		}
 		return response.data;
+	}
+
+	isAuth() {
+		return this._loggedin;
+	}
+
+	getScore() {
+		return 322;
+	}
+
+	getScores() {
+		return {
+			'Scores' : [
+				{
+					'user' : 'Jhon',
+					'place' : '1',
+					'score' : '999',
+				},
+				{
+					'user' : 'Mike',
+					'place' : '2',
+					'score' : '888'
+				},
+				{
+					'user' : 'Bredd',
+					'place' : '3',
+					'score' : '777'
+				}
+			],
+			'User' : {
+				'place' : '999',
+				'score' : '0'
+			}
+		};
 	}
 
 	login(login, password) {

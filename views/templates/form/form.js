@@ -1,6 +1,11 @@
+/* global require */
+/* global module */
+
+'use strict';
+
 module.exports = {
 	rend : function(params) {
-		var template = require('./form.ejs');
+		const template = require('./form.ejs');
 		let html = template(params);
 		const elem = document.createElement('div');
 		elem.innerHTML = html;
@@ -8,7 +13,7 @@ module.exports = {
 		for(let i=0; i < inputs.length; i++)
 		{
 			let id = inputs[i].getAttribute('id');
-			inputs[i].addEventListener('focus', event => {
+			inputs[i].addEventListener('focus', () => {
 				document.getElementById(id + '_err').hidden = 'true';
 			});
 		}
@@ -33,9 +38,9 @@ module.exports = {
 	},
 
 	submit : function(form) {
-		document.getElementById(form + '_btn').style.display = 'none'
+		document.getElementById(form + '_btn').style.display = 'none';
 		document.getElementById(form + '_loader').hidden = false;
-		document.getElementById(form + '_Global_err').innerHTML = "";
+		document.getElementById(form + '_Global_err').innerHTML = '';
 	}
 
 };

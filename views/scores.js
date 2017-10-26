@@ -1,3 +1,6 @@
+/* global require */
+/* global module */
+
 'use strict';
 
 const View = require('../modules/view');
@@ -19,31 +22,26 @@ class ScoresView extends View {
 		}), 'Header');
 	}
 
-	InitLeaderBoard() {
-		this.dom.insertDom(this.body, Scores.rend({
-			'users' : ['John','Mike','Bredd','Jarel','Jane'],
-			'place' : ['1','2','3','4','5'],
-			'score' : ['999','888','777','666','555'],
-			'userplace' : '999',
-			'userscore' : '0',
-		}), 'Scores');
-		this.ListenLinks();
+	initLeaderBoard() {
+		const userScores = this.user.getScores();
+		this.dom.insertDom(this.body, Scores.rend(userScores), 'Scores');
+		this.listenLinks();
 	}
 
-	ConstructPage() {
-		this.Show('Header');
+	constructPage() {
+		this.show('Header');
 		if (!this.user.isAuth()) {
 			console.error('Access denied.');
 			this.router.go('/signin/');
 		} else {
-			this.InitLeaderBoard();
-			this.Show('Scores');
+			this.initLeaderBoard();
+			this.show('Scores');
 		}
 	}
 
-	DestroyPage() {
-		this.Hide('Header');
-		this.Hide('Scores');
+	destroyPage() {
+		this.hide('Header');
+		this.hide('Scores');
 	}
 
 }

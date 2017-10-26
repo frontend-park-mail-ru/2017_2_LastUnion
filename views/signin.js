@@ -1,3 +1,6 @@
+/* global require */
+/* global module */
+
 'use strict';
 
 const View = require('../modules/view');
@@ -41,31 +44,31 @@ class SignInView extends View {
 			score: this.user.getScore()
 		}), 'Header');
 		if(this.dom.insertDom(this.body, this.form, 'LoginForm')) {
-			this.ListenSubmit();
+			this.listenSubmit();
 		}
-		this.ListenLinks();
+		this.listenLinks();
 	}
 
-	ListenSubmit() {
-		this.dom.gTAG(this.form, 'button')[0].addEventListener('click', event => {
+	listenSubmit() {
+		this.form.getElementsByTagName('button')[0].addEventListener('click', event => {
 			event.preventDefault();
 
-			let login = this.dom.gID('LoginForm_Login');
-			let passw = this.dom.gID('LoginForm_Password');
+			let login = document.getElementById('LoginForm_Login');
+			let passw = document.getElementById('LoginForm_Password');
 
-			if(this.Validate(login, passw)) {
+			if(this.validate(login, passw)) {
 				const _this = this;
 				this.user.login(login.value, passw.value)
 					.then(function() {
 						Form.revert('LoginForm');
 						_this.dom.removeDOM('LoginForm');
 						_this.dom.removeDOM('SignUpForm');
-						_this.Hide('Header');
+						_this.hide('Header');
 						_this.dom.insertDom(_this.body, Header.rend({
 							loggedin : _this.user.isAuth(),
 							score: _this.user.getScore()
 						}), 'Header', true, true);
-						_this.ListenLinks();
+						_this.listenLinks();
 						_this.router.go('/menu/');
 					})
 					.catch(function(e) {
@@ -76,7 +79,7 @@ class SignInView extends View {
 		});
 	}
 
-	Validate(login, passw) {
+	validate(login, passw) {
 		let valid = true;
 		if(login.value.length < 4) {
 			Form.err('LoginForm', 'Login', 'Login is at least 4 characters.');
@@ -89,15 +92,15 @@ class SignInView extends View {
 		return valid;
 	}
 
-	ConstructPage() {
+	constructPage() {
 		this.init();
-		this.Show('Header');
-		this.Show('LoginForm');
+		this.show('Header');
+		this.show('LoginForm');
 	}
 
-	DestroyPage() {
-		this.Hide('Header');
-		this.Hide('LoginForm');
+	destroyPage() {
+		this.hide('Header');
+		this.hide('LoginForm');
 	}
 
 }
