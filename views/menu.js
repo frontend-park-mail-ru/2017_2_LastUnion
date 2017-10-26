@@ -1,3 +1,6 @@
+/* global require */
+/* global module */
+
 'use strict';
 
 const View = require('../modules/view');
@@ -22,21 +25,21 @@ class MenuView extends View {
 			score: this.user.getScore()
 		}), 'Header');
 		this.dom.insertDom(this.body, Menu.rend({
-			'menuitems' : ['Play', 'About us (404)', 'Scores'],
-			'links' : ['/play/', '/about/', '/scores/'],
+			'menuitems' : ['Play', 'Scores'],
+			'links' : ['/play/', '/scores/'],
 		}), 'Menu');
-		this.ListenLinks();
+		this.listenLinks();
 	}
 
-	ConstructPage() {
+	constructPage() {
 		this.init();
-		this.Show('Header');
-		this.Show('Menu');
+		this.show('Header');
+		this.show('Menu');
 	}
 
-	DestroyPage() {
-		this.Hide('Header');
-		this.Hide('Menu');
+	destroyPage() {
+		this.hide('Header');
+		this.hide('Menu');
 	}
 
 }

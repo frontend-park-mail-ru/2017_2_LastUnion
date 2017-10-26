@@ -1,3 +1,6 @@
+/* global require */
+/* global module */
+
 'use strict';
 
 const View = require('../modules/view');
@@ -22,18 +25,18 @@ class GameView extends View {
 			score: this.user.getScore()
 		}), 'Header');
 		this.dom.insertDom(this.body, Game.rend({}), 'Game');
-		this.ListenLinks();
+		this.listenLinks();
 	}
 
-	ConstructPage() {
+	constructPage() {
 		this.init();
-		this.Show('Header');
-		this.Show('Game');
+		this.show('Header');
+		this.show('Game');
 	}
 
-	DestroyPage() {
-		this.Hide('Header');
-		this.Hide('Game');
+	destroyPage() {
+		this.hide('Header');
+		this.hide('Game');
 	}
 
 }

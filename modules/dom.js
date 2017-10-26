@@ -1,3 +1,5 @@
+/* global module */
+
 'use strict';
 
 class DOM {
@@ -12,9 +14,7 @@ class DOM {
 	}
 
 	insertDom(parent, elem, id, upd, first) {
-		if (!this.loadedBlocks[id] ||
-      typeof this.loadedBlocks[id] === 'undefined' ||
-      upd == true) {
+		if (!this.loadedBlocks[id] || typeof this.loadedBlocks[id] === 'undefined' || upd == true) {
 			if(upd) {
 				console.log('Reloading ' + id + ' in DOM');
 				this.removeDOM(id);
@@ -36,17 +36,6 @@ class DOM {
 		this.loadedBlocks[id].html.remove();
 		delete this.loadedBlocks[id];
 		console.log('Removed ' + id + ' from DOM');
-	}
-
-	gID(id) {
-		return document.getElementById(id);
-	}
-
-	gTAG(parent, tag) {
-		if(!parent || typeof parent == 'undefined') {
-			parent = document;
-		}
-		return parent.getElementsByTagName(tag);
 	}
 
 }

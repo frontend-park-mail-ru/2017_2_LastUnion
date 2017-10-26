@@ -1,3 +1,5 @@
+/* global module */
+
 'use strict';
 
 class UrlCom {
@@ -8,16 +10,16 @@ class UrlCom {
 		this.instance = null;
 	}
 
-	Load() {
+	load() {
 		if(!this.instance) {
 			this.instance = new this.view();
 		}
 
-		this.instance.ConstructPage();
+		this.instance.constructPage();
 	}
 
-	Destroy() {
-		this.instance.DestroyPage();
+	destroy() {
+		this.instance.destroyPage();
 		this.instance = null;
 	}
 

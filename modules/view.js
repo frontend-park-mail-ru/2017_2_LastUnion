@@ -1,3 +1,6 @@
+/* global require */
+/* global module */
+
 'use strict';
 
 const Router = require('../routes/router');
@@ -10,21 +13,21 @@ class View {
 		this.dom = new DOM();
 		this.user = new User();
 		this.router = new Router();
-		this.body = this.dom.gTAG(null, 'body')[0];
+		this.body = document.getElementsByTagName('body')[0];
 	}
 
 
-	ListenLinks() {
+	listenLinks() {
 		const _this = this;
-		const SelEvent = [];
-		for(var obj in this.dom.loadedBlocks) {
+		
+		for(let obj in this.dom.loadedBlocks) {
 			if(!this.dom.loadedBlocks[obj].listened) {
-				const Links = this.dom.gTAG(this.dom.loadedBlocks[obj].html, 'a');
-				for(let i=0; i < Links.length; i++)
+				const links = this.dom.loadedBlocks[obj].html.getElementsByTagName('a');
+				for(let i=0; i < links.length; i++)
 				{
-					Links[i].addEventListener('click', event => {
+					links[i].addEventListener('click', event => {
 						event.preventDefault();
-						const route = Links[i].getAttribute('href');
+						const route = links[i].getAttribute('href');
 						_this.router.go(route);
 					});
 				}
@@ -33,16 +36,16 @@ class View {
 		}
 	}
 
-	Hide(obj) {
+	hide(obj) {
 		const elem = this.dom.loadedBlocks[obj];
 		if(elem && typeof elem !== 'undefined') {
-			elem.html.hidden = 'true';
+			elem.html.hidden = true;
 		} else {
 			console.error('Can\'t hide. No such element: ' + obj);
 		}
 	}
 
-	Show(obj) {
+	show(obj) {
 		const elem = this.dom.loadedBlocks[obj];
 		if(elem && typeof elem !== 'undefined') {
 			elem.html.hidden = false;
