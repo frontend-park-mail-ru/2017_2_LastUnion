@@ -455,7 +455,7 @@ class User {
 
 	constructor() {
 		this.api = new API;
-		this._loggedin = true;
+		this._loggedin = false;
 		this._proto = {};
 	}
 
