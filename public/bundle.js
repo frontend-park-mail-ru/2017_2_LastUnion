@@ -352,6 +352,8 @@ const View = __webpack_require__(0);
 const Game = __webpack_require__(10);
 const Header = __webpack_require__(1);
 
+const GameController = __webpack_require__(23);
+
 class GameView extends View {
 
 	constructor() {
@@ -360,7 +362,6 @@ class GameView extends View {
 			return GameView._instance;
 		}
 		GameView._instance = this;
-
 		this.init();
 	}
 
@@ -369,7 +370,10 @@ class GameView extends View {
 			loggedin : this.user.isAuth(),
 			score: this.user.getScore()
 		}), 'Header');
-		this.dom.insertDom(this.body, Game.rend({}), 'Game');
+		if(this.dom.insertDom(this.body, Game.rend({}), 'Game')) {
+			Game.resize();
+			this.GameController = new GameController();
+		}
 		this.listenLinks();
 	}
 
@@ -604,6 +608,16 @@ module.exports = {
 		const elem = document.createElement('div');
 		elem.innerHTML = html;
 		return elem;
+	},
+
+	resizeInit : function() {
+		document.getElementById('game').width = document.body.clientWidth - 100;		
+		document.getElementById('game').height = document.getElementById('game').width / 16 * 8;
+	},
+
+	resize : function() {
+		this.resizeInit();
+		window.onresize = this.resizeInit;
 	}
 };
 
@@ -616,7 +630,7 @@ module.exports = function (obj) {
 obj || (obj = {});
 var __t, __p = '';
 with (obj) {
-__p += '<!-- GAME -->\r\n<center>\r\n  <img src="/img/octocat.png">\r\n  <br>\r\n  <span class="loading">Loading game</span>\r\n</center>\r\n<!-- GAME -->\r\n';
+__p += '<!-- GAME -->\r\n<center>\r\n  <canvas id="game"></canvas>\r\n</center>\r\n<!-- GAME -->\r\n';
 
 }
 return __p
@@ -1191,6 +1205,13 @@ class LogoutView extends View {
 
 module.exports = LogoutView;
 
+
+/***/ }),
+/* 23 */
+/***/ (function(module, exports) {
+
+"use strict";
+throw new Error("Module build failed: Error: ENOENT: no such file or directory, open 'E:\\technopark\\frontend\\2017_2_LastUnion\\game\\controller.js'\n    at Error (native)");
 
 /***/ })
 /******/ ]);
