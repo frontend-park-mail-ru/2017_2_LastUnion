@@ -1,0 +1,30 @@
+<!-- SCORES -->
+<div class="container">
+    <div class="panel panel-default">
+        <div class="panel-heading">Best GAMERS</div>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Username</th>
+                    <th>Scope</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% for(var i=0; i<Scores.length; i++) { %>
+                <tr>
+                    <th scope="row"><%= Scores[i].place %></th>
+                    <th><%= Scores[i].user %></th>
+                    <th><%= Scores[i].score %></th>
+                </tr>
+                <% } %>
+                <tr>
+                    <th scope="row"><%= User.place %></th>
+                    <th>YOU</th>
+                    <th><%= User.score %></th>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+<!-- SCORES -->
