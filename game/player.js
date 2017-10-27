@@ -9,12 +9,10 @@ const WIDTH = 50;
 const HEIGHT = 100;
 const JUMPPOWER = 35;
 
-/*
-    POSSIBLE STATES
-    0: RUN
-    1: JUMP
-    2: BENDED
-*/
+const RUN = 0;
+const ONAIR = 1;
+const BEND = 2;
+const BENDEDONAIR = 3;
 
 class Player {
 
@@ -23,84 +21,122 @@ class Player {
 			return Player._instance;
 		}
         Player._instance = this;
-        
+    }
+
+    init() {
         this._state = 0;
+        this._action = null;
+
+        this.jumpTime = 0;
+        this.verticalAcceleration = 10;  
 
         const bm = new Dot(0,0);
         const tr = new Dot(WIDTH / 2, HEIGHT);
-        const br = new Dot(WIDTH / 2, 0);
 
         this.geometry = {
             'bm' : bm,
             'tr' : tr,
-            'br' : br
         };
+    }
 
+    draw(drawingInfo) {
+        const centerX = drawingInfo.width / 2;
+        const centerY = drawingInfo.height / 2;
+        drawingInfo.canvas.fillStyle = "#000000";
+        drawingInfo.canvas.fillRect(
+            centerX - this.xRightPos, 
+            centerY - this.yHeadPos, 
+            this.xRightPos * 2, 
+            this.yHeadPos - this.yBottomPos
+        );
     }
 
     trigger() {
-        switch(this._state) {
-            case 1:
-                this.jump();
-            break;
+        if(!this._action || this._action === null) {
+            return;
         }
-    }
-
-    draw(drawingInginfo) {
-        const centerX = drawingInginfo.width / 2;
-        const centerY = drawingInginfo.height / 2;
-        drawingInginfo.canvas.fillStyle = "#000000";
-        drawingInginfo.canvas.fillRect(
-            centerX + this.geometry.tr.x - WIDTH, 
-            centerY - this.geometry.tr.y, 
-            WIDTH, 
-            this.geometry.tr.y - this.geometry.bm.y
-        );
+        this._action();
     }
 
     changePosition(x,y) {
         for(let d in this.geometry) {
-            let _x = this.geometry[d].x + x;
-            let _y = this.geometry[d].y + y;
-            this.geometry[d].update(_x, _y);
+            this.geometry[d].update(x, y);
         }
     }
 
     jump() {
+        if(this._action === null) {
+            this.action = this.jumpAction;
+        }
+    }
+
+    jumpAction() {
         if(this.jumpTime == 0) {
-            this._state = 1;
-            this.verticalAcceleration = 10;
-            this.verticalSpeed = 0;       
+            this.bended ? this.state = BENDEDONAIR : this.state = ONAIR; 
             this.jumpLambda = 0;
         }
 
         this.jumpLambda = JUMPPOWER * this.jumpTime - (this.verticalAcceleration * Math.pow(this.jumpTime, 2) / 2) - this.jumpLambda;
-        this.jumpTime = this.jumpTime + 1;
-  
-        if(this.geometry.bm.y + this.jumpLambda < 0) {
-            this.jumpLambda = -this.geometry.bm.y;
-            this.changePosition(0, this.jumpLambda);
-            this.run();
+        this.jumpTime += 0.7;
+
+        if(this.yBottomPos + this.jumpLambda < 0) {
+            this.changePosition(0, -this.yBottomPos);
+            this.jumpTime = 0;
+            this.action = null;
+            if(this.state == ONAIR) {
+                this.run();
+            }
             return;
         }
         this.changePosition(0, this.jumpLambda);
     }
 
     duck() {
-        this._state = 2;
-        this.geometry.tr.update(WIDTH / 2, HEIGHT / 2);
+        if(!this.bended) {
+            this.state == ONAIR ? this.state = BENDEDONAIR : this.state = BEND;
+            this.geometry.tr.update(0, -HEIGHT / 2);
+        }
     }
 
     run() {
-        this._state = 0;
-        this.geometry.tr.update(WIDTH / 2, HEIGHT);
+        if(this.bended) {
+            this.geometry.tr.update(0, HEIGHT / 2);
+        }
+        this.state = RUN;
     }
 
     get state() {
         return this._state;
     }
 
-	
+    set state(st) {
+        this._state = st;
+    }
+
+    set action(f) {
+        this._action = f;
+    }
+
+    get yHeadPos() {
+        return this.geometry.tr.y;
+    }
+
+    get yBottomPos() {
+        return this.geometry.bm.y;
+    }
+
+    get xPos() {
+        return this.geometry.bm.x;
+    }
+
+    get xRightPos() {
+        return this.geometry.tr.x;
+    }
+
+    get bended() {
+        return this.state > 1;
+    }
+
 }
 
 module.exports = Player;

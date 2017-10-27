@@ -60,7 +60,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 4);
+/******/ 	return __webpack_require__(__webpack_require__.s = 6);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -74,8 +74,8 @@
 
 
 const Router = __webpack_require__(2);
-const DOM = __webpack_require__(7);
-const User = __webpack_require__(8);
+const DOM = __webpack_require__(9);
+const User = __webpack_require__(10);
 
 class View {
 
@@ -138,7 +138,7 @@ module.exports = View;
 
 module.exports = {
 	rend : function(params){
-		const template = __webpack_require__(12);
+		const template = __webpack_require__(14);
 		let html = template(params);
 		const elem = document.createElement('div');
 		elem.innerHTML = html;
@@ -157,7 +157,7 @@ module.exports = {
 
 
 
-const UrlCom = __webpack_require__(5);
+const UrlCom = __webpack_require__(7);
 
 class Router {
 
@@ -230,9 +230,209 @@ module.exports = Router;
 
 
 
+class Dot {
+    
+    constructor(x, y) {
+        if(!y || y == 'undefined') {
+            this._x = 0;
+            this._y = 0;
+        } else {
+            this._x = x;
+            this._y = y;
+        }
+    }
+
+    update(x, y) {
+        this._x += x;
+        this._y += y;
+    }
+
+    get x() {
+        return this._x;
+    }
+
+    get y() {
+        return this._y;
+    }
+
+    newCoords(x, y) {
+        this._x = x;
+        this._y = y;
+    }
+
+    get coords() {
+        return {
+            'x' : this._x,
+            'y' : this._y
+        }
+    }
+
+}
+
+module.exports = Dot;
+
+/***/ }),
+/* 4 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/* global require */
+/* global module */
+
+
+
+const Dot = __webpack_require__(3);
+
+const WIDTH = 50;
+const HEIGHT = 100;
+const JUMPPOWER = 35;
+
+const RUN = 0;
+const ONAIR = 1;
+const BEND = 2;
+const BENDEDONAIR = 3;
+
+class Player {
+
+	constructor () {
+        if(Player._instance) {
+			return Player._instance;
+		}
+        Player._instance = this;
+    }
+
+    init() {
+        this._state = 0;
+        this._action = null;
+
+        this.jumpTime = 0;
+        this.verticalAcceleration = 10;  
+
+        const bm = new Dot(0,0);
+        const tr = new Dot(WIDTH / 2, HEIGHT);
+
+        this.geometry = {
+            'bm' : bm,
+            'tr' : tr,
+        };
+    }
+
+    draw(drawingInfo) {
+        const centerX = drawingInfo.width / 2;
+        const centerY = drawingInfo.height / 2;
+        drawingInfo.canvas.fillStyle = "#000000";
+        drawingInfo.canvas.fillRect(
+            centerX - this.xRightPos, 
+            centerY - this.yHeadPos, 
+            this.xRightPos * 2, 
+            this.yHeadPos - this.yBottomPos
+        );
+    }
+
+    trigger() {
+        if(!this._action || this._action === null) {
+            return;
+        }
+        this._action();
+    }
+
+    changePosition(x,y) {
+        for(let d in this.geometry) {
+            this.geometry[d].update(x, y);
+        }
+    }
+
+    jump() {
+        if(this._action === null) {
+            this.action = this.jumpAction;
+        }
+    }
+
+    jumpAction() {
+        if(this.jumpTime == 0) {
+            this.bended ? this.state = BENDEDONAIR : this.state = ONAIR; 
+            this.jumpLambda = 0;
+        }
+
+        this.jumpLambda = JUMPPOWER * this.jumpTime - (this.verticalAcceleration * Math.pow(this.jumpTime, 2) / 2) - this.jumpLambda;
+        this.jumpTime += 0.7;
+
+        if(this.yBottomPos + this.jumpLambda < 0) {
+            this.changePosition(0, -this.yBottomPos);
+            this.jumpTime = 0;
+            this.action = null;
+            if(this.state == ONAIR) {
+                this.run();
+            }
+            return;
+        }
+        this.changePosition(0, this.jumpLambda);
+    }
+
+    duck() {
+        if(!this.bended) {
+            this.state == ONAIR ? this.state = BENDEDONAIR : this.state = BEND;
+            this.geometry.tr.update(0, -HEIGHT / 2);
+        }
+    }
+
+    run() {
+        if(this.bended) {
+            this.geometry.tr.update(0, HEIGHT / 2);
+        }
+        this.state = RUN;
+    }
+
+    get state() {
+        return this._state;
+    }
+
+    set state(st) {
+        this._state = st;
+    }
+
+    set action(f) {
+        this._action = f;
+    }
+
+    get yHeadPos() {
+        return this.geometry.tr.y;
+    }
+
+    get yBottomPos() {
+        return this.geometry.bm.y;
+    }
+
+    get xPos() {
+        return this.geometry.bm.x;
+    }
+
+    get xRightPos() {
+        return this.geometry.tr.x;
+    }
+
+    get bended() {
+        return this.state > 1;
+    }
+
+}
+
+module.exports = Player;
+
+
+/***/ }),
+/* 5 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/* global require */
+/* global module */
+
+
+
 module.exports = {
 	rend : function(params) {
-		const template = __webpack_require__(20);
+		const template = __webpack_require__(25);
 		let html = template(params);
 		const elem = document.createElement('div');
 		elem.innerHTML = html;
@@ -274,7 +474,7 @@ module.exports = {
 
 
 /***/ }),
-/* 4 */
+/* 6 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -285,12 +485,12 @@ const Router = __webpack_require__(2);
 const R = new Router();
 
 //const MenuView = require('./views/menu');
-const GameView = __webpack_require__(6);
-const ScoresView = __webpack_require__(13);
-const MenuView = __webpack_require__(16);
-const SignInView = __webpack_require__(19);
-const SignUpView = __webpack_require__(21);
-const LogoutView = __webpack_require__(22);
+const GameView = __webpack_require__(8);
+const ScoresView = __webpack_require__(18);
+const MenuView = __webpack_require__(21);
+const SignInView = __webpack_require__(24);
+const SignUpView = __webpack_require__(26);
+const LogoutView = __webpack_require__(27);
 
 R.addUrl('/', MenuView);
 R.addUrl('/play', GameView);
@@ -304,7 +504,7 @@ R.loadPage();
 
 
 /***/ }),
-/* 5 */
+/* 7 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -339,7 +539,7 @@ module.exports = UrlCom;
 
 
 /***/ }),
-/* 6 */
+/* 8 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -349,10 +549,10 @@ module.exports = UrlCom;
 
 
 const View = __webpack_require__(0);
-const Game = __webpack_require__(10);
+const Game = __webpack_require__(12);
 const Header = __webpack_require__(1);
 
-const GameController = __webpack_require__(23);
+const GameController = __webpack_require__(15);
 
 class GameView extends View {
 
@@ -394,7 +594,7 @@ module.exports = GameView;
 
 
 /***/ }),
-/* 7 */
+/* 9 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -444,7 +644,7 @@ module.exports = DOM;
 
 
 /***/ }),
-/* 8 */
+/* 10 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -453,7 +653,7 @@ module.exports = DOM;
 
 
 
-const API = __webpack_require__(9);
+const API = __webpack_require__(11);
 
 class User {
 
@@ -545,7 +745,7 @@ module.exports = User;
 
 
 /***/ }),
-/* 9 */
+/* 11 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -595,7 +795,7 @@ module.exports = API;
 
 
 /***/ }),
-/* 10 */
+/* 12 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* global require */
@@ -603,7 +803,7 @@ module.exports = API;
 
 module.exports = {
 	rend : function(params){
-		const template = __webpack_require__(11);
+		const template = __webpack_require__(13);
 		let html = template(params);
 		const elem = document.createElement('div');
 		elem.innerHTML = html;
@@ -623,7 +823,7 @@ module.exports = {
 
 
 /***/ }),
-/* 11 */
+/* 13 */
 /***/ (function(module, exports) {
 
 module.exports = function (obj) {
@@ -637,7 +837,7 @@ return __p
 }
 
 /***/ }),
-/* 12 */
+/* 14 */
 /***/ (function(module, exports) {
 
 module.exports = function (obj) {
@@ -664,7 +864,416 @@ return __p
 }
 
 /***/ }),
-/* 13 */
+/* 15 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/* global require */
+/* global module */
+
+
+
+const Dot = __webpack_require__(3);
+const Player = __webpack_require__(4);
+const InputController = __webpack_require__(16);
+const ObstaclesController = __webpack_require__(17);
+
+class GameController {
+
+	constructor () {
+		if(GameController._instance) {
+			return GameController._instance;
+		}
+		GameController._instance = this;
+		
+		this.horSpeed = 30;
+		this.frameTime = 30;
+
+		this.gameCanvas = document.getElementById('game');
+		this.gameCtx = this.gameCanvas.getContext('2d');
+		
+		this.PlayerController = new Player();	
+		this.InputController = new InputController(this);
+		this.ObstaclesController = new ObstaclesController();
+		this.WorldController;
+
+		this.initGame();
+		
+		this.game = null;
+		this._over = false;
+		this._pause = false;
+		this.play();
+	}
+
+	initGame() {
+		this.PlayerController.init();
+	}
+
+	runPlayer(drawingInfo) {
+		this.PlayerController.trigger();
+		this.PlayerController.draw(drawingInfo);
+	}
+
+	runObstacles(drawingInfo) {
+		const bottomMid = new Dot(drawingInfo.width / 2 + this.PlayerController.xPos, 300 - this.PlayerController.yBottomPos);
+		const upperMid = new Dot(drawingInfo.width / 2 + this.PlayerController.xPos, 300 - this.PlayerController.yHeadPos);
+		
+		if (this.ObstaclesController.checkFatalCollisions(upperMid, bottomMid)) {
+			this._over = true;
+		}
+		
+		if (this.ObstaclesController.obstaclesAmount <= 0) {
+			this.ObstaclesController.addSeriesOfObstacles(drawingInfo.width, 300, 150);
+		}
+		
+		this.ObstaclesController.redrawAllObstacles(drawingInfo);
+		this.ObstaclesController.moveAllObstacles(this.horSpeed);
+		if(this._over) {
+			this.gameover();
+		}
+	}
+
+	reset() {
+		this.initGame();
+		this.play();
+	}
+
+	play() {
+		const _this = this;
+		this.game = setInterval(function () {
+	
+			let drawingInfo = {
+				'canvas' : _this.gameCtx,
+				'height' : _this.gameCanvas.height,
+				'width' : _this.gameCanvas.width,
+			}
+
+			_this.gameCtx.fillStyle = "#FFFFFF";
+			_this.gameCtx.strokeStyle = "#000000";
+			_this.gameCtx.clearRect(0, 0, _this.gameCanvas.width, _this.gameCanvas.height);
+
+			_this.runPlayer(drawingInfo);
+			_this.runObstacles(drawingInfo);
+		}, this.frameTime);
+	}
+
+	text(source, y, size, color) {
+		this.gameCtx.fillStyle = color;
+		this.gameCtx.font = size + "px Arial";
+		this.gameCtx.textAlign="center";
+		this.gameCtx.fillText(source, this.gameCanvas.width / 2, y - size);
+	}
+
+	setOpacity() {
+		this.gameCtx.globalAlpha = 0.8;
+		this.gameCtx.fillStyle = "#FFFFFF";
+		this.gameCtx.fillRect(0, 0, this.gameCanvas.width, this.gameCanvas.height);
+		this.gameCtx.globalAlpha = 1.0;
+	}
+
+	pause() {
+		if(this._over) {
+			return;
+		}
+
+		if(!this._pause) {
+			this._pause = true;
+			clearInterval(this.game);
+			this.setOpacity();
+			this.text("Pause", this.gameCanvas.height / 2, 60, "#000000");
+			this.text("Press SPACE to continue", this.gameCanvas.height / 2 + 30, 30, "#555555");
+			return;
+		}
+
+		this._pause = false;
+		this.play();
+	}
+
+	gameover() {
+		clearInterval(this.game);
+		this.setOpacity();
+		this.text("Game Over!", this.gameCanvas.height / 2, 60, "#000000");
+		this.text("Press SPACE to run again!", this.gameCanvas.height / 2 + 30, 30, "#555555");
+
+		const nekro = new Image();
+		nekro.src = '/img/nekro.png';
+		const _this = this;
+		nekro.onload = function() {
+			_this.gameCtx.drawImage(nekro, _this.gameCanvas.width / 2 - 100, 100, 200, 200);
+		}
+	}
+	
+}
+
+module.exports = GameController;
+
+
+/***/ }),
+/* 16 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/* global require */
+/* global module */
+
+
+
+const Player = __webpack_require__(4);
+
+class InputController {
+
+	constructor (Controller) {
+        this.PlayerController = new Player();
+        this.Controller = Controller;
+
+        const _this = this;
+        document.addEventListener('keydown', function(event) {
+            switch(event.keyCode) {
+                case 87:
+                    _this.PlayerController.jump();;
+                break;
+                case 83:
+                    _this.PlayerController.duck();
+                break;
+                case 32:
+                    if(!_this.Controller._over) {
+                        _this.Controller.pause();
+                    } else {
+                        _this.Controller.reset();
+                    }
+                break;
+            break;
+            }
+        });
+
+        document.addEventListener('keyup', function(event) {
+            switch(event.keyCode) {
+                case 83:
+                    _this.PlayerController.run();
+                break;
+            }
+        });
+    }
+
+	
+}
+
+module.exports = InputController;
+
+
+/***/ }),
+/* 17 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/* global require */
+/* global module */
+
+
+
+const Types = {
+	UP : 0,
+	GROUND : 1,
+}
+
+const typesAmount = 2;
+const spikeColor = "#000000";
+
+function GetRandomNLessThen(Restrict) {
+	 return Math.floor(Math.random() * Restrict);
+}
+
+function GetRandomNInRange(a, b) {
+	 return Math.floor(Math.random() * (b + 1 - a) + a);
+}
+
+class Obstacle {
+
+	constructor(x, y, type, drawAt, checkFatal, checkCollision) {
+		this.x = x;
+		this.y = y;
+		this.width = 50;
+		this.height = 100;
+		
+		this.type = type;
+		
+		this.drawAt = drawAt;					// drawAt(canvas, ctx, x)
+		this.checkFatal = checkFatal;			// checkFatal(upperMidPoint, lowerMidPoint)
+		this.checkCollision = checkCollision;	// checkCollision(upperRightPoint,lowerRightPoint)
+	}
+	
+	static drawUpperObstacleAt(drawingInfo, x) {
+		drawingInfo.canvas.fillStyle = "#440000";
+		drawingInfo.canvas.strokeStyle = "#FF0000";
+		drawingInfo.canvas.fillRect(x, 100, 50, 100);
+		
+		drawingInfo.canvas.beginPath();
+		drawingInfo.canvas.moveTo(x,100);
+		
+		let spikeX = 5;
+        const spikeHeight = 10;
+        
+		while (spikeX < 50) {
+			drawingInfo.canvas.lineTo(
+                x + spikeX, 
+                98 - (spikeHeight + (spikeX / 5) * (spikeX / 5 % 2)) * (spikeX / 5 % 2)
+            );
+			spikeX = spikeX + 5;
+        }
+        
+		drawingInfo.canvas.lineTo(x + 50, 100);
+		drawingInfo.canvas.fillStyle = spikeColor;
+		drawingInfo.canvas.fill();
+		
+		drawingInfo.canvas.beginPath();
+		drawingInfo.canvas.moveTo(x,200);
+		
+		spikeX = 5;
+        
+		while (spikeX < 50) {
+			drawingInfo.canvas.lineTo(
+                x + spikeX,
+                202 + (spikeHeight + (spikeX / 5) * (spikeX / 5 % 2)) * (spikeX / 5 % 2));
+			spikeX = spikeX + 5;
+        }
+        
+		drawingInfo.canvas.lineTo(x + 50, 200);
+		drawingInfo.canvas.fillStyle = spikeColor;
+		drawingInfo.canvas.fill();
+	}
+	
+	CheckUpperObstacleFatal(upperMidPoint, lowerMidPoint) {
+		return (
+            this.x < upperMidPoint.x && 
+            upperMidPoint.x < this.x + this.width &&
+            200 <= upperMidPoint.y && 
+            upperMidPoint.y <= 210
+        );
+	}
+	
+	CheckGroundObstacleFatal (upperMidPoint, lowerMidPoint) {
+		return (
+            this.x < upperMidPoint.x && 
+            upperMidPoint.x < this.x + this.width &&
+            lowerMidPoint.y > 190
+        );
+	}
+	
+	static drawGroundObstacleAt (drawingInfo, x) {
+		drawingInfo.canvas.fillStyle = "#440000";
+		drawingInfo.canvas.strokeStyle = "#FF0000";
+		drawingInfo.canvas.fillRect(x, 200, 50, 100);
+		
+		drawingInfo.canvas.beginPath();
+		drawingInfo.canvas.moveTo(x,200);
+		
+		let spikeX = 5;
+		const spikeHeight = 10;
+		while (spikeX < 50) {
+			drawingInfo.canvas.lineTo(
+                x + spikeX,
+                198 - (spikeHeight + (spikeX / 5) * (spikeX / 5 % 2)) * (spikeX / 5 % 2));
+			spikeX = spikeX + 5;
+        }
+        
+		drawingInfo.canvas.lineTo(x + 50, 200);
+		drawingInfo.canvas.fillStyle = spikeColor;
+		drawingInfo.canvas.fill();
+	}
+	
+}
+
+class ObstacleCreator {
+
+	static CreateByType(type, x) {
+		switch (type) {
+			case Types.UP : return ObstacleCreator.CreateUpperObstacle(x);
+			case Types.GROUND : return ObstacleCreator.CreateGroundObstacle(x);
+		}
+	}
+	
+	static CreateUpperObstacle(x) {
+		const Obst = new Obstacle(x, 200, Types.UP, Obstacle.drawUpperObstacleAt);
+		Obst.width = 50;
+		Obst.height = 100;
+		Obst.checkFatal = Obst.CheckUpperObstacleFatal;
+		
+		return Obst;
+	}
+	static CreateGroundObstacle(x) {
+		const Obst = new Obstacle(x, 0, Types.GROUND, Obstacle.drawGroundObstacleAt);
+		Obst.width = 50;
+		Obst.height = 100;
+		Obst.checkFatal = Obst.CheckGroundObstacleFatal;
+		
+		return Obst;
+	}
+}
+	
+class ObstaclesController {
+
+	constructor() {		
+		this.obstaclesArray = []; 
+	}
+	
+	get obstaclesAmount() {
+		return this.obstaclesArray.length;
+	}
+	
+	checkStoppingCollisions(upperRightPoint,lowerRightPoint) {
+		
+	}
+	
+	checkFatalCollisions(upperMidPoint, lowerMidPoint) {
+		let flag = false;
+		this.obstaclesArray.forEach(function(obstacle, index, array) {
+            if (obstacle.checkFatal(upperMidPoint, lowerMidPoint)) 
+                flag = true;
+        });
+
+		return flag;
+	}
+	
+	redrawAllObstacles(drawingInfo) {  //drawing info contents canvas context, scale, etc..
+		this.obstaclesArray.forEach(function(obstacle, index, array) {
+            obstacle.drawAt(drawingInfo, obstacle.x);
+        });									
+	}
+
+	moveAllObstacles(horSpeed) {
+		this.obstaclesArray.forEach(function(item, index, array) {
+            item.x = item.x - horSpeed;
+        });
+		
+		// deliting left object that's away from screen
+		if (this.obstaclesArray[0].x < -this.obstaclesArray[0].width) {
+			this.obstaclesArray.shift();
+		}
+	}
+	
+	addSeriesOfObstacles(screenWidth, minRange, delta) {
+		const obstacleCreator = new ObstacleCreator;
+		
+		const baseX = Math.floor(screenWidth * 1.5);
+		let curX = baseX;
+		
+		let obstaclesInSeries = GetRandomNInRange(3, 6);
+		while (obstaclesInSeries >= 0) {
+			const curType = GetRandomNLessThen(typesAmount);
+			
+			this.obstaclesArray.push(ObstacleCreator.CreateByType(curType, curX));
+			
+			curX = curX + minRange + GetRandomNLessThen(delta);
+			obstaclesInSeries = obstaclesInSeries - 1;
+		}
+	}
+}
+
+module.exports = ObstaclesController;
+
+
+/***/ }),
+/* 18 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -674,7 +1283,7 @@ return __p
 
 
 const View = __webpack_require__(0);
-const Scores = __webpack_require__(14);
+const Scores = __webpack_require__(19);
 const Header = __webpack_require__(1);
 
 class ScoresView extends View {
@@ -720,7 +1329,7 @@ module.exports = ScoresView;
 
 
 /***/ }),
-/* 14 */
+/* 19 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* global require */
@@ -728,7 +1337,7 @@ module.exports = ScoresView;
 
 module.exports = {
 	rend : function(params){
-		const template = __webpack_require__(15);
+		const template = __webpack_require__(20);
 		let html = template(params);
 		const elem = document.createElement('div');
 		elem.innerHTML = html;
@@ -738,7 +1347,7 @@ module.exports = {
 
 
 /***/ }),
-/* 15 */
+/* 20 */
 /***/ (function(module, exports) {
 
 module.exports = function (obj) {
@@ -767,7 +1376,7 @@ return __p
 }
 
 /***/ }),
-/* 16 */
+/* 21 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -777,7 +1386,7 @@ return __p
 
 
 const View = __webpack_require__(0);
-const Menu = __webpack_require__(17);
+const Menu = __webpack_require__(22);
 const Header = __webpack_require__(1);
 
 class MenuView extends View {
@@ -821,7 +1430,7 @@ module.exports = MenuView;
 
 
 /***/ }),
-/* 17 */
+/* 22 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* global require */
@@ -829,7 +1438,7 @@ module.exports = MenuView;
 
 module.exports = {
 	rend : function(params){
-		const template = __webpack_require__(18);
+		const template = __webpack_require__(23);
 		let html = template(params);
 		const elem = document.createElement('div');
 		elem.innerHTML = html;
@@ -839,7 +1448,7 @@ module.exports = {
 
 
 /***/ }),
-/* 18 */
+/* 23 */
 /***/ (function(module, exports) {
 
 module.exports = function (obj) {
@@ -862,7 +1471,7 @@ return __p
 }
 
 /***/ }),
-/* 19 */
+/* 24 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -872,7 +1481,7 @@ return __p
 
 
 const View = __webpack_require__(0);
-const Form = __webpack_require__(3);
+const Form = __webpack_require__(5);
 const Header = __webpack_require__(1);
 
 class SignInView extends View {
@@ -977,7 +1586,7 @@ module.exports = SignInView;
 
 
 /***/ }),
-/* 20 */
+/* 25 */
 /***/ (function(module, exports) {
 
 module.exports = function (obj) {
@@ -1028,7 +1637,7 @@ return __p
 }
 
 /***/ }),
-/* 21 */
+/* 26 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1038,7 +1647,7 @@ return __p
 
 
 const View = __webpack_require__(0);
-const Form = __webpack_require__(3);
+const Form = __webpack_require__(5);
 const Header = __webpack_require__(1);
 
 class SignUpView extends View {
@@ -1158,7 +1767,7 @@ module.exports = SignUpView;
 
 
 /***/ }),
-/* 22 */
+/* 27 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1205,13 +1814,6 @@ class LogoutView extends View {
 
 module.exports = LogoutView;
 
-
-/***/ }),
-/* 23 */
-/***/ (function(module, exports) {
-
-"use strict";
-throw new Error("Module build failed: Error: ENOENT: no such file or directory, open 'E:\\technopark\\frontend\\2017_2_LastUnion\\game\\controller.js'\n    at Error (native)");
 
 /***/ })
 /******/ ]);

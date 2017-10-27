@@ -15,9 +15,9 @@ class Dot {
         }
     }
 
-    update(x,y) {
-        this._x = x;
-        this._y = y;
+    update(x, y) {
+        this._x += x;
+        this._y += y;
     }
 
     get x() {
@@ -26,6 +26,11 @@ class Dot {
 
     get y() {
         return this._y;
+    }
+
+    newCoords(x, y) {
+        this._x = x;
+        this._y = y;
     }
 
     get coords() {

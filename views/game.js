@@ -7,7 +7,7 @@ const View = require('../modules/view');
 const Game = require('./templates/game/game');
 const Header = require('../views/templates/header/header');
 
-const GameController = require('../game/controller.js');
+const GameController = require('../game/controller');
 
 class GameView extends View {
 

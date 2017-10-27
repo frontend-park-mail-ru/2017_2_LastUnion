@@ -6,34 +6,131 @@
 const Dot = require('./dot');
 const Player = require('./player');
 const InputController = require('./input');
+const ObstaclesController = require('./obstacle');
 
 class GameController {
 
 	constructor () {
+		if(GameController._instance) {
+			return GameController._instance;
+		}
+		GameController._instance = this;
+		
 		this.horSpeed = 30;
-		this.frameTime = 33;
+		this.frameTime = 30;
 
 		this.gameCanvas = document.getElementById('game');
 		this.gameCtx = this.gameCanvas.getContext('2d');
 		
 		this.PlayerController = new Player();	
-		this.InputController = new InputController(this.gameCanvas);
-		this.ObjectController;
+		this.InputController = new InputController(this);
+		this.ObstaclesController = new ObstaclesController();
 		this.WorldController;
+
+		this.initGame();
 		
+		this.game = null;
+		this._over = false;
+		this._pause = false;
+		this.play();
+	}
+
+	initGame() {
+		this.PlayerController.init();
+	}
+
+	runPlayer(drawingInfo) {
+		this.PlayerController.trigger();
+		this.PlayerController.draw(drawingInfo);
+	}
+
+	runObstacles(drawingInfo) {
+		const bottomMid = new Dot(drawingInfo.width / 2 + this.PlayerController.xPos, 300 - this.PlayerController.yBottomPos);
+		const upperMid = new Dot(drawingInfo.width / 2 + this.PlayerController.xPos, 300 - this.PlayerController.yHeadPos);
+		
+		if (this.ObstaclesController.checkFatalCollisions(upperMid, bottomMid)) {
+			this._over = true;
+		}
+		
+		if (this.ObstaclesController.obstaclesAmount <= 0) {
+			this.ObstaclesController.addSeriesOfObstacles(drawingInfo.width, 300, 150);
+		}
+		
+		this.ObstaclesController.redrawAllObstacles(drawingInfo);
+		this.ObstaclesController.moveAllObstacles(this.horSpeed);
+		if(this._over) {
+			this.gameover();
+		}
+	}
+
+	reset() {
+		this.initGame();
+		this.play();
+	}
+
+	play() {
 		const _this = this;
-		setInterval(function () {
+		this.game = setInterval(function () {
 	
-			let drawingInginfo = {
+			let drawingInfo = {
 				'canvas' : _this.gameCtx,
 				'height' : _this.gameCanvas.height,
 				'width' : _this.gameCanvas.width,
 			}
 
+			_this.gameCtx.fillStyle = "#FFFFFF";
+			_this.gameCtx.strokeStyle = "#000000";
 			_this.gameCtx.clearRect(0, 0, _this.gameCanvas.width, _this.gameCanvas.height);
-			_this.PlayerController.trigger();
-			_this.PlayerController.draw(drawingInginfo);
+
+			_this.runPlayer(drawingInfo);
+			_this.runObstacles(drawingInfo);
 		}, this.frameTime);
+	}
+
+	text(source, y, size, color) {
+		this.gameCtx.fillStyle = color;
+		this.gameCtx.font = size + "px Arial";
+		this.gameCtx.textAlign="center";
+		this.gameCtx.fillText(source, this.gameCanvas.width / 2, y - size);
+	}
+
+	setOpacity() {
+		this.gameCtx.globalAlpha = 0.8;
+		this.gameCtx.fillStyle = "#FFFFFF";
+		this.gameCtx.fillRect(0, 0, this.gameCanvas.width, this.gameCanvas.height);
+		this.gameCtx.globalAlpha = 1.0;
+	}
+
+	pause() {
+		if(this._over) {
+			return;
+		}
+
+		if(!this._pause) {
+			this._pause = true;
+			clearInterval(this.game);
+			this.setOpacity();
+			this.text("Pause", this.gameCanvas.height / 2, 60, "#000000");
+			this.text("Press SPACE to continue", this.gameCanvas.height / 2 + 30, 30, "#555555");
+			return;
+		}
+
+		this._pause = false;
+		this.play();
+	}
+
+	gameover() {
+		clearInterval(this.game);
+		this.setOpacity();
+		this.text("Game Over!", this.gameCanvas.height / 2, 60, "#000000");
+		this.text("Press SPACE to run again!", this.gameCanvas.height / 2 + 30, 30, "#555555");
+
+		const nekro = new Image();
+		nekro.src = '/img/nekro.png';
+		const _this = this;
+		nekro.onload = function() {
+			_this.gameCtx.drawImage(nekro, _this.gameCanvas.width / 2 - 100, 100, 200, 200);
+		}
 	}
 	
 }

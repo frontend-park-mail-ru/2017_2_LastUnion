@@ -7,32 +7,34 @@ const Player = require('./player');
 
 class InputController {
 
-	constructor (canvas) {
+	constructor (Controller) {
         this.PlayerController = new Player();
+        this.Controller = Controller;
 
         const _this = this;
         document.addEventListener('keydown', function(event) {
             switch(event.keyCode) {
                 case 87:
-                    if(_this.PlayerController._state !== 1) {
-                        _this.PlayerController.jumpTime = 0;
-                        _this.PlayerController._state = 1;
-                    }
+                    _this.PlayerController.jump();;
                 break;
                 case 83:
-                    if(_this.PlayerController._state == 0) {
-                        _this.PlayerController.duck();
+                    _this.PlayerController.duck();
+                break;
+                case 32:
+                    if(!_this.Controller._over) {
+                        _this.Controller.pause();
+                    } else {
+                        _this.Controller.reset();
                     }
                 break;
+            break;
             }
         });
 
         document.addEventListener('keyup', function(event) {
             switch(event.keyCode) {
                 case 83:
-                    if(_this.PlayerController._state != 1) {
-                        _this.PlayerController.run();
-                    }
+                    _this.PlayerController.run();
                 break;
             }
         });
