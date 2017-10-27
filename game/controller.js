@@ -3,6 +3,8 @@
 
 'use strict';
 
+const DEFAULT_W = 1920;
+
 const Dot = require('./dot');
 const Player = require('./player');
 const InputController = require('./input');
@@ -40,24 +42,24 @@ class GameController {
 		this.ObstaclesController.resetObstacles();
 	}
 
-	runPlayer(drawingInfo) {
+	runPlayer(gameSettings) {
 		this.PlayerController.trigger();
-		this.PlayerController.draw(drawingInfo);
+		this.PlayerController.draw(gameSettings);
 	}
 
-	runObstacles(drawingInfo) {
-		const bottomMid = new Dot(drawingInfo.width / 2 + this.PlayerController.xPos, 300 - this.PlayerController.yBottomPos);
-		const upperMid = new Dot(drawingInfo.width / 2 + this.PlayerController.xPos, 300 - this.PlayerController.yHeadPos);
+	runObstacles(gameSettings) {
+		const bottomMid = new Dot(gameSettings.width / 2 + this.PlayerController.xPos, 300 - this.PlayerController.yBottomPos);
+		const upperMid = new Dot(gameSettings.width / 2 + this.PlayerController.xPos, 300 - this.PlayerController.yHeadPos);
 		
 		if (this.ObstaclesController.checkFatalCollisions(upperMid, bottomMid)) {
 			this._over = true;
 		}
 		
 		if (this.ObstaclesController.obstaclesAmount <= 0) {
-			this.ObstaclesController.addSeriesOfObstacles(drawingInfo.width, 300, 150);
+			this.ObstaclesController.addSeriesOfObstacles(gameSettings.width, 300, 150);
 		}
 		
-		this.ObstaclesController.redrawAllObstacles(drawingInfo);
+		this.ObstaclesController.redrawAllObstacles(gameSettings);
 		this.ObstaclesController.moveAllObstacles(this.horSpeed);
 		if(this._over) {
 			this.gameover();
@@ -75,18 +77,19 @@ class GameController {
 		const _this = this;
 		this.game = setInterval(function () {
 	
-			let drawingInfo = {
+			let gameSettings = {
 				'canvas' : _this.gameCtx,
 				'height' : _this.gameCanvas.height,
 				'width' : _this.gameCanvas.width,
+				'scale' : _this.gameCanvas.width / DEFAULT_W,
 			}
 
 			_this.gameCtx.fillStyle = "#FFFFFF";
 			_this.gameCtx.strokeStyle = "#000000";
 			_this.gameCtx.clearRect(0, 0, _this.gameCanvas.width, _this.gameCanvas.height);
 
-			_this.runPlayer(drawingInfo);
-			_this.runObstacles(drawingInfo);
+			_this.runPlayer(gameSettings);
+			_this.runObstacles(gameSettings);
 		}, this.frameTime);
 	}
 
@@ -112,9 +115,7 @@ class GameController {
 		if(!this._pause) {
 			this._pause = true;
 			clearInterval(this.game);
-			this.setOpacity();
-			this.text("Pause", this.gameCanvas.height / 2, 60, "#000000");
-			this.text("Press SPACE to continue", this.gameCanvas.height / 2 + 30, 30, "#555555");
+			this.pauseOverlay();
 			return;
 		}
 
@@ -122,8 +123,18 @@ class GameController {
 		this.play();
 	}
 
+	pauseOverlay() {
+		this.setOpacity();
+		this.text("Pause", this.gameCanvas.height / 2, 60, "#000000");
+		this.text("Press SPACE to continue", this.gameCanvas.height / 2 + 30, 30, "#555555");
+	}
+
 	gameover() {
 		clearInterval(this.game);
+		this.gameoverOverlay();
+	}
+
+	gameoverOverlay() {
 		this.setOpacity();
 		this.text("Game Over!", this.gameCanvas.height / 2, 60, "#000000");
 		this.text("Press SPACE to run again!", this.gameCanvas.height / 2 + 30, 30, "#555555");

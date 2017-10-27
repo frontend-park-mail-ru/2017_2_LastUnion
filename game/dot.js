@@ -24,8 +24,16 @@ class Dot {
         return this._x;
     }
 
+    set x(__x) {
+        this._x = __x;
+    }
+
     get y() {
         return this._y;
+    }
+
+    set y(__y) {
+        this._y = __y;
     }
 
     newCoords(x, y) {

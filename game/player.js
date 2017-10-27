@@ -31,23 +31,35 @@ class Player {
         this.verticalAcceleration = 10;  
 
         const bm = new Dot(0,0);
+        const br = new Dot(WIDTH / 2, 0);
         const tr = new Dot(WIDTH / 2, HEIGHT);
+        const tl = new Dot(-WIDTH / 2, HEIGHT);
 
         this.geometry = {
             'bm' : bm,
+            'br' : br,
             'tr' : tr,
+            'tl' : tl,
         };
     }
 
-    draw(drawingInfo) {
-        const centerX = drawingInfo.width / 2;
-        const centerY = drawingInfo.height / 2;
-        drawingInfo.canvas.fillStyle = "#000000";
-        drawingInfo.canvas.fillRect(
-            centerX - this.xRightPos, 
-            centerY - this.yHeadPos, 
-            this.xRightPos * 2, 
-            this.yHeadPos - this.yBottomPos
+    draw(gameSettings) {
+        const centerX = gameSettings.width / 2;
+        const centerY = gameSettings.height / 2;
+        gameSettings.canvas.fillStyle = "#000000";
+
+        let sceneCoords = {};
+        for(let dot in this.geometry) {
+            sceneCoords[dot] = new Dot();
+            sceneCoords[dot].x = centerX - this.geometry[dot].x * gameSettings.scale
+            sceneCoords[dot].y = centerY - this.geometry[dot].y * gameSettings.scale
+        }
+
+        gameSettings.canvas.fillRect(
+            sceneCoords['tr'].x, 
+            sceneCoords['tr'].y, 
+            (this.topRightCoords.x * 2) * gameSettings.scale, 
+            (this.topRightCoords.y - this.bottomRightCoords.y) * gameSettings.scale
         );
     }
 
@@ -77,10 +89,10 @@ class Player {
         }
 
         this.jumpLambda = JUMPPOWER * this.jumpTime - (this.verticalAcceleration * Math.pow(this.jumpTime, 2) / 2) - this.jumpLambda;
-        this.jumpTime += 0.7;
+        this.jumpTime += 0.8;
 
-        if(this.yBottomPos + this.jumpLambda < 0) {
-            this.changePosition(0, -this.yBottomPos);
+        if(this.bottomCenterCoords.y + this.jumpLambda < 0) {
+            this.changePosition(0, -this.bottomCenterCoords.y);
             this.jumpTime = 0;
             this.action = null;
             if(this.state == ONAIR) {
@@ -94,13 +106,13 @@ class Player {
     duck() {
         if(!this.bended) {
             this.state == ONAIR ? this.state = BENDEDONAIR : this.state = BEND;
-            this.geometry.tr.update(0, -HEIGHT / 2);
+            this.topRightCoords.update(0, -HEIGHT / 2);
         }
     }
 
     run() {
         if(this.bended) {
-            this.geometry.tr.update(0, HEIGHT / 2);
+            this.topRightCoords.update(0, HEIGHT / 2);
         }
         this.state = RUN;
     }
@@ -117,20 +129,20 @@ class Player {
         this._action = f;
     }
 
-    get yHeadPos() {
-        return this.geometry.tr.y;
+    get bottomCenterCoords() {
+        return this.geometry.bm;
     }
 
-    get yBottomPos() {
-        return this.geometry.bm.y;
+    get topLeftCoords() {
+        return this.geometry.tl;
     }
 
-    get xPos() {
-        return this.geometry.bm.x;
+    get topRightCoords() {
+        return this.geometry.tr;
     }
 
-    get xRightPos() {
-        return this.geometry.tr.x;
+    get bottomRightCoords() {
+        return this.geometry.br;
     }
 
     get bended() {
