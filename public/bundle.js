@@ -314,7 +314,8 @@ class Player {
         this._action = null;
 
         this.jumpTime = 0;
-        this.verticalAcceleration = 10;  
+        this.verticalAcceleration = 10;
+        this.offtop = 0;
 
         const bm = new Dot(0,0);
         const br = new Dot(WIDTH / 2, 0);
@@ -344,12 +345,13 @@ class Player {
         gameSettings.canvas.fillRect(
             sceneCoords['tr'].x, 
             sceneCoords['tr'].y, 
-            (this.topRightCoords.x * 2) * gameSettings.scale, 
+            WIDTH * gameSettings.scale, 
             (this.topRightCoords.y - this.bottomRightCoords.y) * gameSettings.scale
         );
     }
 
     trigger() {
+        this.bendedTired();
         if(!this._action || this._action === null) {
             return;
         }
@@ -362,10 +364,27 @@ class Player {
         }
     }
 
+    bendedTired() {
+        if(this.bended) {
+            this.offtop++;
+            this.changePosition(1, 0);
+        } else {
+            if(this.offtop > 0) {
+                this.offtop -= 3
+                this.changePosition(-3, 0);
+            }
+        }
+    }
+
     jump() {
         if(this._action === null) {
             this.action = this.jumpAction;
         }
+        this.jumpStop = false;
+    }
+
+    jumpFinish() {
+        this.jumpStop = true;
     }
 
     jumpAction() {
@@ -380,7 +399,9 @@ class Player {
         if(this.bottomCenterCoords.y + this.jumpLambda < 0) {
             this.changePosition(0, -this.bottomCenterCoords.y);
             this.jumpTime = 0;
-            this.action = null;
+            if(this.jumpStop) {
+                this.action = null;
+            }
             if(this.state == ONAIR) {
                 this.run();
             }
@@ -401,6 +422,10 @@ class Player {
             this.topRightCoords.update(0, HEIGHT / 2);
         }
         this.state = RUN;
+    }
+
+    voice() {
+        
     }
 
     get state() {
@@ -977,6 +1002,8 @@ class GameController {
 			_this.gameCtx.fillStyle = "#FFFFFF";
 			_this.gameCtx.strokeStyle = "#000000";
 			_this.gameCtx.clearRect(0, 0, _this.gameCanvas.width, _this.gameCanvas.height);
+			_this.gameCtx.fillStyle = "#4B2125";
+			_this.gameCtx.fillRect(0, _this.gameCanvas.height / 2, _this.gameCanvas.width, _this.gameCanvas.height / 2);
 
 			_this.runPlayer(gameSettings);
 			_this.runObstacles(gameSettings);
@@ -1084,6 +1111,9 @@ class InputController {
             switch(event.keyCode) {
                 case 83:
                     _this.PlayerController.run();
+                break;
+                case 87:
+                    _this.PlayerController.jumpFinish();;
                 break;
             }
         });

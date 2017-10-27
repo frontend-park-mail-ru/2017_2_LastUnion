@@ -36,6 +36,9 @@ class InputController {
                 case 83:
                     _this.PlayerController.run();
                 break;
+                case 87:
+                    _this.PlayerController.jumpFinish();;
+                break;
             }
         });
     }
