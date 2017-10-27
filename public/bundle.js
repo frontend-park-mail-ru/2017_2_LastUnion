@@ -907,6 +907,7 @@ class GameController {
 
 	initGame() {
 		this.PlayerController.init();
+		this.ObstaclesController.resetObstacles();
 	}
 
 	runPlayer(drawingInfo) {
@@ -935,6 +936,8 @@ class GameController {
 
 	reset() {
 		this.initGame();
+		this._over = false;
+		this._pause = false;
 		this.play();
 	}
 
@@ -1214,7 +1217,11 @@ class ObstaclesController {
 
 	constructor() {		
 		this.obstaclesArray = []; 
-	}
+    }
+    
+    resetObstacles () { 
+        this.obstaclesArray = []; 
+    }
 	
 	get obstaclesAmount() {
 		return this.obstaclesArray.length;

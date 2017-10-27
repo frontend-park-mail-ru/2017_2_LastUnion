@@ -146,7 +146,11 @@ class ObstaclesController {
 
 	constructor() {		
 		this.obstaclesArray = []; 
-	}
+    }
+    
+    resetObstacles () { 
+        this.obstaclesArray = []; 
+    }
 	
 	get obstaclesAmount() {
 		return this.obstaclesArray.length;
