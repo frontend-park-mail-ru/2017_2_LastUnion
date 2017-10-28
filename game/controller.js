@@ -107,7 +107,7 @@ class GameController {
 				_this.gameCtx.fillStyle = "#FFFFFF";
 				_this.gameCtx.strokeStyle = "#000000";
 				_this.gameCtx.clearRect(0, 0, _this.gameCanvas.width, _this.gameCanvas.height);
-				_this.gameCtx.fillStyle = "#4B2125";
+				_this.gameCtx.fillStyle = "#000000";
 				_this.gameCtx.fillRect(0, _this.gameCanvas.height / 2, _this.gameCanvas.width, _this.gameCanvas.height / 2);
 				
 				_this.runScore(gameSettings);
@@ -121,7 +121,7 @@ class GameController {
 						const newScore = _this.ScoreController.scoreValue;
 						if(newScore > currentScore) {
 							_this.UserController.setScore(newScore);
-							document.getElementsByClassName("navbar-scores")[0].html = newScore;
+							document.getElementsByClassName("navbar-scores")[0].innerHTML = "Your score is: "  +  newScore;
 						}
 					}
 				}
