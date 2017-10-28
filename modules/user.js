@@ -28,7 +28,19 @@ class User {
 	}
 
 	getScore() {
-		return 322;
+		const _this = this;
+		return this.api.sendReq('uesr/get_score', 'GET').then(function(response) {
+			_this._proto.score = _this.checkResponse(response);
+
+		});
+	}
+
+	setScore(score) {
+		const _this = this;
+		return this.api.sendReq('user/set_score/' + score, 'GET').then(function(response) {
+			_this._proto.score = score;
+			_this.checkResponse(response);
+		});
 	}
 
 	getScores() {
