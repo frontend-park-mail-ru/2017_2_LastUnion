@@ -871,7 +871,7 @@ class User {
 	}
 
 	getScores() {
-		const score = 0;
+		let score = 0;
 		if(this._loggedin) {
 			score = this._proto.score;
 		}
