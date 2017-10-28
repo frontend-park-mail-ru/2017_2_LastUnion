@@ -871,6 +871,10 @@ class User {
 	}
 
 	getScores() {
+		const score = 0;
+		if(this._loggedin) {
+			score = this._proto.score;
+		}
 		return {
 			'Scores' : [
 				{
@@ -891,7 +895,7 @@ class User {
 			],
 			'User' : {
 				'place' : '999',
-				'score' : '0'
+				'score' : score
 			}
 		};
 	}
