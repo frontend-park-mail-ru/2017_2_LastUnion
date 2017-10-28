@@ -29,10 +29,14 @@ class User {
 
 	getScore() {
 		const _this = this;
-		return this.api.sendReq('user/get_score', 'GET').then(function(response) {
+		// Is this correct 
+		this.api.sendReq('user/get_score', 'GET').then(function(response) {
 			_this._proto.score = _this.checkResponse(response);
-			// return _this._proto.score;
 		});
+		
+		if (typeof this._proto.score === 'undefned' || this._proto.score == null)
+			return 0;
+		return this._proto.score;
 	}
 
 	setScore(score) {
