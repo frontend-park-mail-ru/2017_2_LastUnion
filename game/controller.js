@@ -4,14 +4,16 @@
 'use strict';
 
 const DEFAULT_W = 1920;
+const HORSPEED = 25;
+const FRAMETIME = 35;
 
-const MAIN_TEXT_COLOR = "#000000";
-const TIP_TEXT_COLOT = "#555555";
+const User = require('../modules/user');
 
 const Dot = require('./dot');
 const Player = require('./player');
 const InputController = require('./input');
-const ObstaclesController = require('./obstacle');
+const WorldObjectsController = require('./world_objects_controller');
+const ScoreController = require('./score');
 
 class GameController {
 
@@ -21,81 +23,118 @@ class GameController {
 		}
 		GameController._instance = this;
 		
-		this.horSpeed = 30;
-		this.frameTime = 30;
+		this.horSpeed = HORSPEED;
+		this.frameTime = FRAMETIME;
 
 		this.gameCanvas = document.getElementById('game');
 		this.gameCtx = this.gameCanvas.getContext('2d');
+
+		this.UserController = new User();
 		
 		this.PlayerController = new Player();	
 		this.InputController = new InputController(this);
-		this.ObstaclesController = new ObstaclesController();
-		this.WorldController;
-
-		this.initGame();
+		this.WorldObjectsController = new WorldObjectsController();
+		this.ScoreController = new ScoreController();
 		
+	}
+
+	initGame(_started) {
+		this.started = _started;
 		this.game = null;
 		this._over = false;
 		this._pause = false;
-		this.play();
-	}
-
-	initGame() {
 		this.PlayerController.init();
-		this.ObstaclesController.resetObstacles();
+		this.WorldObjectsController.resetObjects();
+		this.ScoreController.init();
+	}
+	runScore(gameSettings) {
+		this.ScoreController.tick();
+		this.text("Score: " + this.ScoreController.scoreValue, 60, 30 * gameSettings.scale, "#000000");
 	}
 
 	runPlayer(gameSettings) {
-		this.PlayerController.trigger();
+		this._over = this._over || this.PlayerController.trigger();
 		this.PlayerController.draw(gameSettings);
 	}
 
-	runObstacles(gameSettings) {
-		const bottomMid = new Dot(gameSettings.width / 2 + this.PlayerController.xPos, 300 - this.PlayerController.yBottomPos);
-		const upperMid = new Dot(gameSettings.width / 2 + this.PlayerController.xPos, 300 - this.PlayerController.yHeadPos);
+	runObjects(gameSettings) {
+		let topLeftCoords = this.PlayerController.topLeftCoords;
+		let playerUpperLeft = new Dot(topLeftCoords.x + DEFAULT_W/2, DEFAULT_W/16*8/2 - this.PlayerController.topLeftCoords.y);
 		
-		if (this.ObstaclesController.checkFatalCollisions(upperMid, bottomMid)) {
+		let bottomRightCoords = this.PlayerController.bottomRightCoords;
+		let playerBottomRight = new Dot(bottomRightCoords.x + DEFAULT_W/2, DEFAULT_W/16*8/2 - this.PlayerController.bottomRightCoords.y);
+		
+		
+		if (this.WorldObjectsController.getObjectsAmount() <= 0) {
+			this.WorldObjectsController.addSeriesOfObjects(DEFAULT_W, 300, 150);
+		}
+		
+		this.WorldObjectsController.moveAllObjects(this.horSpeed);
+		this.WorldObjectsController.redrawAllObjects(gameSettings);
+		
+		let check = this.WorldObjectsController.CheckAllCollisions(playerUpperLeft, playerBottomRight);
+		if (check && check.isCollided && check.isFatal) {
+			check.playerEffect(this.PlayerController, gameSettings);
+			check.scoreEffect(this.ScoreController, gameSettings);
 			this._over = true;
 		}
-		
-		if (this.ObstaclesController.obstaclesAmount <= 0) {
-			this.ObstaclesController.addSeriesOfObstacles(gameSettings.width, 300, 150);
-		}
-		
-		this.ObstaclesController.redrawAllObstacles(gameSettings);
-		this.ObstaclesController.moveAllObstacles(this.horSpeed);
-		if(this._over) {
-			this.gameover();
-		}
+		else if (check && check.isCollided && !check.isFatal) {
+			check.scoreEffect(this.ScoreController,gameSettings);
+			check.playerEffect(this.PlayerController, gameSettings);
+		}	
+				
 	}
 
-	reset() {
-		this.initGame();
-		this._over = false;
-		this._pause = false;
+	reset(_started) {
+		this.initGame(_started);
 		this.play();
 	}
 
 	play() {
 		const _this = this;
-		this.game = setInterval(function () {
+		if(this.started) {
+			this.game = setInterval(function () {
+				
+				let gameSettings = {
+					'canvas' : _this.gameCtx,
+					'height' : _this.gameCanvas.height,
+					'width' : _this.gameCanvas.width,
+					'scale' : _this.gameCanvas.width / DEFAULT_W,
+					'defaultW' : DEFAULT_W,
+					'horSpeed' : HORSPEED,
+				}
 	
-			let gameSettings = {
+				_this.gameCtx.fillStyle = "#FFFFFF";
+				_this.gameCtx.strokeStyle = "#000000";
+				_this.gameCtx.clearRect(0, 0, _this.gameCanvas.width, _this.gameCanvas.height);
+				_this.gameCtx.fillStyle = "#4B2125";
+				_this.gameCtx.fillRect(0, _this.gameCanvas.height / 2, _this.gameCanvas.width, _this.gameCanvas.height / 2);
+				
+				_this.runScore(gameSettings);
+				_this.runObjects(gameSettings);
+				_this.runPlayer(gameSettings);
+	
+				if(_this._over) {
+					_this.gameover(gameSettings);
+					if(_this.UserController.isAuth()) {
+						const currentScore = _this.UserController._proto.score;
+						const newScore = _this.ScoreController.scoreValue;
+						if(newScore > currentScore) {
+							_this.UserController.setScore(newScore);
+							document.getElementsByClassName("navbar-scores")[0].html = newScore;
+						}
+					}
+				}
+				
+			}, this.frameTime);
+		} else {
+			this.startOverlay({
 				'canvas' : _this.gameCtx,
 				'height' : _this.gameCanvas.height,
 				'width' : _this.gameCanvas.width,
 				'scale' : _this.gameCanvas.width / DEFAULT_W,
-			}
-
-			_this.gameCtx.fillStyle = "#FFFFFF";
-			_this.gameCtx.strokeStyle = "#000000";
-			_this.gameCtx.clearRect(0, 0, _this.gameCanvas.width, _this.gameCanvas.height);
-			_this.gameCtx.fillStyle = "#4B2125";
-			_this.gameCtx.fillRect(0, _this.gameCanvas.height / 2, _this.gameCanvas.width, _this.gameCanvas.height / 2);
-
-			_this.runPlayer(gameSettings);
-			_this.runObstacles(gameSettings);
-		}, this.frameTime);
+			});
+		}
 	}
 
 	text(source, y, size, color) {
@@ -128,27 +167,34 @@ class GameController {
 		this.play();
 	}
 
+	startOverlay() {
+		this.setOpacity();
+		this.text("LASTUNION presents!", this.gameCanvas.height / 2, 60, "#000000");
+		this.text("Press SPACE to start", this.gameCanvas.height / 2 + 30, 30, "#555555");
+	}
+
 	pauseOverlay() {
 		this.setOpacity();
-		this.text("Pause", this.gameCanvas.height / 2, 60, MAIN_TEXT_COLOT);
-		this.text("Press SPACE to continue", this.gameCanvas.height / 2 + 30, 30, TIP_TEXT_COLOT);
+		this.text("Pause", this.gameCanvas.height / 2, 60, "#000000");
+		this.text("Press SPACE to continue", this.gameCanvas.height / 2 + 30, 30, "#555555");
 	}
 
-	gameover() {
+	gameover(gameSettings) {
 		clearInterval(this.game);
-		this.gameoverOverlay();
+		this.gameoverOverlay(gameSettings);
 	}
 
-	gameoverOverlay() {
+	gameoverOverlay(gameSettings) {
 		this.setOpacity();
-		this.text("Game Over!", this.gameCanvas.height / 2, 60, MAIN_TEXT_COLOR);
-		this.text("Press SPACE to run again!", this.gameCanvas.height / 2 + 30, 30, TIP_TEXT_COLOT);
+		this.text("Game Over!", 300  * gameSettings.scale, 60 * gameSettings.scale, "#000000");
+		this.text("Press SPACE to run again!", 250  * gameSettings.scale + 70 * gameSettings.scale, 30  * gameSettings.scale, "#555555");
+		this.text("Your score: " + this.ScoreController.scoreValue, (250 + 70 + 160)  * gameSettings.scale, 60  * gameSettings.scale, "#000000");
 
 		const nekro = new Image();
 		nekro.src = '/img/nekro.png';
 		const _this = this;
 		nekro.onload = function() {
-			_this.gameCtx.drawImage(nekro, _this.gameCanvas.width / 2 - 100, 100, 200, 200);
+			_this.gameCtx.drawImage(nekro, _this.gameCanvas.width / 2 - 100 * gameSettings.scale, gameSettings.scale * (-25), 200  * gameSettings.scale, 200  * gameSettings.scale);
 		}
 	}
 	

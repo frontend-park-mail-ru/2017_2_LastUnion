@@ -28,6 +28,8 @@ class GameView extends View {
 		if(this.dom.insertDom(this.body, Game.rend({}), 'Game')) {
 			Game.resize();
 			this.GameController = new GameController();
+			this.GameController.initGame(false);
+			this.GameController.play();
 		}
 		this.listenLinks();
 	}

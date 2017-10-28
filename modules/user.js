@@ -8,6 +8,10 @@ const API = require('./api.js');
 class User {
 
 	constructor() {
+		if(User._instance) {
+			return User._instance;
+		}
+		User._instance = this;
 		this.api = new API;
 		this._loggedin = false;
 		this._proto = {};
@@ -81,12 +85,8 @@ class User {
 		}).then(function(response) {
 			_this.checkResponse(response);
 			_this._proto.login = login;
-			/////////////////////////////////
-			// test
-			_this.setScore(50);
-			console.log(_this.getScore());
-			//////////////////////////////////
 			_this._loggedin = true;
+			_this.getScore();
 		});
 	}
 

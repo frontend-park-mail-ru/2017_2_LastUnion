@@ -60,7 +60,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 6);
+/******/ 	return __webpack_require__(__webpack_require__.s = 8);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -73,9 +73,68 @@
 
 
 
-const Router = __webpack_require__(2);
-const DOM = __webpack_require__(9);
-const User = __webpack_require__(10);
+class Dot {
+    
+    constructor(x, y) {
+        if(!y || y == 'undefined') {
+            this._x = 0;
+            this._y = 0;
+        } else {
+            this._x = x;
+            this._y = y;
+        }
+    }
+
+    update(x, y) {
+        this._x += x;
+        this._y += y;
+    }
+
+    get x() {
+        return this._x;
+    }
+
+    set x(__x) {
+        this._x = __x;
+    }
+
+    get y() {
+        return this._y;
+    }
+
+    set y(__y) {
+        this._y = __y;
+    }
+
+    newCoords(x, y) {
+        this._x = x;
+        this._y = y;
+    }
+
+    get coords() {
+        return {
+            'x' : this._x,
+            'y' : this._y
+        }
+    }
+
+}
+
+module.exports = Dot;
+
+/***/ }),
+/* 1 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/* global require */
+/* global module */
+
+
+
+const Router = __webpack_require__(5);
+const DOM = __webpack_require__(11);
+const User = __webpack_require__(12);
 
 class View {
 
@@ -130,7 +189,7 @@ module.exports = View;
 
 
 /***/ }),
-/* 1 */
+/* 2 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* global require */
@@ -138,7 +197,7 @@ module.exports = View;
 
 module.exports = {
 	rend : function(params){
-		const template = __webpack_require__(14);
+		const template = __webpack_require__(16);
 		let html = template(params);
 		const elem = document.createElement('div');
 		elem.innerHTML = html;
@@ -148,7 +207,7 @@ module.exports = {
 
 
 /***/ }),
-/* 2 */
+/* 3 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -157,7 +216,67 @@ module.exports = {
 
 
 
-const UrlCom = __webpack_require__(7);
+module.exports = {
+	GetRandomNLessThen : function GetRandomNLessThen(Restrict) {
+		return Math.floor(Math.random() * Restrict);
+	},
+
+	GetRandomNInRange : function GetRandomNInRange(a, b) {
+		return Math.floor(Math.random() * (b + 1 - a) + a);
+	},
+	
+	GetDistance : function GetDistance(a, b) {
+		let dx = a.x - b.x;
+		let dy = a.y - b.y;
+		
+		return Math.sqrt(dx*dx + dy*dy);
+	}
+};
+
+/***/ }),
+/* 4 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/* global require */
+/* global module */
+
+
+
+class WorldObject {
+	constructor (x) {
+		this.x = x;
+	}
+	
+	drawAt (x) {}
+	
+	// returns object containing: is there a collision (true/false)
+	//							  score effect of collision - function(scoreController, sceneInfo)
+	// 							  player effect of collision - function(player, sceneInfo)
+	CheckCollision(playerUpperLeft, playerBottomRight) {
+		let result = {
+				'isCollided' : false,
+				'scoreEffect' : function(scoreController, gameSettings) {},
+				'playerEffect' : function(player, gameSettings) {},
+		}
+		
+		return result;
+	}
+}
+
+module.exports = WorldObject;
+
+/***/ }),
+/* 5 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/* global require */
+/* global module */
+
+
+
+const UrlCom = __webpack_require__(9);
 
 class Router {
 
@@ -221,7 +340,7 @@ module.exports = Router;
 
 
 /***/ }),
-/* 3 */
+/* 6 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -230,70 +349,11 @@ module.exports = Router;
 
 
 
-class Dot {
-    
-    constructor(x, y) {
-        if(!y || y == 'undefined') {
-            this._x = 0;
-            this._y = 0;
-        } else {
-            this._x = x;
-            this._y = y;
-        }
-    }
-
-    update(x, y) {
-        this._x += x;
-        this._y += y;
-    }
-
-    get x() {
-        return this._x;
-    }
-
-    set x(__x) {
-        this._x = __x;
-    }
-
-    get y() {
-        return this._y;
-    }
-
-    set y(__y) {
-        this._y = __y;
-    }
-
-    newCoords(x, y) {
-        this._x = x;
-        this._y = y;
-    }
-
-    get coords() {
-        return {
-            'x' : this._x,
-            'y' : this._y
-        }
-    }
-
-}
-
-module.exports = Dot;
-
-/***/ }),
-/* 4 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-/* global require */
-/* global module */
-
-
-
-const Dot = __webpack_require__(3);
+const Dot = __webpack_require__(0);
 
 const WIDTH = 100;
 const HEIGHT = 100;
-const JUMPPOWER = 35;
+const JUMPPOWER = 33;
 
 const RUN = 0;
 const ONAIR = 1;
@@ -312,16 +372,19 @@ class Player {
     init() {
         this._state = 0;
         this._action = null;
+        this.gameover = false;
 
         this.time = 0;
         this.skin = 0;
+		this.dialogVisible = false;
 
         this.jumpTime = 0;
         this.verticalAcceleration = 10;
         this.offtop = 0;
 
         const bm = new Dot(0,0);
-        const br = new Dot(WIDTH / 2, 0);
+        const br = new Dot( WIDTH / 2, 0 ); // doesn't work. I hz pochemy
+		br.x = WIDTH / 2;
         const tr = new Dot(WIDTH / 2, HEIGHT);
         const tl = new Dot(-WIDTH / 2, HEIGHT);
 
@@ -338,6 +401,9 @@ class Player {
             playerImg.src = '/img/player0' + i + '.png';
             this.playerSkinRun.push(playerImg);
         }
+		
+		this.dlgImg = new Image();   
+        this.dlgImg.src = '/img/fck.png';
 
     }
 
@@ -349,35 +415,53 @@ class Player {
         let sceneCoords = {};
         for(let dot in this.geometry) {
             sceneCoords[dot] = new Dot();
-            sceneCoords[dot].x = centerX - this.geometry[dot].x * gameSettings.scale
-            sceneCoords[dot].y = centerY - this.geometry[dot].y * gameSettings.scale
+            sceneCoords[dot].x = (gameSettings.defaultW/2 + this.geometry[dot].x) * gameSettings.scale
+            sceneCoords[dot].y = (gameSettings.defaultW/4 - this.geometry[dot].y) * gameSettings.scale
         }
 
         
         gameSettings.canvas.drawImage(
             this.playerSkinRun[this.skin],
-            sceneCoords['tr'].x, 
-            sceneCoords['tr'].y,
+            sceneCoords['tl'].x, 
+            sceneCoords['tl'].y,
             WIDTH * gameSettings.scale, 
             (this.topRightCoords.y - this.bottomRightCoords.y) * gameSettings.scale
         );
+        
+
+		if(this.dialogVisible && sceneCoords['tl'].x < 200) {
+            gameSettings.canvas.drawImage(
+                this.dlgImg,
+                sceneCoords['tr'].x + WIDTH, 
+                sceneCoords['tr'].y - HEIGHT,
+                100 * gameSettings.scale, 
+                100 * gameSettings.scale
+            );
+        }
+
+        if(sceneCoords['tl'].x <= 0) {
+            this.gameover = true;
+        }
 		
 
-        // gameSettings.canvas.fillRect(
-        //     sceneCoords['tr'].x, 
-        //     sceneCoords['tr'].y, 
-        //     WIDTH * gameSettings.scale, 
-        //     (this.topRightCoords.y - this.bottomRightCoords.y) * gameSettings.scale
-        // );
+		// show control points
+		/*gameSettings.canvas.fillStyle = "#FFFF00";
+		for(let dot in this.geometry) {
+			if (dot == 'br') gameSettings.canvas.fillStyle = "#00FF00";
+			if (dot == 'tr') gameSettings.canvas.fillStyle = "#0000FF";
+			if (dot == 'tl') gameSettings.canvas.fillStyle = "#FF00FF";
+           gameSettings.canvas.fillRect((this.geometry[dot].x+960-7)*gameSettings.scale, (480-this.geometry[dot].y-7)*gameSettings.scale, 14, 14);
+        }*/
     }
 
     trigger() {
         this.bendedTired();
         this.tick();
         if(!this._action || this._action === null) {
-            return;
+            return this.gameover;
         }
         this._action();
+        return this.gameover;
     }
 
     changePosition(x,y) {
@@ -388,12 +472,12 @@ class Player {
 
     bendedTired() {
         if(this.bended) {
-            this.offtop++;
-            this.changePosition(1, 0);
+            this.offtop -= 3;
+            this.changePosition(-3, 0);
         } else {
-            if(this.offtop > 0) {
-                this.offtop -= 3
-                this.changePosition(-3, 0);
+            if(this.offtop < 0) {
+                this.offtop += 6;
+                this.changePosition(6, 0);
             }
         }
     }
@@ -403,6 +487,13 @@ class Player {
         if(this.time % 4 == 0) {
             this.skin == 3 ? this.skin = 0 : this.skin++;
         }
+		if(this.time % 40 == 0) {
+            this.dialog();
+        }
+    }
+	
+	dialog() {
+        this.dialogVisible == false ? this.dialogVisible = true : this.dialogVisible = false;
     }
 
     jump() {
@@ -443,12 +534,14 @@ class Player {
         if(!this.bended) {
             this.state == ONAIR ? this.state = BENDEDONAIR : this.state = BEND;
             this.topRightCoords.update(0, -HEIGHT / 2);
+			this.topLeftCoords.update(0, -HEIGHT / 2);
         }
     }
 
     run() {
         if(this.bended) {
             this.topRightCoords.update(0, HEIGHT / 2);
+			this.topLeftCoords.update(0, HEIGHT / 2);
         }
         this.state = RUN;
     }
@@ -495,7 +588,7 @@ module.exports = Player;
 
 
 /***/ }),
-/* 5 */
+/* 7 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -506,7 +599,7 @@ module.exports = Player;
 
 module.exports = {
 	rend : function(params) {
-		const template = __webpack_require__(25);
+		const template = __webpack_require__(32);
 		let html = template(params);
 		const elem = document.createElement('div');
 		elem.innerHTML = html;
@@ -548,23 +641,23 @@ module.exports = {
 
 
 /***/ }),
-/* 6 */
+/* 8 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 /* global require */
 
 
-const Router = __webpack_require__(2);
+const Router = __webpack_require__(5);
 const R = new Router();
 
 //const MenuView = require('./views/menu');
-const GameView = __webpack_require__(8);
-const ScoresView = __webpack_require__(18);
-const MenuView = __webpack_require__(21);
-const SignInView = __webpack_require__(24);
-const SignUpView = __webpack_require__(26);
-const LogoutView = __webpack_require__(27);
+const GameView = __webpack_require__(10);
+const ScoresView = __webpack_require__(25);
+const MenuView = __webpack_require__(28);
+const SignInView = __webpack_require__(31);
+const SignUpView = __webpack_require__(33);
+const LogoutView = __webpack_require__(34);
 
 R.addUrl('/', MenuView);
 R.addUrl('/play', GameView);
@@ -578,7 +671,7 @@ R.loadPage();
 
 
 /***/ }),
-/* 7 */
+/* 9 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -613,7 +706,7 @@ module.exports = UrlCom;
 
 
 /***/ }),
-/* 8 */
+/* 10 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -622,11 +715,11 @@ module.exports = UrlCom;
 
 
 
-const View = __webpack_require__(0);
-const Game = __webpack_require__(12);
-const Header = __webpack_require__(1);
+const View = __webpack_require__(1);
+const Game = __webpack_require__(14);
+const Header = __webpack_require__(2);
 
-const GameController = __webpack_require__(15);
+const GameController = __webpack_require__(17);
 
 class GameView extends View {
 
@@ -647,6 +740,8 @@ class GameView extends View {
 		if(this.dom.insertDom(this.body, Game.rend({}), 'Game')) {
 			Game.resize();
 			this.GameController = new GameController();
+			this.GameController.initGame(false);
+			this.GameController.play();
 		}
 		this.listenLinks();
 	}
@@ -668,7 +763,7 @@ module.exports = GameView;
 
 
 /***/ }),
-/* 9 */
+/* 11 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -718,7 +813,7 @@ module.exports = DOM;
 
 
 /***/ }),
-/* 10 */
+/* 12 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -727,11 +822,15 @@ module.exports = DOM;
 
 
 
-const API = __webpack_require__(11);
+const API = __webpack_require__(13);
 
 class User {
 
 	constructor() {
+		if(User._instance) {
+			return User._instance;
+		}
+		User._instance = this;
 		this.api = new API;
 		this._loggedin = false;
 		this._proto = {};
@@ -752,7 +851,23 @@ class User {
 	}
 
 	getScore() {
-		return 322;
+		const _this = this;
+		// Is this correct 
+		this.api.sendReq('user/get_score', 'GET').then(function(response) {
+			_this._proto.score = _this.checkResponse(response);
+		});
+		
+		if (typeof this._proto.score === 'undefned' || this._proto.score == null)
+			return 0;
+		return this._proto.score;
+	}
+
+	setScore(score) {
+		const _this = this;
+		return this.api.sendReq('user/set_score/' + score, 'GET').then(function(response) {
+			_this._proto.score = score;
+			_this.checkResponse(response);
+		});
 	}
 
 	getScores() {
@@ -783,19 +898,20 @@ class User {
 
 	login(login, password) {
 		const _this = this;
-		return this.api.call('user/signin', 'POST', {
+		return this.api.sendReq('user/signin', 'POST', {
 			userName: login,
 			userPassword: password
 		}).then(function(response) {
 			_this.checkResponse(response);
 			_this._proto.login = login;
 			_this._loggedin = true;
+			_this.getScore();
 		});
 	}
 
 	signup(login, password, email) {
 		const _this = this;
-		return this.api.call('user/signup', 'POST', {
+		return this.api.sendReq('user/signup', 'POST', {
 			userName: login,
 			userPassword: password,
 			userEmail: email
@@ -806,7 +922,7 @@ class User {
 
 	logout() {
 		const _this = this;
-		return this.api.call('user/logout', 'POST').then(function(response) {
+		return this.api.sendReq('user/logout', 'POST').then(function(response) {
 			_this.checkResponse(response);
 			_this._proto = {};
 			_this._loggedin = false;
@@ -819,7 +935,7 @@ module.exports = User;
 
 
 /***/ }),
-/* 11 */
+/* 13 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -827,16 +943,21 @@ module.exports = User;
 
 
 
+//const HOST = 'localhost:8080';
+//const PROTOCOL = 'http://';
+const PROTOCOL = 'https://';
 const HOST = 'lastunion.herokuapp.com';
+
 
 class API {
 
 	constructor() {
+		this._protocol = PROTOCOL;
 		this._host = HOST;
 	}
 
 	sendReq(method, httpMethod, params) {
-		const url = 'https://' + this._host + '/api/' + method;
+		const url = this._protocol + this._host + '/api/' + method;
 		const httpRequest = {
 			method: httpMethod,
 			headers: {
@@ -869,7 +990,7 @@ module.exports = API;
 
 
 /***/ }),
-/* 12 */
+/* 14 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* global require */
@@ -877,7 +998,7 @@ module.exports = API;
 
 module.exports = {
 	rend : function(params){
-		const template = __webpack_require__(13);
+		const template = __webpack_require__(15);
 		let html = template(params);
 		const elem = document.createElement('div');
 		elem.innerHTML = html;
@@ -897,7 +1018,7 @@ module.exports = {
 
 
 /***/ }),
-/* 13 */
+/* 15 */
 /***/ (function(module, exports) {
 
 module.exports = function (obj) {
@@ -911,7 +1032,7 @@ return __p
 }
 
 /***/ }),
-/* 14 */
+/* 16 */
 /***/ (function(module, exports) {
 
 module.exports = function (obj) {
@@ -938,7 +1059,7 @@ return __p
 }
 
 /***/ }),
-/* 15 */
+/* 17 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -948,14 +1069,16 @@ return __p
 
 
 const DEFAULT_W = 1920;
+const HORSPEED = 25;
+const FRAMETIME = 35;
 
-const MAIN_TEXT_COLOR = "#000000";
-const TIP_TEXT_COLOT = "#555555";
+const User = __webpack_require__(12);
 
-const Dot = __webpack_require__(3);
-const Player = __webpack_require__(4);
-const InputController = __webpack_require__(16);
-const ObstaclesController = __webpack_require__(17);
+const Dot = __webpack_require__(0);
+const Player = __webpack_require__(6);
+const InputController = __webpack_require__(18);
+const WorldObjectsController = __webpack_require__(19);
+const ScoreController = __webpack_require__(35);
 
 class GameController {
 
@@ -965,81 +1088,118 @@ class GameController {
 		}
 		GameController._instance = this;
 		
-		this.horSpeed = 30;
-		this.frameTime = 30;
+		this.horSpeed = HORSPEED;
+		this.frameTime = FRAMETIME;
 
 		this.gameCanvas = document.getElementById('game');
 		this.gameCtx = this.gameCanvas.getContext('2d');
+
+		this.UserController = new User();
 		
 		this.PlayerController = new Player();	
 		this.InputController = new InputController(this);
-		this.ObstaclesController = new ObstaclesController();
-		this.WorldController;
-
-		this.initGame();
+		this.WorldObjectsController = new WorldObjectsController();
+		this.ScoreController = new ScoreController();
 		
+	}
+
+	initGame(_started) {
+		this.started = _started;
 		this.game = null;
 		this._over = false;
 		this._pause = false;
-		this.play();
-	}
-
-	initGame() {
 		this.PlayerController.init();
-		this.ObstaclesController.resetObstacles();
+		this.WorldObjectsController.resetObjects();
+		this.ScoreController.init();
+	}
+	runScore(gameSettings) {
+		this.ScoreController.tick();
+		this.text("Score: " + this.ScoreController.scoreValue, 60, 30 * gameSettings.scale, "#000000");
 	}
 
 	runPlayer(gameSettings) {
-		this.PlayerController.trigger();
+		this._over = this._over || this.PlayerController.trigger();
 		this.PlayerController.draw(gameSettings);
 	}
 
-	runObstacles(gameSettings) {
-		const bottomMid = new Dot(gameSettings.width / 2 + this.PlayerController.xPos, 300 - this.PlayerController.yBottomPos);
-		const upperMid = new Dot(gameSettings.width / 2 + this.PlayerController.xPos, 300 - this.PlayerController.yHeadPos);
+	runObjects(gameSettings) {
+		let topLeftCoords = this.PlayerController.topLeftCoords;
+		let playerUpperLeft = new Dot(topLeftCoords.x + DEFAULT_W/2, DEFAULT_W/16*8/2 - this.PlayerController.topLeftCoords.y);
 		
-		if (this.ObstaclesController.checkFatalCollisions(upperMid, bottomMid)) {
+		let bottomRightCoords = this.PlayerController.bottomRightCoords;
+		let playerBottomRight = new Dot(bottomRightCoords.x + DEFAULT_W/2, DEFAULT_W/16*8/2 - this.PlayerController.bottomRightCoords.y);
+		
+		
+		if (this.WorldObjectsController.getObjectsAmount() <= 0) {
+			this.WorldObjectsController.addSeriesOfObjects(DEFAULT_W, 300, 150);
+		}
+		
+		this.WorldObjectsController.moveAllObjects(this.horSpeed);
+		this.WorldObjectsController.redrawAllObjects(gameSettings);
+		
+		let check = this.WorldObjectsController.CheckAllCollisions(playerUpperLeft, playerBottomRight);
+		if (check && check.isCollided && check.isFatal) {
+			check.playerEffect(this.PlayerController, gameSettings);
+			check.scoreEffect(this.ScoreController, gameSettings);
 			this._over = true;
 		}
-		
-		if (this.ObstaclesController.obstaclesAmount <= 0) {
-			this.ObstaclesController.addSeriesOfObstacles(gameSettings.width, 300, 150);
-		}
-		
-		this.ObstaclesController.redrawAllObstacles(gameSettings);
-		this.ObstaclesController.moveAllObstacles(this.horSpeed);
-		if(this._over) {
-			this.gameover();
-		}
+		else if (check && check.isCollided && !check.isFatal) {
+			check.scoreEffect(this.ScoreController,gameSettings);
+			check.playerEffect(this.PlayerController, gameSettings);
+		}	
+				
 	}
 
-	reset() {
-		this.initGame();
-		this._over = false;
-		this._pause = false;
+	reset(_started) {
+		this.initGame(_started);
 		this.play();
 	}
 
 	play() {
 		const _this = this;
-		this.game = setInterval(function () {
+		if(this.started) {
+			this.game = setInterval(function () {
+				
+				let gameSettings = {
+					'canvas' : _this.gameCtx,
+					'height' : _this.gameCanvas.height,
+					'width' : _this.gameCanvas.width,
+					'scale' : _this.gameCanvas.width / DEFAULT_W,
+					'defaultW' : DEFAULT_W,
+					'horSpeed' : HORSPEED,
+				}
 	
-			let gameSettings = {
+				_this.gameCtx.fillStyle = "#FFFFFF";
+				_this.gameCtx.strokeStyle = "#000000";
+				_this.gameCtx.clearRect(0, 0, _this.gameCanvas.width, _this.gameCanvas.height);
+				_this.gameCtx.fillStyle = "#4B2125";
+				_this.gameCtx.fillRect(0, _this.gameCanvas.height / 2, _this.gameCanvas.width, _this.gameCanvas.height / 2);
+				
+				_this.runScore(gameSettings);
+				_this.runObjects(gameSettings);
+				_this.runPlayer(gameSettings);
+	
+				if(_this._over) {
+					_this.gameover(gameSettings);
+					if(_this.UserController.isAuth()) {
+						const currentScore = _this.UserController._proto.score;
+						const newScore = _this.ScoreController.scoreValue;
+						if(newScore > currentScore) {
+							_this.UserController.setScore(newScore);
+							document.getElementsByClassName("navbar-scores")[0].html = newScore;
+						}
+					}
+				}
+				
+			}, this.frameTime);
+		} else {
+			this.startOverlay({
 				'canvas' : _this.gameCtx,
 				'height' : _this.gameCanvas.height,
 				'width' : _this.gameCanvas.width,
 				'scale' : _this.gameCanvas.width / DEFAULT_W,
-			}
-
-			_this.gameCtx.fillStyle = "#FFFFFF";
-			_this.gameCtx.strokeStyle = "#000000";
-			_this.gameCtx.clearRect(0, 0, _this.gameCanvas.width, _this.gameCanvas.height);
-			_this.gameCtx.fillStyle = "#4B2125";
-			_this.gameCtx.fillRect(0, _this.gameCanvas.height / 2, _this.gameCanvas.width, _this.gameCanvas.height / 2);
-
-			_this.runPlayer(gameSettings);
-			_this.runObstacles(gameSettings);
-		}, this.frameTime);
+			});
+		}
 	}
 
 	text(source, y, size, color) {
@@ -1072,27 +1232,34 @@ class GameController {
 		this.play();
 	}
 
+	startOverlay() {
+		this.setOpacity();
+		this.text("LASTUNION presents!", this.gameCanvas.height / 2, 60, "#000000");
+		this.text("Press SPACE to start", this.gameCanvas.height / 2 + 30, 30, "#555555");
+	}
+
 	pauseOverlay() {
 		this.setOpacity();
-		this.text("Pause", this.gameCanvas.height / 2, 60, MAIN_TEXT_COLOT);
-		this.text("Press SPACE to continue", this.gameCanvas.height / 2 + 30, 30, TIP_TEXT_COLOT);
+		this.text("Pause", this.gameCanvas.height / 2, 60, "#000000");
+		this.text("Press SPACE to continue", this.gameCanvas.height / 2 + 30, 30, "#555555");
 	}
 
-	gameover() {
+	gameover(gameSettings) {
 		clearInterval(this.game);
-		this.gameoverOverlay();
+		this.gameoverOverlay(gameSettings);
 	}
 
-	gameoverOverlay() {
+	gameoverOverlay(gameSettings) {
 		this.setOpacity();
-		this.text("Game Over!", this.gameCanvas.height / 2, 60, MAIN_TEXT_COLOR);
-		this.text("Press SPACE to run again!", this.gameCanvas.height / 2 + 30, 30, TIP_TEXT_COLOT);
+		this.text("Game Over!", 300  * gameSettings.scale, 60 * gameSettings.scale, "#000000");
+		this.text("Press SPACE to run again!", 250  * gameSettings.scale + 70 * gameSettings.scale, 30  * gameSettings.scale, "#555555");
+		this.text("Your score: " + this.ScoreController.scoreValue, (250 + 70 + 160)  * gameSettings.scale, 60  * gameSettings.scale, "#000000");
 
 		const nekro = new Image();
 		nekro.src = '/img/nekro.png';
 		const _this = this;
 		nekro.onload = function() {
-			_this.gameCtx.drawImage(nekro, _this.gameCanvas.width / 2 - 100, 100, 200, 200);
+			_this.gameCtx.drawImage(nekro, _this.gameCanvas.width / 2 - 100 * gameSettings.scale, gameSettings.scale * (-25), 200  * gameSettings.scale, 200  * gameSettings.scale);
 		}
 	}
 	
@@ -1102,7 +1269,7 @@ module.exports = GameController;
 
 
 /***/ }),
-/* 16 */
+/* 18 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1111,7 +1278,7 @@ module.exports = GameController;
 
 
 
-const Player = __webpack_require__(4);
+const Player = __webpack_require__(6);
 
 class InputController {
 
@@ -1129,10 +1296,10 @@ class InputController {
                     _this.PlayerController.duck();
                 break;
                 case 32:
-                    if(!_this.Controller._over) {
+                    if(!_this.Controller._over && _this.Controller.started) {
                         _this.Controller.pause();
                     } else {
-                        _this.Controller.reset();
+                        _this.Controller.reset(true);
                     }
                 break;
             break;
@@ -1158,7 +1325,7 @@ module.exports = InputController;
 
 
 /***/ }),
-/* 17 */
+/* 19 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1167,213 +1334,102 @@ module.exports = InputController;
 
 
 
+const MathGeom = __webpack_require__(3);
+
+const UpperObstacle = __webpack_require__(20);
+const MidObstacle = __webpack_require__(21);
+const PitObstacle = __webpack_require__(22);
+const MidGem = __webpack_require__(23);
+const UpperGem = __webpack_require__(24);
+
+const typesAmount = 5;
 const Types = {
 	UP : 0,
-	GROUND : 1,
+	MID : 1,
+	PIT : 2,
+	MIDGEM : 3,
+	UPGEM: 4,
 }
 
-const typesAmount = 2;
-const spikeColor = "#000000";
-
-function GetRandomNLessThen(Restrict) {
-	 return Math.floor(Math.random() * Restrict);
-}
-
-function GetRandomNInRange(a, b) {
-	 return Math.floor(Math.random() * (b + 1 - a) + a);
-}
-
-class Obstacle {
-
-	constructor(x, y, type, drawAt, checkFatal, checkCollision) {
-		this.x = x;
-		this.y = y;
-		this.width = 50;
-		this.height = 100;
-		
-		this.type = type;
-		
-		this.drawAt = drawAt;					// drawAt(canvas, ctx, x)
-		this.checkFatal = checkFatal;			// checkFatal(upperMidPoint, lowerMidPoint)
-		this.checkCollision = checkCollision;	// checkCollision(upperRightPoint,lowerRightPoint)
-	}
 	
-	static drawUpperObstacleAt(drawingInfo, x) {
-		drawingInfo.canvas.fillStyle = "#440000";
-		drawingInfo.canvas.strokeStyle = "#FF0000";
-		drawingInfo.canvas.fillRect(x, 100, 50, 100);
-		
-		drawingInfo.canvas.beginPath();
-		drawingInfo.canvas.moveTo(x,100);
-		
-		let spikeX = 5;
-        const spikeHeight = 10;
-        
-		while (spikeX < 50) {
-			drawingInfo.canvas.lineTo(
-                x + spikeX, 
-                98 - (spikeHeight + (spikeX / 5) * (spikeX / 5 % 2)) * (spikeX / 5 % 2)
-            );
-			spikeX = spikeX + 5;
-        }
-        
-		drawingInfo.canvas.lineTo(x + 50, 100);
-		drawingInfo.canvas.fillStyle = spikeColor;
-		drawingInfo.canvas.fill();
-		
-		drawingInfo.canvas.beginPath();
-		drawingInfo.canvas.moveTo(x,200);
-		
-		spikeX = 5;
-        
-		while (spikeX < 50) {
-			drawingInfo.canvas.lineTo(
-                x + spikeX,
-                202 + (spikeHeight + (spikeX / 5) * (spikeX / 5 % 2)) * (spikeX / 5 % 2));
-			spikeX = spikeX + 5;
-        }
-        
-		drawingInfo.canvas.lineTo(x + 50, 200);
-		drawingInfo.canvas.fillStyle = spikeColor;
-		drawingInfo.canvas.fill();
-	}
-	
-	CheckUpperObstacleFatal(upperMidPoint, lowerMidPoint) {
-		return (
-            this.x < upperMidPoint.x && 
-            upperMidPoint.x < this.x + this.width &&
-            200 <= upperMidPoint.y && 
-            upperMidPoint.y <= 210
-        );
-	}
-	
-	CheckGroundObstacleFatal (upperMidPoint, lowerMidPoint) {
-		return (
-            this.x < upperMidPoint.x && 
-            upperMidPoint.x < this.x + this.width &&
-            lowerMidPoint.y > 190
-        );
-	}
-	
-	static drawGroundObstacleAt (drawingInfo, x) {
-		drawingInfo.canvas.fillStyle = "#440000";
-		drawingInfo.canvas.strokeStyle = "#FF0000";
-		drawingInfo.canvas.fillRect(x, 200, 50, 100);
-		
-		drawingInfo.canvas.beginPath();
-		drawingInfo.canvas.moveTo(x,200);
-		
-		let spikeX = 5;
-		const spikeHeight = 10;
-		while (spikeX < 50) {
-			drawingInfo.canvas.lineTo(
-                x + spikeX,
-                198 - (spikeHeight + (spikeX / 5) * (spikeX / 5 % 2)) * (spikeX / 5 % 2));
-			spikeX = spikeX + 5;
-        }
-        
-		drawingInfo.canvas.lineTo(x + 50, 200);
-		drawingInfo.canvas.fillStyle = spikeColor;
-		drawingInfo.canvas.fill();
-	}
-	
-}
-
-class ObstacleCreator {
-
-	static CreateByType(type, x) {
-		switch (type) {
-			case Types.UP : return ObstacleCreator.CreateUpperObstacle(x);
-			case Types.GROUND : return ObstacleCreator.CreateGroundObstacle(x);
-		}
-	}
-	
-	static CreateUpperObstacle(x) {
-		const Obst = new Obstacle(x, 200, Types.UP, Obstacle.drawUpperObstacleAt);
-		Obst.width = 50;
-		Obst.height = 100;
-		Obst.checkFatal = Obst.CheckUpperObstacleFatal;
-		
-		return Obst;
-	}
-	static CreateGroundObstacle(x) {
-		const Obst = new Obstacle(x, 0, Types.GROUND, Obstacle.drawGroundObstacleAt);
-		Obst.width = 50;
-		Obst.height = 100;
-		Obst.checkFatal = Obst.CheckGroundObstacleFatal;
-		
-		return Obst;
-	}
-}
-	
-class ObstaclesController {
+class WorldObjectsController {
 
 	constructor() {		
-		this.obstaclesArray = []; 
+		this.objectsArray = []; 
     }
     
-    resetObstacles () { 
-        this.obstaclesArray = []; 
+    resetObjects () { 
+        this.objectsArray = []; 
     }
 	
-	get obstaclesAmount() {
-		return this.obstaclesArray.length;
+	getObjectsAmount() {
+		return this.objectsArray.length;
 	}
-	
-	checkStoppingCollisions(upperRightPoint,lowerRightPoint) {
 		
-	}
-	
-	checkFatalCollisions(upperMidPoint, lowerMidPoint) {
-		let flag = false;
-		this.obstaclesArray.forEach(function(obstacle, index, array) {
-            if (obstacle.checkFatal(upperMidPoint, lowerMidPoint)) 
-                flag = true;
+	CheckAllCollisions(playerUpperLeft, playerBottomRight) {
+		let res = null;
+		let foundRes = null;
+		let found = false;
+		
+		this.objectsArray.forEach(function(worldObject, index, array) {
+			res = worldObject.CheckCollision(playerUpperLeft, playerBottomRight);
+            if (!found && res.isCollided) {
+				found = true;
+				foundRes = res;
+			}
         });
 
-		return flag;
+		return foundRes;
 	}
 	
-	redrawAllObstacles(drawingInfo) {  //drawing info contents canvas context, scale, etc..
-		this.obstaclesArray.forEach(function(obstacle, index, array) {
-            obstacle.drawAt(drawingInfo, obstacle.x);
+	redrawAllObjects(gameSettings) {  //drawing info contents canvas context, scale, etc..
+		this.objectsArray.forEach(function(worldObject, index, array) {
+            worldObject.draw(gameSettings);
         });									
 	}
 
-	moveAllObstacles(horSpeed) {
-		this.obstaclesArray.forEach(function(item, index, array) {
-            item.x = item.x - horSpeed;
+	moveAllObjects(horSpeed) {
+		this.objectsArray.forEach(function(worldObject, index, array) {
+            worldObject.x = worldObject.x - horSpeed;
         });
 		
 		// deliting left object that's away from screen
-		if (this.obstaclesArray[0].x < -this.obstaclesArray[0].width) {
-			this.obstaclesArray.shift();
+		if (this.objectsArray[0].x < -this.objectsArray[0].GetWidth()) {
+			this.objectsArray.shift();
 		}
 	}
 	
-	addSeriesOfObstacles(screenWidth, minRange, delta) {
-		const obstacleCreator = new ObstacleCreator;
+	CreateObjectByType(type, x) {
+		switch (type) {
+			case Types.UP : return new UpperObstacle(x);
+			case Types.MID : return new MidObstacle(x);
+			case Types.PIT : return new PitObstacle(x);
+			case Types.MIDGEM : return new MidGem(x);
+			case Types.UPGEM : return new UpperGem(x);
+		}
+	}
+	
+	addSeriesOfObjects(screenWidth, minRange, delta) {
 		
 		const baseX = Math.floor(screenWidth * 1.5);
 		let curX = baseX;
 		
-		let obstaclesInSeries = GetRandomNInRange(3, 6);
+		let obstaclesInSeries = MathGeom.GetRandomNInRange(9, 18);
 		while (obstaclesInSeries >= 0) {
-			const curType = GetRandomNLessThen(typesAmount);
+			const curType = MathGeom.GetRandomNLessThen(typesAmount);
 			
-			this.obstaclesArray.push(ObstacleCreator.CreateByType(curType, curX));
+			this.objectsArray.push(this.CreateObjectByType(curType, curX));
 			
-			curX = curX + minRange + GetRandomNLessThen(delta);
+			curX = curX + minRange + MathGeom.GetRandomNLessThen(delta);
 			obstaclesInSeries = obstaclesInSeries - 1;
 		}
 	}
 }
 
-module.exports = ObstaclesController;
-
+module.exports = WorldObjectsController;
 
 /***/ }),
-/* 18 */
+/* 20 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1382,9 +1438,453 @@ module.exports = ObstaclesController;
 
 
 
-const View = __webpack_require__(0);
-const Scores = __webpack_require__(19);
-const Header = __webpack_require__(1);
+const Dot = __webpack_require__(0);
+const MathGeom = __webpack_require__(3);
+const WorldObject = __webpack_require__(4);
+
+const Y = 295;
+const WIDTH = 50;
+const HEIGHT = 100;
+
+const SQUARECOLOUR = "#201919";
+
+const SPIKES = new Image();
+SPIKES.src = '/img/spike.png';         
+
+class UpperObstacle extends WorldObject {
+	
+	GetWidth () { return WIDTH }; 
+	GetHeight () { return HEIGHT };
+	
+	draw (gameSettings) {
+		// drawing central square
+		gameSettings.canvas.fillStyle = SQUARECOLOUR;
+		gameSettings.canvas.fillRect(
+            this.x*gameSettings.scale, 
+            (Y+WIDTH/2)*gameSettings.scale, 
+            WIDTH*gameSettings.scale, 
+            (HEIGHT-WIDTH)*gameSettings.scale
+        );
+		
+		// upper spikes (upper half of png)
+		gameSettings.canvas.drawImage(SPIKES, 0, 0, 300, 150,
+										this.x*gameSettings.scale,
+										Y*gameSettings.scale,
+										WIDTH*gameSettings.scale, WIDTH/2*gameSettings.scale);
+							
+		// bottom spikes (bottom half of png)
+		gameSettings.canvas.drawImage(SPIKES, 0, 150, 300, 150,
+										this.x*gameSettings.scale,
+										(Y+HEIGHT-WIDTH/2)*gameSettings.scale-1,
+										WIDTH*gameSettings.scale, WIDTH/2*gameSettings.scale);
+	}
+	
+	// returns object containing: is there a collision (true/false)
+	//							  is collision fatal (true/false)
+	//							  score effect of collision - function(scoreController, sceneInfo)
+	// 							  player effect of collision - function(player, sceneInfo)
+	CheckCollision(playerUpperLeft, playerBottomRight) {
+		let result = {
+				'isCollided' : false,
+				'isFatal' : false,
+				'scoreEffect' : function (score, gameSettings) {},
+				'playerEffect' : function (player, gameSettings) {},
+		}
+		
+		// check spikes
+		let playerMidTop = new Dot(
+								(playerUpperLeft.x + playerBottomRight.x)/2,
+								playerUpperLeft.y
+							);
+							
+		let spikeCenterBottom = new Dot(
+								this.x+WIDTH/2,
+								Y + HEIGHT - WIDTH/2
+							);
+		
+		// check bottom circle half
+		let dist = MathGeom.GetDistance(playerMidTop, spikeCenterBottom);
+		
+		if ((playerMidTop.y >= spikeCenterBottom.y) && (dist <  WIDTH/2)) {
+			result.isCollided = true;
+			result.isFatal = true;
+							
+			return result;
+		}
+		
+		// check non-Fatal collision
+		let playerRightTop = new Dot (playerBottomRight.x, playerUpperLeft.y);
+		if (this.x <= playerRightTop.x && playerRightTop.x <= this.x+WIDTH && playerRightTop.y < Y+HEIGHT-WIDTH/2) {
+			result.isCollided = true;
+			result.isFatal = false;
+			
+			result.playerEffect = function (player, gameSettings) {
+										player.changePosition(-gameSettings.horSpeed,0);
+								  }
+			
+			return result;
+		}
+		
+		return result;
+	}
+}
+
+module.exports = UpperObstacle;
+
+/***/ }),
+/* 21 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/* global require */
+/* global module */
+
+
+
+const Dot = __webpack_require__(0);
+const MathGeom = __webpack_require__(3);
+const WorldObject = __webpack_require__(4);
+
+const Y = 405;
+const WIDTH = 50;
+const HEIGHT = 100;
+
+const SQUARECOLOUR = "#201919";
+
+const SPIKES = new Image();
+SPIKES.src = '/img/spike.png';         
+
+class MidObstacle extends WorldObject {
+	
+	GetWidth () { return WIDTH }; 
+	GetHeight () { return HEIGHT };
+	
+	draw (gameSettings) {
+		// drawing central square
+		gameSettings.canvas.fillStyle = SQUARECOLOUR;
+		gameSettings.canvas.fillRect(
+            this.x*gameSettings.scale, 
+            (Y+WIDTH/2)*gameSettings.scale, 
+            WIDTH*gameSettings.scale, 
+            (HEIGHT-WIDTH)*gameSettings.scale
+        );
+		
+		// upper spikes (upper half of png)
+		gameSettings.canvas.drawImage(SPIKES, 0, 0, 300, 150,
+										this.x*gameSettings.scale,
+										Y*gameSettings.scale+1,
+										WIDTH*gameSettings.scale, WIDTH/2*gameSettings.scale);
+	}
+	
+	// returns object containing: is there a collision (true/false)
+	//							  is collision fatal (true/false)
+	//							  score effect of collision - function(scoreController, sceneInfo)
+	// 							  player effect of collision - function(player, sceneInfo)
+	CheckCollision(playerUpperLeft, playerBottomRight) {
+		let result = {
+				'isCollided' : false,
+				'isFatal' : false,
+				'scoreEffect' : function (score, gameSettings) {},
+				'playerEffect' : function (player, gameSettings) {},
+		}
+		
+		// check spikes
+		let playerMidBottom = new Dot(
+								(playerUpperLeft.x + playerBottomRight.x)/2,
+								playerBottomRight.y
+							);
+							
+		let spikeCenterBottom = new Dot(
+								this.x+WIDTH/2,
+								Y + WIDTH/2
+							);
+									
+		// check top circle half
+		let dist = MathGeom.GetDistance(playerMidBottom, spikeCenterBottom);
+		
+		if ((dist <  WIDTH/2)) {
+			result.isCollided = true;
+			result.isFatal = true;
+							
+			return result;
+		}
+		
+		// check non-Fatal collision
+		if (this.x <= playerBottomRight.x && playerBottomRight.x <= this.x+WIDTH && playerBottomRight.y > Y+WIDTH/2) {
+			result.isCollided = true;
+			result.isFatal = false;
+			
+			result.playerEffect = function (player, gameSettings) {
+										player.changePosition(-gameSettings.horSpeed*1.5,0);
+								  }
+			
+			return result;
+		}
+		
+		return result;
+	}
+}
+
+module.exports = MidObstacle;
+
+/***/ }),
+/* 22 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/* global require */
+/* global module */
+
+
+
+const Dot = __webpack_require__(0);
+const MathGeom = __webpack_require__(3);
+const WorldObject = __webpack_require__(4);
+
+const Y = 480;
+const WIDTH = 100;
+const HEIGHT = 100;
+
+const SQUARECOLOUR = "#FFFFFF";
+
+const SPIKES = new Image();
+SPIKES.src = '/img/spike.png';         
+
+class PitObstacle extends WorldObject {
+	
+	GetWidth () { return WIDTH }; 
+	GetHeight () { return HEIGHT };
+	
+	draw (gameSettings) {
+		// drawing central square
+		gameSettings.canvas.fillStyle = SQUARECOLOUR;
+		gameSettings.canvas.fillRect(
+            this.x*gameSettings.scale, 
+            Y*gameSettings.scale-1, 
+            WIDTH*gameSettings.scale, 
+            (HEIGHT)*gameSettings.scale
+        );
+		
+		// spikes (upper half of png)
+		gameSettings.canvas.drawImage(SPIKES, 0, 0, 300, 150,
+										this.x*gameSettings.scale,
+										(Y+HEIGHT-WIDTH/2)*gameSettings.scale+1,
+										WIDTH*gameSettings.scale, WIDTH/2*gameSettings.scale);
+	}
+	
+	// returns object containing: is there a collision (true/false)
+	//							  is collision fatal (true/false)
+	//							  score effect of collision - function(scoreController, sceneInfo)
+	// 							  player effect of collision - function(player, sceneInfo)
+	CheckCollision(playerUpperLeft, playerBottomRight) {
+		let result = {
+				'isCollided' : false,
+				'isFatal' : false,
+				'scoreEffect' : function (score, gameSettings) {},
+				'playerEffect' : function (player, gameSettings) {},
+		}
+		
+		// check spikes
+		let playerMidBottom = new Dot(
+								(playerUpperLeft.x + playerBottomRight.x)/2,
+								playerBottomRight.y
+							);
+							
+		let spikeCenterBottom = new Dot(
+								this.x+WIDTH/2,
+								Y + WIDTH/2
+							);
+							
+		if (this.x <= playerMidBottom.x && playerMidBottom.x <= this.x+WIDTH && playerMidBottom.y > Y+5) {
+			result.isCollided = true;
+			result.isFatal = true;
+							
+			return result;
+		}
+		
+		// check non-Fatal collision
+		if (this.x <= playerMidBottom.x && playerMidBottom.x <= this.x+WIDTH && playerMidBottom.y >= Y-5) {
+			result.isCollided = true;
+			result.isFatal = false;
+			
+			result.playerEffect = function (player, gameSettings) {
+										player.changePosition(-gameSettings.horSpeed*0.5,-55);
+								  }
+			
+			return result;
+		}
+		
+		return result;
+	}
+}
+
+module.exports = PitObstacle;
+
+/***/ }),
+/* 23 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/* global require */
+/* global module */
+
+
+
+const Dot = __webpack_require__(0);
+const MathGeom = __webpack_require__(3);
+const WorldObject = __webpack_require__(4);
+
+const Y = 420;
+const WIDTH = 25;
+const HEIGHT = 25;
+
+const GEM = new Image();
+GEM.src = '/img/gem.png';         
+
+class MidGem extends WorldObject {
+	
+	GetWidth () { return WIDTH }; 
+	GetHeight () { return HEIGHT };
+	
+	draw (gameSettings) {
+		
+		// spikes (upper half of png)
+		gameSettings.canvas.drawImage(GEM,
+										(this.x-WIDTH/2)*gameSettings.scale,
+										(Y-HEIGHT/2)*gameSettings.scale,
+										25,25
+									);
+	}
+	
+	// returns object containing: is there a collision (true/false)
+	//							  is collision fatal (true/false)
+	//							  score effect of collision - function(scoreController, sceneInfo)
+	// 							  player effect of collision - function(player, sceneInfo)
+	CheckCollision(playerUpperLeft, playerBottomRight) {
+		let result = {
+				'isCollided' : false,
+				'isFatal' : false,
+				'scoreEffect' : function (score, gameSettings) {},
+				'playerEffect' : function (player, gameSettings) {},
+		}
+			
+		let playerMidBottom = new Dot(
+								(playerUpperLeft.x + playerBottomRight.x)/2,
+								playerBottomRight.y
+							);	
+			
+		// check non-Fatal collision
+		if (playerMidBottom.x-WIDTH <= this.x && this.x <= playerMidBottom.x + WIDTH && 
+				playerUpperLeft.y <= Y && Y <= playerBottomRight.y ) {
+					
+			result.isCollided = true;
+			result.isFatal = false;
+			
+			result.scoreEffect = function (score, gameSettings) {
+				score.extra(20);
+			}
+			
+			// gem disappears in left side of screen
+			this.x = -25;
+			
+			return result;
+		}
+		
+		return result;
+	}
+}
+
+module.exports = MidGem;
+
+/***/ }),
+/* 24 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/* global require */
+/* global module */
+
+
+
+const Dot = __webpack_require__(0);
+const MathGeom = __webpack_require__(3);
+const WorldObject = __webpack_require__(4);
+
+const Y = 320;
+const WIDTH = 25;
+const HEIGHT = 25;
+
+const GEM = new Image();
+GEM.src = '/img/gem.png';         
+
+class UpperGem extends WorldObject {
+	
+	GetWidth () { return WIDTH }; 
+	GetHeight () { return HEIGHT };
+	
+	draw (gameSettings) {
+		
+		// spikes (upper half of png)
+		gameSettings.canvas.drawImage(GEM,
+										(this.x-WIDTH/2)*gameSettings.scale,
+										(Y-HEIGHT/2)*gameSettings.scale,
+										25,25
+									);
+	}
+	
+	// returns object containing: is there a collision (true/false)
+	//							  is collision fatal (true/false)
+	//							  score effect of collision - function(scoreController, sceneInfo)
+	// 							  player effect of collision - function(player, sceneInfo)
+	CheckCollision(playerUpperLeft, playerBottomRight) {
+		let result = {
+				'isCollided' : false,
+				'isFatal' : false,
+				'scoreEffect' : function (score, gameSettings) {},
+				'playerEffect' : function (player, gameSettings) {},
+		}
+			
+		let playerMidBottom = new Dot(
+								(playerUpperLeft.x + playerBottomRight.x)/2,
+								playerBottomRight.y
+							);	
+			
+		// check non-Fatal collision
+		if (playerMidBottom.x-WIDTH <= this.x && this.x <= playerMidBottom.x + WIDTH && 
+				playerUpperLeft.y <= Y && Y <= playerBottomRight.y ) {
+					
+			result.isCollided = true;
+			result.isFatal = false;
+			
+			result.scoreEffect = function (score, gameSettings) {
+				score.extra(40);
+			}
+			
+			// gem disappears in left side of screen
+			this.x = -25;
+			
+			return result;
+		}
+		
+		return result;
+	}
+}
+
+module.exports = UpperGem;
+
+/***/ }),
+/* 25 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/* global require */
+/* global module */
+
+
+
+const View = __webpack_require__(1);
+const Scores = __webpack_require__(26);
+const Header = __webpack_require__(2);
 
 class ScoresView extends View {
 
@@ -1429,7 +1929,7 @@ module.exports = ScoresView;
 
 
 /***/ }),
-/* 19 */
+/* 26 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* global require */
@@ -1437,7 +1937,7 @@ module.exports = ScoresView;
 
 module.exports = {
 	rend : function(params){
-		const template = __webpack_require__(20);
+		const template = __webpack_require__(27);
 		let html = template(params);
 		const elem = document.createElement('div');
 		elem.innerHTML = html;
@@ -1447,7 +1947,7 @@ module.exports = {
 
 
 /***/ }),
-/* 20 */
+/* 27 */
 /***/ (function(module, exports) {
 
 module.exports = function (obj) {
@@ -1476,7 +1976,7 @@ return __p
 }
 
 /***/ }),
-/* 21 */
+/* 28 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1485,9 +1985,9 @@ return __p
 
 
 
-const View = __webpack_require__(0);
-const Menu = __webpack_require__(22);
-const Header = __webpack_require__(1);
+const View = __webpack_require__(1);
+const Menu = __webpack_require__(29);
+const Header = __webpack_require__(2);
 
 class MenuView extends View {
 
@@ -1530,7 +2030,7 @@ module.exports = MenuView;
 
 
 /***/ }),
-/* 22 */
+/* 29 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* global require */
@@ -1538,7 +2038,7 @@ module.exports = MenuView;
 
 module.exports = {
 	rend : function(params){
-		const template = __webpack_require__(23);
+		const template = __webpack_require__(30);
 		let html = template(params);
 		const elem = document.createElement('div');
 		elem.innerHTML = html;
@@ -1548,7 +2048,7 @@ module.exports = {
 
 
 /***/ }),
-/* 23 */
+/* 30 */
 /***/ (function(module, exports) {
 
 module.exports = function (obj) {
@@ -1571,7 +2071,7 @@ return __p
 }
 
 /***/ }),
-/* 24 */
+/* 31 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1580,9 +2080,9 @@ return __p
 
 
 
-const View = __webpack_require__(0);
-const Form = __webpack_require__(5);
-const Header = __webpack_require__(1);
+const View = __webpack_require__(1);
+const Form = __webpack_require__(7);
+const Header = __webpack_require__(2);
 
 class SignInView extends View {
 
@@ -1686,7 +2186,7 @@ module.exports = SignInView;
 
 
 /***/ }),
-/* 25 */
+/* 32 */
 /***/ (function(module, exports) {
 
 module.exports = function (obj) {
@@ -1737,7 +2237,7 @@ return __p
 }
 
 /***/ }),
-/* 26 */
+/* 33 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1746,9 +2246,9 @@ return __p
 
 
 
-const View = __webpack_require__(0);
-const Form = __webpack_require__(5);
-const Header = __webpack_require__(1);
+const View = __webpack_require__(1);
+const Form = __webpack_require__(7);
+const Header = __webpack_require__(2);
 
 class SignUpView extends View {
 
@@ -1867,7 +2367,7 @@ module.exports = SignUpView;
 
 
 /***/ }),
-/* 27 */
+/* 34 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1876,8 +2376,8 @@ module.exports = SignUpView;
 
 
 
-const View = __webpack_require__(0);
-const Header = __webpack_require__(1);
+const View = __webpack_require__(1);
+const Header = __webpack_require__(2);
 
 class LogoutView extends View {
 
@@ -1913,6 +2413,58 @@ class LogoutView extends View {
 }
 
 module.exports = LogoutView;
+
+
+/***/ }),
+/* 35 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/* global require */
+/* global module */
+
+
+
+const Dot = __webpack_require__(0);
+
+const WIDTH = 100;
+const HEIGHT = 100;
+const JUMPPOWER = 33;
+
+const RUN = 0;
+const ONAIR = 1;
+const BEND = 2;
+const BENDEDONAIR = 3;
+
+class Score {
+
+	constructor () {
+        if(Score._instance) {
+			return Score._instance;
+		}
+        Score._instance = this;
+    }
+
+    init() {
+        this._time = 0;
+        this._score = 0;
+    }
+
+    extra(bonus) {
+        this._score += Number(bonus);
+    }
+
+    tick() {
+        this._time++;
+    }
+
+    get scoreValue() {
+        return Math.floor(Number(this._time) * 0.1) + Number(this._score);
+    }
+
+}
+
+module.exports = Score;
 
 
 /***/ })

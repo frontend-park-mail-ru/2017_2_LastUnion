@@ -21,10 +21,10 @@ class InputController {
                     _this.PlayerController.duck();
                 break;
                 case 32:
-                    if(!_this.Controller._over) {
+                    if(!_this.Controller._over && _this.Controller.started) {
                         _this.Controller.pause();
                     } else {
-                        _this.Controller.reset();
+                        _this.Controller.reset(true);
                     }
                 break;
             break;

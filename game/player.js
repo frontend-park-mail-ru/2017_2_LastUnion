@@ -7,7 +7,7 @@ const Dot = require('./dot');
 
 const WIDTH = 100;
 const HEIGHT = 100;
-const JUMPPOWER = 35;
+const JUMPPOWER = 33;
 
 const RUN = 0;
 const ONAIR = 1;
@@ -26,16 +26,19 @@ class Player {
     init() {
         this._state = 0;
         this._action = null;
+        this.gameover = false;
 
         this.time = 0;
         this.skin = 0;
+		this.dialogVisible = false;
 
         this.jumpTime = 0;
         this.verticalAcceleration = 10;
         this.offtop = 0;
 
         const bm = new Dot(0,0);
-        const br = new Dot(WIDTH / 2, 0);
+        const br = new Dot( WIDTH / 2, 0 ); // doesn't work. I hz pochemy
+		br.x = WIDTH / 2;
         const tr = new Dot(WIDTH / 2, HEIGHT);
         const tl = new Dot(-WIDTH / 2, HEIGHT);
 
@@ -52,6 +55,9 @@ class Player {
             playerImg.src = '/img/player0' + i + '.png';
             this.playerSkinRun.push(playerImg);
         }
+		
+		this.dlgImg = new Image();   
+        this.dlgImg.src = '/img/fck.png';
 
     }
 
@@ -63,35 +69,53 @@ class Player {
         let sceneCoords = {};
         for(let dot in this.geometry) {
             sceneCoords[dot] = new Dot();
-            sceneCoords[dot].x = centerX - this.geometry[dot].x * gameSettings.scale
-            sceneCoords[dot].y = centerY - this.geometry[dot].y * gameSettings.scale
+            sceneCoords[dot].x = (gameSettings.defaultW/2 + this.geometry[dot].x) * gameSettings.scale
+            sceneCoords[dot].y = (gameSettings.defaultW/4 - this.geometry[dot].y) * gameSettings.scale
         }
 
         
         gameSettings.canvas.drawImage(
             this.playerSkinRun[this.skin],
-            sceneCoords['tr'].x, 
-            sceneCoords['tr'].y,
+            sceneCoords['tl'].x, 
+            sceneCoords['tl'].y,
             WIDTH * gameSettings.scale, 
             (this.topRightCoords.y - this.bottomRightCoords.y) * gameSettings.scale
         );
+        
+
+		if(this.dialogVisible && sceneCoords['tl'].x < 200) {
+            gameSettings.canvas.drawImage(
+                this.dlgImg,
+                sceneCoords['tr'].x + WIDTH, 
+                sceneCoords['tr'].y - HEIGHT,
+                100 * gameSettings.scale, 
+                100 * gameSettings.scale
+            );
+        }
+
+        if(sceneCoords['tl'].x <= 0) {
+            this.gameover = true;
+        }
 		
 
-        // gameSettings.canvas.fillRect(
-        //     sceneCoords['tr'].x, 
-        //     sceneCoords['tr'].y, 
-        //     WIDTH * gameSettings.scale, 
-        //     (this.topRightCoords.y - this.bottomRightCoords.y) * gameSettings.scale
-        // );
+		// show control points
+		/*gameSettings.canvas.fillStyle = "#FFFF00";
+		for(let dot in this.geometry) {
+			if (dot == 'br') gameSettings.canvas.fillStyle = "#00FF00";
+			if (dot == 'tr') gameSettings.canvas.fillStyle = "#0000FF";
+			if (dot == 'tl') gameSettings.canvas.fillStyle = "#FF00FF";
+           gameSettings.canvas.fillRect((this.geometry[dot].x+960-7)*gameSettings.scale, (480-this.geometry[dot].y-7)*gameSettings.scale, 14, 14);
+        }*/
     }
 
     trigger() {
         this.bendedTired();
         this.tick();
         if(!this._action || this._action === null) {
-            return;
+            return this.gameover;
         }
         this._action();
+        return this.gameover;
     }
 
     changePosition(x,y) {
@@ -102,12 +126,12 @@ class Player {
 
     bendedTired() {
         if(this.bended) {
-            this.offtop++;
-            this.changePosition(1, 0);
+            this.offtop -= 3;
+            this.changePosition(-3, 0);
         } else {
-            if(this.offtop > 0) {
-                this.offtop -= 3
-                this.changePosition(-3, 0);
+            if(this.offtop < 0) {
+                this.offtop += 6;
+                this.changePosition(6, 0);
             }
         }
     }
@@ -117,6 +141,13 @@ class Player {
         if(this.time % 4 == 0) {
             this.skin == 3 ? this.skin = 0 : this.skin++;
         }
+		if(this.time % 40 == 0) {
+            this.dialog();
+        }
+    }
+	
+	dialog() {
+        this.dialogVisible == false ? this.dialogVisible = true : this.dialogVisible = false;
     }
 
     jump() {
@@ -157,12 +188,14 @@ class Player {
         if(!this.bended) {
             this.state == ONAIR ? this.state = BENDEDONAIR : this.state = BEND;
             this.topRightCoords.update(0, -HEIGHT / 2);
+			this.topLeftCoords.update(0, -HEIGHT / 2);
         }
     }
 
     run() {
         if(this.bended) {
             this.topRightCoords.update(0, HEIGHT / 2);
+			this.topLeftCoords.update(0, HEIGHT / 2);
         }
         this.state = RUN;
     }

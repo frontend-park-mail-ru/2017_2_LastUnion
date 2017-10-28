@@ -2,10 +2,10 @@
 
 'use strict';
 
-const HOST = 'localhost:8080';
-const PROTOCOL = 'http://';
-//const PROTOCOL = 'https://';
-//const HOST = 'lastunion.herokuapp.com';
+//const HOST = 'localhost:8080';
+//const PROTOCOL = 'http://';
+const PROTOCOL = 'https://';
+const HOST = 'lastunion.herokuapp.com';
 
 
 class API {
