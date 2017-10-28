@@ -29,9 +29,9 @@ class User {
 
 	getScore() {
 		const _this = this;
-		return this.api.sendReq('uesr/get_score', 'GET').then(function(response) {
+		return this.api.sendReq('user/get_score', 'GET').then(function(response) {
 			_this._proto.score = _this.checkResponse(response);
-
+			// return _this._proto.score;
 		});
 	}
 
@@ -71,19 +71,24 @@ class User {
 
 	login(login, password) {
 		const _this = this;
-		return this.api.call('user/signin', 'POST', {
+		return this.api.sendReq('user/signin', 'POST', {
 			userName: login,
 			userPassword: password
 		}).then(function(response) {
 			_this.checkResponse(response);
 			_this._proto.login = login;
+			/////////////////////////////////
+			// test
+			_this.setScore(50);
+			console.log(_this.getScore());
+			//////////////////////////////////
 			_this._loggedin = true;
 		});
 	}
 
 	signup(login, password, email) {
 		const _this = this;
-		return this.api.call('user/signup', 'POST', {
+		return this.api.sendReq('user/signup', 'POST', {
 			userName: login,
 			userPassword: password,
 			userEmail: email
@@ -94,7 +99,7 @@ class User {
 
 	logout() {
 		const _this = this;
-		return this.api.call('user/logout', 'POST').then(function(response) {
+		return this.api.sendReq('user/logout', 'POST').then(function(response) {
 			_this.checkResponse(response);
 			_this._proto = {};
 			_this._loggedin = false;
