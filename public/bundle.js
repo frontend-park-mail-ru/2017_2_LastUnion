@@ -291,7 +291,7 @@ module.exports = Dot;
 
 const Dot = __webpack_require__(3);
 
-const WIDTH = 50;
+const WIDTH = 100;
 const HEIGHT = 100;
 const JUMPPOWER = 35;
 
@@ -313,6 +313,9 @@ class Player {
         this._state = 0;
         this._action = null;
 
+        this.time = 0;
+        this.skin = 0;
+
         this.jumpTime = 0;
         this.verticalAcceleration = 10;
         this.offtop = 0;
@@ -328,6 +331,14 @@ class Player {
             'tr' : tr,
             'tl' : tl,
         };
+
+        this.playerSkinRun = [];
+        for(let i = 0; i < 4; i++) {
+            let playerImg = new Image();
+            playerImg.src = '/img/player0' + i + '.png';
+            this.playerSkinRun.push(playerImg);
+        }
+
     }
 
     draw(gameSettings) {
@@ -342,16 +353,27 @@ class Player {
             sceneCoords[dot].y = centerY - this.geometry[dot].y * gameSettings.scale
         }
 
-        gameSettings.canvas.fillRect(
+        
+        gameSettings.canvas.drawImage(
+            this.playerSkinRun[this.skin],
             sceneCoords['tr'].x, 
-            sceneCoords['tr'].y, 
+            sceneCoords['tr'].y,
             WIDTH * gameSettings.scale, 
             (this.topRightCoords.y - this.bottomRightCoords.y) * gameSettings.scale
         );
+		
+
+        // gameSettings.canvas.fillRect(
+        //     sceneCoords['tr'].x, 
+        //     sceneCoords['tr'].y, 
+        //     WIDTH * gameSettings.scale, 
+        //     (this.topRightCoords.y - this.bottomRightCoords.y) * gameSettings.scale
+        // );
     }
 
     trigger() {
         this.bendedTired();
+        this.tick();
         if(!this._action || this._action === null) {
             return;
         }
@@ -373,6 +395,13 @@ class Player {
                 this.offtop -= 3
                 this.changePosition(-3, 0);
             }
+        }
+    }
+
+    tick() {
+        this.time++;
+        if(this.time % 4 == 0) {
+            this.skin == 3 ? this.skin = 0 : this.skin++;
         }
     }
 
@@ -920,6 +949,9 @@ return __p
 
 const DEFAULT_W = 1920;
 
+const MAIN_TEXT_COLOR = "#000000";
+const TIP_TEXT_COLOT = "#555555";
+
 const Dot = __webpack_require__(3);
 const Player = __webpack_require__(4);
 const InputController = __webpack_require__(16);
@@ -1042,8 +1074,8 @@ class GameController {
 
 	pauseOverlay() {
 		this.setOpacity();
-		this.text("Pause", this.gameCanvas.height / 2, 60, "#000000");
-		this.text("Press SPACE to continue", this.gameCanvas.height / 2 + 30, 30, "#555555");
+		this.text("Pause", this.gameCanvas.height / 2, 60, MAIN_TEXT_COLOT);
+		this.text("Press SPACE to continue", this.gameCanvas.height / 2 + 30, 30, TIP_TEXT_COLOT);
 	}
 
 	gameover() {
@@ -1053,8 +1085,8 @@ class GameController {
 
 	gameoverOverlay() {
 		this.setOpacity();
-		this.text("Game Over!", this.gameCanvas.height / 2, 60, "#000000");
-		this.text("Press SPACE to run again!", this.gameCanvas.height / 2 + 30, 30, "#555555");
+		this.text("Game Over!", this.gameCanvas.height / 2, 60, MAIN_TEXT_COLOR);
+		this.text("Press SPACE to run again!", this.gameCanvas.height / 2 + 30, 30, TIP_TEXT_COLOT);
 
 		const nekro = new Image();
 		nekro.src = '/img/nekro.png';

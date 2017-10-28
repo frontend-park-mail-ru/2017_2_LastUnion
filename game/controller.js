@@ -5,6 +5,9 @@
 
 const DEFAULT_W = 1920;
 
+const MAIN_TEXT_COLOR = "#000000";
+const TIP_TEXT_COLOT = "#555555";
+
 const Dot = require('./dot');
 const Player = require('./player');
 const InputController = require('./input');
@@ -127,8 +130,8 @@ class GameController {
 
 	pauseOverlay() {
 		this.setOpacity();
-		this.text("Pause", this.gameCanvas.height / 2, 60, "#000000");
-		this.text("Press SPACE to continue", this.gameCanvas.height / 2 + 30, 30, "#555555");
+		this.text("Pause", this.gameCanvas.height / 2, 60, MAIN_TEXT_COLOT);
+		this.text("Press SPACE to continue", this.gameCanvas.height / 2 + 30, 30, TIP_TEXT_COLOT);
 	}
 
 	gameover() {
@@ -138,8 +141,8 @@ class GameController {
 
 	gameoverOverlay() {
 		this.setOpacity();
-		this.text("Game Over!", this.gameCanvas.height / 2, 60, "#000000");
-		this.text("Press SPACE to run again!", this.gameCanvas.height / 2 + 30, 30, "#555555");
+		this.text("Game Over!", this.gameCanvas.height / 2, 60, MAIN_TEXT_COLOR);
+		this.text("Press SPACE to run again!", this.gameCanvas.height / 2 + 30, 30, TIP_TEXT_COLOT);
 
 		const nekro = new Image();
 		nekro.src = '/img/nekro.png';
