@@ -7,6 +7,8 @@ const View = require('../modules/view');
 const Game = require('./templates/game/game');
 const Header = require('../views/templates/header/header');
 
+const GameController = require('../game/controller');
+
 class GameView extends View {
 
 	constructor() {
@@ -15,7 +17,6 @@ class GameView extends View {
 			return GameView._instance;
 		}
 		GameView._instance = this;
-
 		this.init();
 	}
 
@@ -24,7 +25,12 @@ class GameView extends View {
 			loggedin : this.user.isAuth(),
 			score: this.user.getScore()
 		}), 'Header');
-		this.dom.insertDom(this.body, Game.rend({}), 'Game');
+		if(this.dom.insertDom(this.body, Game.rend({}), 'Game')) {
+			Game.resize();
+			this.GameController = new GameController();
+			this.GameController.initGame(false);
+			this.GameController.play();
+		}
 		this.listenLinks();
 	}
 
