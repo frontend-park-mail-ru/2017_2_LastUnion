@@ -60,7 +60,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 4);
+/******/ 	return __webpack_require__(__webpack_require__.s = 8);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -68,11 +68,73 @@
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
+/* global require */
+/* global module */
 
 
-const Router = __webpack_require__(2);
-const DOM = __webpack_require__(7);
-const User = __webpack_require__(8);
+
+class Dot {
+    
+    constructor(x, y) {
+        if(!y || y == 'undefined') {
+            this._x = 0;
+            this._y = 0;
+        } else {
+            this._x = x;
+            this._y = y;
+        }
+    }
+
+    update(x, y) {
+        this._x += x;
+        this._y += y;
+    }
+
+    get x() {
+        return this._x;
+    }
+
+    set x(__x) {
+        this._x = __x;
+    }
+
+    get y() {
+        return this._y;
+    }
+
+    set y(__y) {
+        this._y = __y;
+    }
+
+    newCoords(x, y) {
+        this._x = x;
+        this._y = y;
+    }
+
+    get coords() {
+        return {
+            'x' : this._x,
+            'y' : this._y
+        }
+    }
+
+}
+
+module.exports = Dot;
+
+/***/ }),
+/* 1 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/* global require */
+/* global module */
+
+
+
+const Router = __webpack_require__(5);
+const DOM = __webpack_require__(11);
+const User = __webpack_require__(12);
 
 class View {
 
@@ -80,21 +142,21 @@ class View {
 		this.dom = new DOM();
 		this.user = new User();
 		this.router = new Router();
-		this.body = this.dom.gTAG(null, 'body')[0];
+		this.body = document.getElementsByTagName('body')[0];
 	}
 
 
-	ListenLinks() {
+	listenLinks() {
 		const _this = this;
-		const SelEvent = [];
-		for(var obj in this.dom.loadedBlocks) {
+		
+		for(let obj in this.dom.loadedBlocks) {
 			if(!this.dom.loadedBlocks[obj].listened) {
-				const Links = this.dom.gTAG(this.dom.loadedBlocks[obj].html, 'a');
-				for(let i=0; i < Links.length; i++)
+				const links = this.dom.loadedBlocks[obj].html.getElementsByTagName('a');
+				for(let i=0; i < links.length; i++)
 				{
-					Links[i].addEventListener('click', event => {
+					links[i].addEventListener('click', event => {
 						event.preventDefault();
-						const route = Links[i].getAttribute('href');
+						const route = links[i].getAttribute('href');
 						_this.router.go(route);
 					});
 				}
@@ -103,16 +165,16 @@ class View {
 		}
 	}
 
-	Hide(obj) {
+	hide(obj) {
 		const elem = this.dom.loadedBlocks[obj];
 		if(elem && typeof elem !== 'undefined') {
-			elem.html.hidden = 'true';
+			elem.html.hidden = true;
 		} else {
 			console.error('Can\'t hide. No such element: ' + obj);
 		}
 	}
 
-	Show(obj) {
+	show(obj) {
 		const elem = this.dom.loadedBlocks[obj];
 		if(elem && typeof elem !== 'undefined') {
 			elem.html.hidden = false;
@@ -127,12 +189,15 @@ module.exports = View;
 
 
 /***/ }),
-/* 1 */
+/* 2 */
 /***/ (function(module, exports, __webpack_require__) {
+
+/* global require */
+/* global module */
 
 module.exports = {
 	rend : function(params){
-		var template = __webpack_require__(12);
+		const template = __webpack_require__(16);
 		let html = template(params);
 		const elem = document.createElement('div');
 		elem.innerHTML = html;
@@ -142,13 +207,76 @@ module.exports = {
 
 
 /***/ }),
-/* 2 */
+/* 3 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
+/* global require */
+/* global module */
 
 
-const urlcom = __webpack_require__(5);
+
+module.exports = {
+	GetRandomNLessThen : function GetRandomNLessThen(Restrict) {
+		return Math.floor(Math.random() * Restrict);
+	},
+
+	GetRandomNInRange : function GetRandomNInRange(a, b) {
+		return Math.floor(Math.random() * (b + 1 - a) + a);
+	},
+	
+	GetDistance : function GetDistance(a, b) {
+		let dx = a.x - b.x;
+		let dy = a.y - b.y;
+		
+		return Math.sqrt(dx*dx + dy*dy);
+	}
+};
+
+/***/ }),
+/* 4 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/* global require */
+/* global module */
+
+
+
+class WorldObject {
+	constructor (x) {
+		this.x = x;
+	}
+	
+	drawAt (x) {}
+	
+	// returns object containing: is there a collision (true/false)
+	//							  score effect of collision - function(scoreController, sceneInfo)
+	// 							  player effect of collision - function(player, sceneInfo)
+	CheckCollision(playerUpperLeft, playerBottomRight) {
+		let result = {
+				'isCollided' : false,
+				'scoreEffect' : function(scoreController, gameSettings) {},
+				'playerEffect' : function(player, gameSettings) {},
+		}
+		
+		return result;
+	}
+}
+
+module.exports = WorldObject;
+
+/***/ }),
+/* 5 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/* global require */
+/* global module */
+
+
+
+const UrlCom = __webpack_require__(9);
 
 class Router {
 
@@ -160,13 +288,13 @@ class Router {
 		this.urls = [];
 
 		const _this = this;
-		window.addEventListener("popstate", function(e) {
+		window.addEventListener('popstate', function() {
 			_this.loadPage(location.pathname);
-		}, false)
+		}, false);
 	}
 
 	addUrl(url, view) {
-		const Url = new urlcom(url, view);
+		const Url = new UrlCom(url, view);
 		this.urls.push(Url);
 	}
 
@@ -176,16 +304,14 @@ class Router {
 
 	go(url) {
 		if (window.location.pathname === url) {
-            return;
-        }
-        window.history.pushState({}, '', url);
-        this.loadPage(url);
+			return;
+		}
+		window.history.pushState({}, '', url);
+		this.loadPage(url);
 	}
 
 	loadPage(url) {
-		if (!url || typeof url === 'undefined')
-			url = null;
-		if(url == null) {
+		if (!url || typeof url === 'undefined' || url == null) {
 			url = this.getUrl();
 		}
 
@@ -193,7 +319,7 @@ class Router {
 			url = url.substring(0, url.length - 1);
 		}
 
-		const route = this.urls.filter(function(urlObj) {
+		const Route = this.urls.filter(function(urlObj) {
 			// later better use regular expression
 			// but here we just compare 2 strings
 			// console.log(urlObj.url, url, urlObj.url == url);
@@ -201,12 +327,12 @@ class Router {
 		})[0];
 
 		if(this.CurrentRoute) {
-			this.CurrentRoute.Destroy();
+			this.CurrentRoute.destroy();
 			console.log('Destroyed page ' + this.CurrentRoute.url);
 		}
-		this.CurrentRoute = route;
+		this.CurrentRoute = Route;
 		console.log('Loaded new page: ' + url);
-		route.Load();
+		Route.load();
 	}
 }
 
@@ -214,12 +340,266 @@ module.exports = Router;
 
 
 /***/ }),
-/* 3 */
+/* 6 */
 /***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/* global require */
+/* global module */
+
+
+
+const Dot = __webpack_require__(0);
+
+const WIDTH = 100;
+const HEIGHT = 100;
+const JUMPPOWER = 33;
+
+const RUN = 0;
+const ONAIR = 1;
+const BEND = 2;
+const BENDEDONAIR = 3;
+
+class Player {
+
+	constructor () {
+        if(Player._instance) {
+			return Player._instance;
+		}
+        Player._instance = this;
+    }
+
+    init() {
+        this._state = 0;
+        this._action = null;
+        this.gameover = false;
+
+        this.time = 0;
+        this.skin = 0;
+		this.dialogVisible = false;
+
+        this.jumpTime = 0;
+        this.verticalAcceleration = 10;
+        this.offtop = 0;
+
+        const bm = new Dot(0,0);
+        const br = new Dot( WIDTH / 2, 0 ); // doesn't work. I hz pochemy
+		br.x = WIDTH / 2;
+        const tr = new Dot(WIDTH / 2, HEIGHT);
+        const tl = new Dot(-WIDTH / 2, HEIGHT);
+
+        this.geometry = {
+            'bm' : bm,
+            'br' : br,
+            'tr' : tr,
+            'tl' : tl,
+        };
+
+        this.playerSkinRun = [];
+        for(let i = 0; i < 4; i++) {
+            let playerImg = new Image();
+            playerImg.src = '/img/player0' + i + '.png';
+            this.playerSkinRun.push(playerImg);
+        }
+		
+		this.dlgImg = new Image();   
+        this.dlgImg.src = '/img/fck.png';
+
+    }
+
+    draw(gameSettings) {
+        const centerX = gameSettings.width / 2;
+        const centerY = gameSettings.height / 2;
+        gameSettings.canvas.fillStyle = "#000000";
+
+        let sceneCoords = {};
+        for(let dot in this.geometry) {
+            sceneCoords[dot] = new Dot();
+            sceneCoords[dot].x = (gameSettings.defaultW/2 + this.geometry[dot].x) * gameSettings.scale
+            sceneCoords[dot].y = (gameSettings.defaultW/4 - this.geometry[dot].y) * gameSettings.scale
+        }
+
+        
+        gameSettings.canvas.drawImage(
+            this.playerSkinRun[this.skin],
+            sceneCoords['tl'].x, 
+            sceneCoords['tl'].y,
+            WIDTH * gameSettings.scale, 
+            (this.topRightCoords.y - this.bottomRightCoords.y) * gameSettings.scale
+        );
+        
+
+		if(this.dialogVisible && sceneCoords['tl'].x < 200) {
+            gameSettings.canvas.drawImage(
+                this.dlgImg,
+                sceneCoords['tr'].x + WIDTH, 
+                sceneCoords['tr'].y - HEIGHT,
+                100 * gameSettings.scale, 
+                100 * gameSettings.scale
+            );
+        }
+
+        if(sceneCoords['tl'].x <= 0) {
+            this.gameover = true;
+        }
+		
+
+		// show control points
+		/*gameSettings.canvas.fillStyle = "#FFFF00";
+		for(let dot in this.geometry) {
+			if (dot == 'br') gameSettings.canvas.fillStyle = "#00FF00";
+			if (dot == 'tr') gameSettings.canvas.fillStyle = "#0000FF";
+			if (dot == 'tl') gameSettings.canvas.fillStyle = "#FF00FF";
+           gameSettings.canvas.fillRect((this.geometry[dot].x+960-7)*gameSettings.scale, (480-this.geometry[dot].y-7)*gameSettings.scale, 14, 14);
+        }*/
+    }
+
+    trigger() {
+        this.bendedTired();
+        this.tick();
+        if(!this._action || this._action === null) {
+            return this.gameover;
+        }
+        this._action();
+        return this.gameover;
+    }
+
+    changePosition(x,y) {
+        for(let d in this.geometry) {
+            this.geometry[d].update(x, y);
+        }
+    }
+
+    bendedTired() {
+        if(this.bended) {
+            this.offtop -= 3;
+            this.changePosition(-3, 0);
+        } else {
+            if(this.offtop < 0) {
+                this.offtop += 6;
+                this.changePosition(6, 0);
+            }
+        }
+    }
+
+    tick() {
+        this.time++;
+        if(this.time % 4 == 0) {
+            this.skin == 3 ? this.skin = 0 : this.skin++;
+        }
+		if(this.time % 40 == 0) {
+            this.dialog();
+        }
+    }
+	
+	dialog() {
+        this.dialogVisible == false ? this.dialogVisible = true : this.dialogVisible = false;
+    }
+
+    jump() {
+        if(this._action === null) {
+            this.action = this.jumpAction;
+        }
+        this.jumpStop = false;
+    }
+
+    jumpFinish() {
+        this.jumpStop = true;
+    }
+
+    jumpAction() {
+        if(this.jumpTime == 0) {
+            this.bended ? this.state = BENDEDONAIR : this.state = ONAIR; 
+            this.jumpLambda = 0;
+        }
+
+        this.jumpLambda = JUMPPOWER * this.jumpTime - (this.verticalAcceleration * Math.pow(this.jumpTime, 2) / 2) - this.jumpLambda;
+        this.jumpTime += 0.8;
+
+        if(this.bottomCenterCoords.y + this.jumpLambda < 0) {
+            this.changePosition(0, -this.bottomCenterCoords.y);
+            this.jumpTime = 0;
+            if(this.jumpStop) {
+                this.action = null;
+            }
+            if(this.state == ONAIR) {
+                this.run();
+            }
+            return;
+        }
+        this.changePosition(0, this.jumpLambda);
+    }
+
+    duck() {
+        if(!this.bended) {
+            this.state == ONAIR ? this.state = BENDEDONAIR : this.state = BEND;
+            this.topRightCoords.update(0, -HEIGHT / 2);
+			this.topLeftCoords.update(0, -HEIGHT / 2);
+        }
+    }
+
+    run() {
+        if(this.bended) {
+            this.topRightCoords.update(0, HEIGHT / 2);
+			this.topLeftCoords.update(0, HEIGHT / 2);
+        }
+        this.state = RUN;
+    }
+
+    voice() {
+        
+    }
+
+    get state() {
+        return this._state;
+    }
+
+    set state(st) {
+        this._state = st;
+    }
+
+    set action(f) {
+        this._action = f;
+    }
+
+    get bottomCenterCoords() {
+        return this.geometry.bm;
+    }
+
+    get topLeftCoords() {
+        return this.geometry.tl;
+    }
+
+    get topRightCoords() {
+        return this.geometry.tr;
+    }
+
+    get bottomRightCoords() {
+        return this.geometry.br;
+    }
+
+    get bended() {
+        return this.state > 1;
+    }
+
+}
+
+module.exports = Player;
+
+
+/***/ }),
+/* 7 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/* global require */
+/* global module */
+
+
 
 module.exports = {
 	rend : function(params) {
-		var template = __webpack_require__(20);
+		const template = __webpack_require__(32);
 		let html = template(params);
 		const elem = document.createElement('div');
 		elem.innerHTML = html;
@@ -227,7 +607,7 @@ module.exports = {
 		for(let i=0; i < inputs.length; i++)
 		{
 			let id = inputs[i].getAttribute('id');
-			inputs[i].addEventListener('focus', event => {
+			inputs[i].addEventListener('focus', () => {
 				document.getElementById(id + '_err').hidden = 'true';
 			});
 		}
@@ -252,32 +632,32 @@ module.exports = {
 	},
 
 	submit : function(form) {
-		document.getElementById(form + '_btn').style.display = 'none'
+		document.getElementById(form + '_btn').style.display = 'none';
 		document.getElementById(form + '_loader').hidden = false;
-		document.getElementById(form + '_Global_err').innerHTML = "";
+		document.getElementById(form + '_Global_err').innerHTML = '';
 	}
 
 };
 
 
 /***/ }),
-/* 4 */
+/* 8 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 /* global require */
 
 
-const router = __webpack_require__(2);
-const R = new router();
+const Router = __webpack_require__(5);
+const R = new Router();
 
 //const MenuView = require('./views/menu');
-const GameView = __webpack_require__(6);
-const ScoresView = __webpack_require__(13);
-const MenuView = __webpack_require__(16);
-const SignInView = __webpack_require__(19);
-const SignUpView = __webpack_require__(21);
-const LogoutView = __webpack_require__(22);
+const GameView = __webpack_require__(10);
+const ScoresView = __webpack_require__(25);
+const MenuView = __webpack_require__(28);
+const SignInView = __webpack_require__(31);
+const SignUpView = __webpack_require__(33);
+const LogoutView = __webpack_require__(34);
 
 R.addUrl('/', MenuView);
 R.addUrl('/play', GameView);
@@ -291,10 +671,12 @@ R.loadPage();
 
 
 /***/ }),
-/* 5 */
+/* 9 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
+/* global module */
+
 
 
 class UrlCom {
@@ -305,16 +687,16 @@ class UrlCom {
 		this.instance = null;
 	}
 
-	Load() {
+	load() {
 		if(!this.instance) {
 			this.instance = new this.view();
 		}
 
-		this.instance.ConstructPage();
+		this.instance.constructPage();
 	}
 
-	Destroy() {
-		this.instance.DestroyPage();
+	destroy() {
+		this.instance.destroyPage();
 		this.instance = null;
 	}
 
@@ -324,15 +706,20 @@ module.exports = UrlCom;
 
 
 /***/ }),
-/* 6 */
+/* 10 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
+/* global require */
+/* global module */
 
 
-const View = __webpack_require__(0);
-const Game = __webpack_require__(10);
-const Header = __webpack_require__(1);
+
+const View = __webpack_require__(1);
+const Game = __webpack_require__(14);
+const Header = __webpack_require__(2);
+
+const GameController = __webpack_require__(17);
 
 class GameView extends View {
 
@@ -342,7 +729,6 @@ class GameView extends View {
 			return GameView._instance;
 		}
 		GameView._instance = this;
-
 		this.init();
 	}
 
@@ -351,19 +737,24 @@ class GameView extends View {
 			loggedin : this.user.isAuth(),
 			score: this.user.getScore()
 		}), 'Header');
-		this.dom.insertDom(this.body, Game.rend({}), 'Game');
-		this.ListenLinks();
+		if(this.dom.insertDom(this.body, Game.rend({}), 'Game')) {
+			Game.resize();
+			this.GameController = new GameController();
+			this.GameController.initGame(false);
+			this.GameController.play();
+		}
+		this.listenLinks();
 	}
 
-	ConstructPage() {
+	constructPage() {
 		this.init();
-		this.Show('Header');
-		this.Show('Game');
+		this.show('Header');
+		this.show('Game');
 	}
 
-	DestroyPage() {
-		this.Hide('Header');
-		this.Hide('Game');
+	destroyPage() {
+		this.hide('Header');
+		this.hide('Game');
 	}
 
 }
@@ -372,10 +763,12 @@ module.exports = GameView;
 
 
 /***/ }),
-/* 7 */
+/* 11 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
+/* global module */
+
 
 
 class DOM {
@@ -390,9 +783,7 @@ class DOM {
 	}
 
 	insertDom(parent, elem, id, upd, first) {
-		if (!this.loadedBlocks[id] ||
-      typeof this.loadedBlocks[id] === 'undefined' ||
-      upd == true) {
+		if (!this.loadedBlocks[id] || typeof this.loadedBlocks[id] === 'undefined' || upd == true) {
 			if(upd) {
 				console.log('Reloading ' + id + ' in DOM');
 				this.removeDOM(id);
@@ -416,30 +807,22 @@ class DOM {
 		console.log('Removed ' + id + ' from DOM');
 	}
 
-	gID(id) {
-		return document.getElementById(id);
-	}
-
-	gTAG(parent, tag) {
-		if(!parent || typeof parent == 'undefined') {
-			parent = document;
-		}
-		return parent.getElementsByTagName(tag);
-	}
-
 }
 
 module.exports = DOM;
 
 
 /***/ }),
-/* 8 */
+/* 12 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
+/* global require */
+/* global module */
 
 
-const API = __webpack_require__(9);
+
+const API = __webpack_require__(13);
 
 class User {
 
@@ -448,18 +831,9 @@ class User {
 			return User._instance;
 		}
 		User._instance = this;
-
 		this.api = new API;
 		this._loggedin = false;
 		this._proto = {};
-	}
-
-	isAuth() {
-		return this._loggedin;
-	}
-
-	getScore() {
-		return 322;
 	}
 
 	checkResponse(response) {
@@ -472,21 +846,76 @@ class User {
 		return response.data;
 	}
 
+	isAuth() {
+		return this._loggedin;
+	}
+
+	getScore() {
+		const _this = this;
+		// Is this correct 
+		this.api.sendReq('user/get_score', 'GET').then(function(response) {
+			_this._proto.score = _this.checkResponse(response);
+		});
+		
+		if (typeof this._proto.score === 'undefned' || this._proto.score == null)
+			return 0;
+		return this._proto.score;
+	}
+
+	setScore(score) {
+		const _this = this;
+		return this.api.sendReq('user/set_score/' + score, 'GET').then(function(response) {
+			_this._proto.score = score;
+			_this.checkResponse(response);
+		});
+	}
+
+	getScores() {
+		let score = 0;
+		if(this._loggedin) {
+			score = this._proto.score;
+		}
+		return {
+			'Scores' : [
+				{
+					'user' : 'Jhon',
+					'place' : '1',
+					'score' : '999',
+				},
+				{
+					'user' : 'Mike',
+					'place' : '2',
+					'score' : '888'
+				},
+				{
+					'user' : 'Bredd',
+					'place' : '3',
+					'score' : '777'
+				}
+			],
+			'User' : {
+				'place' : '999',
+				'score' : score
+			}
+		};
+	}
+
 	login(login, password) {
 		const _this = this;
-		return this.api.call('user/signin', 'POST', {
+		return this.api.sendReq('user/signin', 'POST', {
 			userName: login,
 			userPassword: password
 		}).then(function(response) {
 			_this.checkResponse(response);
 			_this._proto.login = login;
 			_this._loggedin = true;
+			_this.getScore();
 		});
 	}
 
 	signup(login, password, email) {
 		const _this = this;
-		return this.api.call('user/signup', 'POST', {
+		return this.api.sendReq('user/signup', 'POST', {
 			userName: login,
 			userPassword: password,
 			userEmail: email
@@ -497,7 +926,7 @@ class User {
 
 	logout() {
 		const _this = this;
-		return this.api.call('user/logout', 'POST').then(function(response) {
+		return this.api.sendReq('user/logout', 'POST').then(function(response) {
 			_this.checkResponse(response);
 			_this._proto = {};
 			_this._loggedin = false;
@@ -510,7 +939,7 @@ module.exports = User;
 
 
 /***/ }),
-/* 9 */
+/* 13 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -518,14 +947,21 @@ module.exports = User;
 
 
 
+//const HOST = 'localhost:8080';
+//const PROTOCOL = 'http://';
+const PROTOCOL = 'https://';
+const HOST = 'lastunion.herokuapp.com';
+
+
 class API {
 
 	constructor() {
-		this._host = 'lastunion.herokuapp.com';
+		this._protocol = PROTOCOL;
+		this._host = HOST;
 	}
 
-	call(method, httpMethod, params) {
-		const url = 'https://' + this._host + '/api/' + method;
+	sendReq(method, httpMethod, params) {
+		const url = this._protocol + this._host + '/api/' + method;
 		const httpRequest = {
 			method: httpMethod,
 			headers: {
@@ -537,12 +973,9 @@ class API {
 			body: null
 		};
 
-		console.log(method, httpMethod, params);
 		if(httpMethod === 'POST' && typeof params !== 'undefined') {
 			httpRequest.body = JSON.stringify(params);
 		}
-
-		console.log(httpRequest);
 
 		return fetch(url, httpRequest).then(
 			function(response) {
@@ -561,36 +994,49 @@ module.exports = API;
 
 
 /***/ }),
-/* 10 */
+/* 14 */
 /***/ (function(module, exports, __webpack_require__) {
+
+/* global require */
+/* global module */
 
 module.exports = {
 	rend : function(params){
-		var template = __webpack_require__(11);
+		const template = __webpack_require__(15);
 		let html = template(params);
 		const elem = document.createElement('div');
 		elem.innerHTML = html;
 		return elem;
+	},
+
+	resizeInit : function() {
+		document.getElementById('game').width = document.body.clientWidth - 100;		
+		document.getElementById('game').height = document.getElementById('game').width / 16 * 8;
+	},
+
+	resize : function() {
+		this.resizeInit();
+		window.onresize = this.resizeInit;
 	}
 };
 
 
 /***/ }),
-/* 11 */
+/* 15 */
 /***/ (function(module, exports) {
 
 module.exports = function (obj) {
 obj || (obj = {});
 var __t, __p = '';
 with (obj) {
-__p += '<!-- GAME -->\r\n<center>\r\n  <img src="/img/octocat.png">\r\n  <br>\r\n  <span class="loading">Loading game</span>\r\n</center>\r\n<!-- GAME -->\r\n';
+__p += '<!-- GAME -->\r\n<center>\r\n  <canvas id="game"></canvas>\r\n</center>\r\n<!-- GAME -->\r\n';
 
 }
 return __p
 }
 
 /***/ }),
-/* 12 */
+/* 16 */
 /***/ (function(module, exports) {
 
 module.exports = function (obj) {
@@ -617,15 +1063,832 @@ return __p
 }
 
 /***/ }),
-/* 13 */
+/* 17 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
+/* global require */
+/* global module */
 
 
-const View = __webpack_require__(0);
-const Scores = __webpack_require__(14);
-const Header = __webpack_require__(1);
+
+const DEFAULT_W = 1920;
+const HORSPEED = 25;
+const FRAMETIME = 35;
+
+const User = __webpack_require__(12);
+
+const Dot = __webpack_require__(0);
+const Player = __webpack_require__(6);
+const InputController = __webpack_require__(18);
+const WorldObjectsController = __webpack_require__(19);
+const ScoreController = __webpack_require__(35);
+
+class GameController {
+
+	constructor () {
+		if(GameController._instance) {
+			return GameController._instance;
+		}
+		GameController._instance = this;
+		
+		this.horSpeed = HORSPEED;
+		this.frameTime = FRAMETIME;
+
+		this.gameCanvas = document.getElementById('game');
+		this.gameCtx = this.gameCanvas.getContext('2d');
+
+		this.UserController = new User();
+		
+		this.PlayerController = new Player();	
+		this.InputController = new InputController(this);
+		this.WorldObjectsController = new WorldObjectsController();
+		this.ScoreController = new ScoreController();
+		
+	}
+
+	initGame(_started) {
+		this.started = _started;
+		this.game = null;
+		this._over = false;
+		this._pause = false;
+		this.PlayerController.init();
+		this.WorldObjectsController.resetObjects();
+		this.ScoreController.init();
+	}
+	runScore(gameSettings) {
+		this.ScoreController.tick();
+		this.text("Score: " + this.ScoreController.scoreValue, 60, 30 * gameSettings.scale, "#000000");
+	}
+
+	runPlayer(gameSettings) {
+		this._over = this._over || this.PlayerController.trigger();
+		this.PlayerController.draw(gameSettings);
+	}
+
+	runObjects(gameSettings) {
+		let topLeftCoords = this.PlayerController.topLeftCoords;
+		let playerUpperLeft = new Dot(topLeftCoords.x + DEFAULT_W/2, DEFAULT_W/16*8/2 - this.PlayerController.topLeftCoords.y);
+		
+		let bottomRightCoords = this.PlayerController.bottomRightCoords;
+		let playerBottomRight = new Dot(bottomRightCoords.x + DEFAULT_W/2, DEFAULT_W/16*8/2 - this.PlayerController.bottomRightCoords.y);
+		
+		
+		if (this.WorldObjectsController.getObjectsAmount() <= 0) {
+			this.WorldObjectsController.addSeriesOfObjects(DEFAULT_W, 300, 150);
+		}
+		
+		this.WorldObjectsController.moveAllObjects(this.horSpeed);
+		this.WorldObjectsController.redrawAllObjects(gameSettings);
+		
+		let check = this.WorldObjectsController.CheckAllCollisions(playerUpperLeft, playerBottomRight);
+		if (check && check.isCollided && check.isFatal) {
+			check.playerEffect(this.PlayerController, gameSettings);
+			check.scoreEffect(this.ScoreController, gameSettings);
+			this._over = true;
+		}
+		else if (check && check.isCollided && !check.isFatal) {
+			check.scoreEffect(this.ScoreController,gameSettings);
+			check.playerEffect(this.PlayerController, gameSettings);
+		}	
+				
+	}
+
+	reset(_started) {
+		this.initGame(_started);
+		this.play();
+	}
+
+	play() {
+		const _this = this;
+		if(this.started) {
+			this.game = setInterval(function () {
+				
+				let gameSettings = {
+					'canvas' : _this.gameCtx,
+					'height' : _this.gameCanvas.height,
+					'width' : _this.gameCanvas.width,
+					'scale' : _this.gameCanvas.width / DEFAULT_W,
+					'defaultW' : DEFAULT_W,
+					'horSpeed' : HORSPEED,
+				}
+	
+				_this.gameCtx.fillStyle = "#FFFFFF";
+				_this.gameCtx.strokeStyle = "#000000";
+				_this.gameCtx.clearRect(0, 0, _this.gameCanvas.width, _this.gameCanvas.height);
+				_this.gameCtx.fillStyle = "#000000";
+				_this.gameCtx.fillRect(0, _this.gameCanvas.height / 2, _this.gameCanvas.width, _this.gameCanvas.height / 2);
+				
+				_this.runScore(gameSettings);
+				_this.runObjects(gameSettings);
+				_this.runPlayer(gameSettings);
+	
+				if(_this._over) {
+					_this.gameover(gameSettings);
+					if(_this.UserController.isAuth()) {
+						const currentScore = _this.UserController._proto.score;
+						const newScore = _this.ScoreController.scoreValue;
+						if(newScore > currentScore) {
+							_this.UserController.setScore(newScore);
+							document.getElementsByClassName("navbar-scores")[0].innerHTML = "Your score is: "  +  newScore;
+						}
+					}
+				}
+				
+			}, this.frameTime);
+		} else {
+			this.startOverlay({
+				'canvas' : _this.gameCtx,
+				'height' : _this.gameCanvas.height,
+				'width' : _this.gameCanvas.width,
+				'scale' : _this.gameCanvas.width / DEFAULT_W,
+			});
+		}
+	}
+
+	text(source, y, size, color) {
+		this.gameCtx.fillStyle = color;
+		this.gameCtx.font = size + "px Arial";
+		this.gameCtx.textAlign="center";
+		this.gameCtx.fillText(source, this.gameCanvas.width / 2, y - size);
+	}
+
+	setOpacity() {
+		this.gameCtx.globalAlpha = 0.8;
+		this.gameCtx.fillStyle = "#FFFFFF";
+		this.gameCtx.fillRect(0, 0, this.gameCanvas.width, this.gameCanvas.height);
+		this.gameCtx.globalAlpha = 1.0;
+	}
+
+	pause() {
+		if(this._over) {
+			return;
+		}
+
+		if(!this._pause) {
+			this._pause = true;
+			clearInterval(this.game);
+			this.pauseOverlay();
+			return;
+		}
+
+		this._pause = false;
+		this.play();
+	}
+
+	startOverlay() {
+		this.setOpacity();
+		this.text("LASTUNION presents!", this.gameCanvas.height / 2, 60, "#000000");
+		this.text("Press SPACE to start", this.gameCanvas.height / 2 + 30, 30, "#555555");
+	}
+
+	pauseOverlay() {
+		this.setOpacity();
+		this.text("Pause", this.gameCanvas.height / 2, 60, "#000000");
+		this.text("Press SPACE to continue", this.gameCanvas.height / 2 + 30, 30, "#555555");
+	}
+
+	gameover(gameSettings) {
+		clearInterval(this.game);
+		this.gameoverOverlay(gameSettings);
+	}
+
+	gameoverOverlay(gameSettings) {
+		this.setOpacity();
+		this.text("Game Over!", 300  * gameSettings.scale, 60 * gameSettings.scale, "#000000");
+		this.text("Press SPACE to run again!", 250  * gameSettings.scale + 70 * gameSettings.scale, 30  * gameSettings.scale, "#555555");
+		this.text("Your score: " + this.ScoreController.scoreValue, (250 + 70 + 160)  * gameSettings.scale, 60  * gameSettings.scale, "#000000");
+
+		const nekro = new Image();
+		nekro.src = '/img/nekro.png';
+		const _this = this;
+		nekro.onload = function() {
+			_this.gameCtx.drawImage(nekro, _this.gameCanvas.width / 2 - 100 * gameSettings.scale, gameSettings.scale * (-25), 200  * gameSettings.scale, 200  * gameSettings.scale);
+		}
+	}
+	
+}
+
+module.exports = GameController;
+
+
+/***/ }),
+/* 18 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/* global require */
+/* global module */
+
+
+
+const Player = __webpack_require__(6);
+
+class InputController {
+
+	constructor (Controller) {
+        this.PlayerController = new Player();
+        this.Controller = Controller;
+
+        const _this = this;
+        document.addEventListener('keydown', function(event) {
+            switch(event.keyCode) {
+                case 87:
+                    _this.PlayerController.jump();;
+                break;
+                case 83:
+                    _this.PlayerController.duck();
+                break;
+                case 32:
+                    if(!_this.Controller._over && _this.Controller.started) {
+                        _this.Controller.pause();
+                    } else {
+                        _this.Controller.reset(true);
+                    }
+                break;
+            break;
+            }
+        });
+
+        document.addEventListener('keyup', function(event) {
+            switch(event.keyCode) {
+                case 83:
+                    _this.PlayerController.run();
+                break;
+                case 87:
+                    _this.PlayerController.jumpFinish();;
+                break;
+            }
+        });
+    }
+
+	
+}
+
+module.exports = InputController;
+
+
+/***/ }),
+/* 19 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/* global require */
+/* global module */
+
+
+
+const MathGeom = __webpack_require__(3);
+
+const UpperObstacle = __webpack_require__(20);
+const MidObstacle = __webpack_require__(21);
+const PitObstacle = __webpack_require__(22);
+const MidGem = __webpack_require__(23);
+const UpperGem = __webpack_require__(24);
+
+const typesAmount = 5;
+const Types = {
+	UP : 0,
+	MID : 1,
+	PIT : 2,
+	MIDGEM : 3,
+	UPGEM: 4,
+}
+
+	
+class WorldObjectsController {
+
+	constructor() {		
+		this.objectsArray = []; 
+    }
+    
+    resetObjects () { 
+        this.objectsArray = []; 
+    }
+	
+	getObjectsAmount() {
+		return this.objectsArray.length;
+	}
+		
+	CheckAllCollisions(playerUpperLeft, playerBottomRight) {
+		let res = null;
+		let foundRes = null;
+		let found = false;
+		
+		this.objectsArray.forEach(function(worldObject, index, array) {
+			res = worldObject.CheckCollision(playerUpperLeft, playerBottomRight);
+            if (!found && res.isCollided) {
+				found = true;
+				foundRes = res;
+			}
+        });
+
+		return foundRes;
+	}
+	
+	redrawAllObjects(gameSettings) {  //drawing info contents canvas context, scale, etc..
+		this.objectsArray.forEach(function(worldObject, index, array) {
+            worldObject.draw(gameSettings);
+        });									
+	}
+
+	moveAllObjects(horSpeed) {
+		this.objectsArray.forEach(function(worldObject, index, array) {
+            worldObject.x = worldObject.x - horSpeed;
+        });
+		
+		// deliting left object that's away from screen
+		if (this.objectsArray[0].x < -this.objectsArray[0].GetWidth()) {
+			this.objectsArray.shift();
+		}
+	}
+	
+	CreateObjectByType(type, x) {
+		switch (type) {
+			case Types.UP : return new UpperObstacle(x);
+			case Types.MID : return new MidObstacle(x);
+			case Types.PIT : return new PitObstacle(x);
+			case Types.MIDGEM : return new MidGem(x);
+			case Types.UPGEM : return new UpperGem(x);
+		}
+	}
+	
+	addSeriesOfObjects(screenWidth, minRange, delta) {
+		
+		const baseX = Math.floor(screenWidth * 1.5);
+		let curX = baseX;
+		
+		let obstaclesInSeries = MathGeom.GetRandomNInRange(9, 18);
+		while (obstaclesInSeries >= 0) {
+			const curType = MathGeom.GetRandomNLessThen(typesAmount);
+			
+			this.objectsArray.push(this.CreateObjectByType(curType, curX));
+			
+			curX = curX + minRange + MathGeom.GetRandomNLessThen(delta);
+			obstaclesInSeries = obstaclesInSeries - 1;
+		}
+	}
+}
+
+module.exports = WorldObjectsController;
+
+/***/ }),
+/* 20 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/* global require */
+/* global module */
+
+
+
+const Dot = __webpack_require__(0);
+const MathGeom = __webpack_require__(3);
+const WorldObject = __webpack_require__(4);
+
+const Y = 295;
+const WIDTH = 50;
+const HEIGHT = 100;
+
+const SQUARECOLOUR = "#201919";
+
+const SPIKES = new Image();
+SPIKES.src = '/img/spike.png';         
+
+class UpperObstacle extends WorldObject {
+	
+	GetWidth () { return WIDTH }; 
+	GetHeight () { return HEIGHT };
+	
+	draw (gameSettings) {
+		// drawing central square
+		gameSettings.canvas.fillStyle = SQUARECOLOUR;
+		gameSettings.canvas.fillRect(
+            this.x*gameSettings.scale, 
+            (Y+WIDTH/2)*gameSettings.scale, 
+            WIDTH*gameSettings.scale, 
+            (HEIGHT-WIDTH)*gameSettings.scale
+        );
+		
+		// upper spikes (upper half of png)
+		gameSettings.canvas.drawImage(SPIKES, 0, 0, 300, 150,
+										this.x*gameSettings.scale,
+										Y*gameSettings.scale,
+										WIDTH*gameSettings.scale, WIDTH/2*gameSettings.scale);
+							
+		// bottom spikes (bottom half of png)
+		gameSettings.canvas.drawImage(SPIKES, 0, 150, 300, 150,
+										this.x*gameSettings.scale,
+										(Y+HEIGHT-WIDTH/2)*gameSettings.scale-1,
+										WIDTH*gameSettings.scale, WIDTH/2*gameSettings.scale);
+	}
+	
+	// returns object containing: is there a collision (true/false)
+	//							  is collision fatal (true/false)
+	//							  score effect of collision - function(scoreController, sceneInfo)
+	// 							  player effect of collision - function(player, sceneInfo)
+	CheckCollision(playerUpperLeft, playerBottomRight) {
+		let result = {
+				'isCollided' : false,
+				'isFatal' : false,
+				'scoreEffect' : function (score, gameSettings) {},
+				'playerEffect' : function (player, gameSettings) {},
+		}
+		
+		// check spikes
+		let playerMidTop = new Dot(
+								(playerUpperLeft.x + playerBottomRight.x)/2,
+								playerUpperLeft.y
+							);
+							
+		let spikeCenterBottom = new Dot(
+								this.x+WIDTH/2,
+								Y + HEIGHT - WIDTH/2
+							);
+		
+		// check bottom circle half
+		let dist = MathGeom.GetDistance(playerMidTop, spikeCenterBottom);
+		
+		if ((playerMidTop.y >= spikeCenterBottom.y) && (dist <  WIDTH/2)) {
+			result.isCollided = true;
+			result.isFatal = true;
+							
+			return result;
+		}
+		
+		// check non-Fatal collision
+		let playerRightTop = new Dot (playerBottomRight.x, playerUpperLeft.y);
+		if (this.x <= playerRightTop.x && playerRightTop.x <= this.x+WIDTH && playerRightTop.y < Y+HEIGHT-WIDTH/2) {
+			result.isCollided = true;
+			result.isFatal = false;
+			
+			result.playerEffect = function (player, gameSettings) {
+										player.changePosition(-gameSettings.horSpeed,0);
+								  }
+			
+			return result;
+		}
+		
+		return result;
+	}
+}
+
+module.exports = UpperObstacle;
+
+/***/ }),
+/* 21 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/* global require */
+/* global module */
+
+
+
+const Dot = __webpack_require__(0);
+const MathGeom = __webpack_require__(3);
+const WorldObject = __webpack_require__(4);
+
+const Y = 405;
+const WIDTH = 50;
+const HEIGHT = 100;
+
+const SQUARECOLOUR = "#201919";
+
+const SPIKES = new Image();
+SPIKES.src = '/img/spike.png';         
+
+class MidObstacle extends WorldObject {
+	
+	GetWidth () { return WIDTH }; 
+	GetHeight () { return HEIGHT };
+	
+	draw (gameSettings) {
+		// drawing central square
+		gameSettings.canvas.fillStyle = SQUARECOLOUR;
+		gameSettings.canvas.fillRect(
+            this.x*gameSettings.scale, 
+            (Y+WIDTH/2)*gameSettings.scale, 
+            WIDTH*gameSettings.scale, 
+            (HEIGHT-WIDTH)*gameSettings.scale
+        );
+		
+		// upper spikes (upper half of png)
+		gameSettings.canvas.drawImage(SPIKES, 0, 0, 300, 150,
+										this.x*gameSettings.scale,
+										Y*gameSettings.scale+1,
+										WIDTH*gameSettings.scale, WIDTH/2*gameSettings.scale);
+	}
+	
+	// returns object containing: is there a collision (true/false)
+	//							  is collision fatal (true/false)
+	//							  score effect of collision - function(scoreController, sceneInfo)
+	// 							  player effect of collision - function(player, sceneInfo)
+	CheckCollision(playerUpperLeft, playerBottomRight) {
+		let result = {
+				'isCollided' : false,
+				'isFatal' : false,
+				'scoreEffect' : function (score, gameSettings) {},
+				'playerEffect' : function (player, gameSettings) {},
+		}
+		
+		// check spikes
+		let playerMidBottom = new Dot(
+								(playerUpperLeft.x + playerBottomRight.x)/2,
+								playerBottomRight.y
+							);
+							
+		let spikeCenterBottom = new Dot(
+								this.x+WIDTH/2,
+								Y + WIDTH/2
+							);
+									
+		// check top circle half
+		let dist = MathGeom.GetDistance(playerMidBottom, spikeCenterBottom);
+		
+		if ((dist <  WIDTH/2)) {
+			result.isCollided = true;
+			result.isFatal = true;
+							
+			return result;
+		}
+		
+		// check non-Fatal collision
+		if (this.x <= playerBottomRight.x && playerBottomRight.x <= this.x+WIDTH && playerBottomRight.y > Y+WIDTH/2) {
+			result.isCollided = true;
+			result.isFatal = false;
+			
+			result.playerEffect = function (player, gameSettings) {
+										player.changePosition(-gameSettings.horSpeed*1.5,0);
+								  }
+			
+			return result;
+		}
+		
+		return result;
+	}
+}
+
+module.exports = MidObstacle;
+
+/***/ }),
+/* 22 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/* global require */
+/* global module */
+
+
+
+const Dot = __webpack_require__(0);
+const MathGeom = __webpack_require__(3);
+const WorldObject = __webpack_require__(4);
+
+const Y = 480;
+const WIDTH = 100;
+const HEIGHT = 100;
+
+const SQUARECOLOUR = "#FFFFFF";
+
+const SPIKES = new Image();
+SPIKES.src = '/img/spike.png';         
+
+class PitObstacle extends WorldObject {
+	
+	GetWidth () { return WIDTH }; 
+	GetHeight () { return HEIGHT };
+	
+	draw (gameSettings) {
+		// drawing central square
+		gameSettings.canvas.fillStyle = SQUARECOLOUR;
+		gameSettings.canvas.fillRect(
+            this.x*gameSettings.scale, 
+            Y*gameSettings.scale-1, 
+            WIDTH*gameSettings.scale, 
+            (HEIGHT)*gameSettings.scale
+        );
+		
+		// spikes (upper half of png)
+		gameSettings.canvas.drawImage(SPIKES, 0, 0, 300, 150,
+										this.x*gameSettings.scale,
+										(Y+HEIGHT-WIDTH/2)*gameSettings.scale+1,
+										WIDTH*gameSettings.scale, WIDTH/2*gameSettings.scale);
+	}
+	
+	// returns object containing: is there a collision (true/false)
+	//							  is collision fatal (true/false)
+	//							  score effect of collision - function(scoreController, sceneInfo)
+	// 							  player effect of collision - function(player, sceneInfo)
+	CheckCollision(playerUpperLeft, playerBottomRight) {
+		let result = {
+				'isCollided' : false,
+				'isFatal' : false,
+				'scoreEffect' : function (score, gameSettings) {},
+				'playerEffect' : function (player, gameSettings) {},
+		}
+		
+		// check spikes
+		let playerMidBottom = new Dot(
+								(playerUpperLeft.x + playerBottomRight.x)/2,
+								playerBottomRight.y
+							);
+							
+		let spikeCenterBottom = new Dot(
+								this.x+WIDTH/2,
+								Y + WIDTH/2
+							);
+							
+		if (this.x <= playerMidBottom.x && playerMidBottom.x <= this.x+WIDTH && playerMidBottom.y > Y+5) {
+			result.isCollided = true;
+			result.isFatal = true;
+							
+			return result;
+		}
+		
+		// check non-Fatal collision
+		if (this.x <= playerMidBottom.x && playerMidBottom.x <= this.x+WIDTH && playerMidBottom.y >= Y-5) {
+			result.isCollided = true;
+			result.isFatal = false;
+			
+			result.playerEffect = function (player, gameSettings) {
+										player.changePosition(-gameSettings.horSpeed*0.5,-55);
+								  }
+			
+			return result;
+		}
+		
+		return result;
+	}
+}
+
+module.exports = PitObstacle;
+
+/***/ }),
+/* 23 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/* global require */
+/* global module */
+
+
+
+const Dot = __webpack_require__(0);
+const MathGeom = __webpack_require__(3);
+const WorldObject = __webpack_require__(4);
+
+const Y = 420;
+const WIDTH = 25;
+const HEIGHT = 25;
+
+const GEM = new Image();
+GEM.src = '/img/gem.png';         
+
+class MidGem extends WorldObject {
+	
+	GetWidth () { return WIDTH }; 
+	GetHeight () { return HEIGHT };
+	
+	draw (gameSettings) {
+		
+		// spikes (upper half of png)
+		gameSettings.canvas.drawImage(GEM,
+										(this.x-WIDTH/2)*gameSettings.scale,
+										(Y-HEIGHT/2)*gameSettings.scale,
+										25,25
+									);
+	}
+	
+	// returns object containing: is there a collision (true/false)
+	//							  is collision fatal (true/false)
+	//							  score effect of collision - function(scoreController, sceneInfo)
+	// 							  player effect of collision - function(player, sceneInfo)
+	CheckCollision(playerUpperLeft, playerBottomRight) {
+		let result = {
+				'isCollided' : false,
+				'isFatal' : false,
+				'scoreEffect' : function (score, gameSettings) {},
+				'playerEffect' : function (player, gameSettings) {},
+		}
+			
+		let playerMidBottom = new Dot(
+								(playerUpperLeft.x + playerBottomRight.x)/2,
+								playerBottomRight.y
+							);	
+			
+		// check non-Fatal collision
+		if (playerMidBottom.x-WIDTH <= this.x && this.x <= playerMidBottom.x + WIDTH && 
+				playerUpperLeft.y <= Y && Y <= playerBottomRight.y ) {
+					
+			result.isCollided = true;
+			result.isFatal = false;
+			
+			result.scoreEffect = function (score, gameSettings) {
+				score.extra(20);
+			}
+			
+			// gem disappears in left side of screen
+			this.x = -25;
+			
+			return result;
+		}
+		
+		return result;
+	}
+}
+
+module.exports = MidGem;
+
+/***/ }),
+/* 24 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/* global require */
+/* global module */
+
+
+
+const Dot = __webpack_require__(0);
+const MathGeom = __webpack_require__(3);
+const WorldObject = __webpack_require__(4);
+
+const Y = 320;
+const WIDTH = 25;
+const HEIGHT = 25;
+
+const GEM = new Image();
+GEM.src = '/img/gem.png';         
+
+class UpperGem extends WorldObject {
+	
+	GetWidth () { return WIDTH }; 
+	GetHeight () { return HEIGHT };
+	
+	draw (gameSettings) {
+		
+		// spikes (upper half of png)
+		gameSettings.canvas.drawImage(GEM,
+										(this.x-WIDTH/2)*gameSettings.scale,
+										(Y-HEIGHT/2)*gameSettings.scale,
+										25,25
+									);
+	}
+	
+	// returns object containing: is there a collision (true/false)
+	//							  is collision fatal (true/false)
+	//							  score effect of collision - function(scoreController, sceneInfo)
+	// 							  player effect of collision - function(player, sceneInfo)
+	CheckCollision(playerUpperLeft, playerBottomRight) {
+		let result = {
+				'isCollided' : false,
+				'isFatal' : false,
+				'scoreEffect' : function (score, gameSettings) {},
+				'playerEffect' : function (player, gameSettings) {},
+		}
+			
+		let playerMidBottom = new Dot(
+								(playerUpperLeft.x + playerBottomRight.x)/2,
+								playerBottomRight.y
+							);	
+			
+		// check non-Fatal collision
+		if (playerMidBottom.x-WIDTH <= this.x && this.x <= playerMidBottom.x + WIDTH && 
+				playerUpperLeft.y <= Y && Y <= playerBottomRight.y ) {
+					
+			result.isCollided = true;
+			result.isFatal = false;
+			
+			result.scoreEffect = function (score, gameSettings) {
+				score.extra(40);
+			}
+			
+			// gem disappears in left side of screen
+			this.x = -25;
+			
+			return result;
+		}
+		
+		return result;
+	}
+}
+
+module.exports = UpperGem;
+
+/***/ }),
+/* 25 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/* global require */
+/* global module */
+
+
+
+const View = __webpack_require__(1);
+const Scores = __webpack_require__(26);
+const Header = __webpack_require__(2);
 
 class ScoresView extends View {
 
@@ -642,31 +1905,26 @@ class ScoresView extends View {
 		}), 'Header');
 	}
 
-	InitLeaderBoard() {
-		this.dom.insertDom(this.body, Scores.rend({
-			'users' : ['John','Mike','Bredd','Jarel','Jane'],
-			'place' : ['1','2','3','4','5'],
-			'score' : ['999','888','777','666','555'],
-			'userplace' : '999',
-			'userscore' : '0',
-		}), 'Scores');
-		this.ListenLinks();
+	initLeaderBoard() {
+		const userScores = this.user.getScores();
+		this.dom.insertDom(this.body, Scores.rend(userScores), 'Scores');
+		this.listenLinks();
 	}
 
-	ConstructPage() {
-		this.Show('Header');
+	constructPage() {
+		this.show('Header');
 		if (!this.user.isAuth()) {
 			console.error('Access denied.');
 			this.router.go('/signin/');
 		} else {
-			this.InitLeaderBoard();
-			this.Show('Scores');
+			this.initLeaderBoard();
+			this.show('Scores');
 		}
 	}
 
-	DestroyPage() {
-		this.Hide('Header');
-		this.Hide('Scores');
+	destroyPage() {
+		this.hide('Header');
+		this.hide('Scores');
 	}
 
 }
@@ -675,12 +1933,15 @@ module.exports = ScoresView;
 
 
 /***/ }),
-/* 14 */
+/* 26 */
 /***/ (function(module, exports, __webpack_require__) {
+
+/* global require */
+/* global module */
 
 module.exports = {
 	rend : function(params){
-		var template = __webpack_require__(15);
+		const template = __webpack_require__(27);
 		let html = template(params);
 		const elem = document.createElement('div');
 		elem.innerHTML = html;
@@ -690,7 +1951,7 @@ module.exports = {
 
 
 /***/ }),
-/* 15 */
+/* 27 */
 /***/ (function(module, exports) {
 
 module.exports = function (obj) {
@@ -699,19 +1960,19 @@ var __t, __p = '', __j = Array.prototype.join;
 function print() { __p += __j.call(arguments, '') }
 with (obj) {
 __p += '<!-- SCORES -->\r\n<div class="container">\r\n    <div class="panel panel-default">\r\n        <div class="panel-heading">Best GAMERS</div>\r\n        <table class="table">\r\n            <thead>\r\n                <tr>\r\n                    <th>#</th>\r\n                    <th>Username</th>\r\n                    <th>Scope</th>\r\n                </tr>\r\n            </thead>\r\n            <tbody>\r\n                ';
- for(var i=0; i<users.length; i++) { ;
+ for(var i=0; i<Scores.length; i++) { ;
 __p += '\r\n                <tr>\r\n                    <th scope="row">' +
-((__t = ( place[i] )) == null ? '' : __t) +
+((__t = ( Scores[i].place )) == null ? '' : __t) +
 '</th>\r\n                    <th>' +
-((__t = ( users[i] )) == null ? '' : __t) +
+((__t = ( Scores[i].user )) == null ? '' : __t) +
 '</th>\r\n                    <th>' +
-((__t = ( score[i] )) == null ? '' : __t) +
+((__t = ( Scores[i].score )) == null ? '' : __t) +
 '</th>\r\n                </tr>\r\n                ';
  } ;
 __p += '\r\n                <tr>\r\n                    <th scope="row">' +
-((__t = ( userplace )) == null ? '' : __t) +
+((__t = ( User.place )) == null ? '' : __t) +
 '</th>\r\n                    <th>YOU</th>\r\n                    <th>' +
-((__t = ( userscore )) == null ? '' : __t) +
+((__t = ( User.score )) == null ? '' : __t) +
 '</th>\r\n                </tr>\r\n            </tbody>\r\n        </table>\r\n    </div>\r\n</div>\r\n<!-- SCORES -->\r\n';
 
 }
@@ -719,15 +1980,18 @@ return __p
 }
 
 /***/ }),
-/* 16 */
+/* 28 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
+/* global require */
+/* global module */
 
 
-const View = __webpack_require__(0);
-const Menu = __webpack_require__(17);
-const Header = __webpack_require__(1);
+
+const View = __webpack_require__(1);
+const Menu = __webpack_require__(29);
+const Header = __webpack_require__(2);
 
 class MenuView extends View {
 
@@ -747,21 +2011,21 @@ class MenuView extends View {
 			score: this.user.getScore()
 		}), 'Header');
 		this.dom.insertDom(this.body, Menu.rend({
-			'menuitems' : ['Play', 'About us (404)', 'Scores'],
-			'links' : ['/play/', '/about/', '/scores/'],
+			'menuitems' : ['Play', 'Scores'],
+			'links' : ['/play/', '/scores/'],
 		}), 'Menu');
-		this.ListenLinks();
+		this.listenLinks();
 	}
 
-	ConstructPage() {
+	constructPage() {
 		this.init();
-		this.Show('Header');
-		this.Show('Menu');
+		this.show('Header');
+		this.show('Menu');
 	}
 
-	DestroyPage() {
-		this.Hide('Header');
-		this.Hide('Menu');
+	destroyPage() {
+		this.hide('Header');
+		this.hide('Menu');
 	}
 
 }
@@ -770,12 +2034,15 @@ module.exports = MenuView;
 
 
 /***/ }),
-/* 17 */
+/* 29 */
 /***/ (function(module, exports, __webpack_require__) {
+
+/* global require */
+/* global module */
 
 module.exports = {
 	rend : function(params){
-		var template = __webpack_require__(18);
+		const template = __webpack_require__(30);
 		let html = template(params);
 		const elem = document.createElement('div');
 		elem.innerHTML = html;
@@ -785,7 +2052,7 @@ module.exports = {
 
 
 /***/ }),
-/* 18 */
+/* 30 */
 /***/ (function(module, exports) {
 
 module.exports = function (obj) {
@@ -808,15 +2075,18 @@ return __p
 }
 
 /***/ }),
-/* 19 */
+/* 31 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
+/* global require */
+/* global module */
 
 
-const View = __webpack_require__(0);
-const Form = __webpack_require__(3);
-const Header = __webpack_require__(1);
+
+const View = __webpack_require__(1);
+const Form = __webpack_require__(7);
+const Header = __webpack_require__(2);
 
 class SignInView extends View {
 
@@ -855,31 +2125,31 @@ class SignInView extends View {
 			score: this.user.getScore()
 		}), 'Header');
 		if(this.dom.insertDom(this.body, this.form, 'LoginForm')) {
-			this.ListenSubmit();
+			this.listenSubmit();
 		}
-		this.ListenLinks();
+		this.listenLinks();
 	}
 
-	ListenSubmit() {
-		this.dom.gTAG(this.form, 'button')[0].addEventListener('click', event => {
+	listenSubmit() {
+		this.form.getElementsByTagName('button')[0].addEventListener('click', event => {
 			event.preventDefault();
 
-			let login = this.dom.gID('LoginForm_Login');
-			let passw = this.dom.gID('LoginForm_Password');
+			let login = document.getElementById('LoginForm_Login');
+			let passw = document.getElementById('LoginForm_Password');
 
-			if(this.Validate(login, passw)) {
+			if(this.validate(login, passw)) {
 				const _this = this;
 				this.user.login(login.value, passw.value)
 					.then(function() {
 						Form.revert('LoginForm');
 						_this.dom.removeDOM('LoginForm');
 						_this.dom.removeDOM('SignUpForm');
-						_this.Hide('Header');
+						_this.hide('Header');
 						_this.dom.insertDom(_this.body, Header.rend({
 							loggedin : _this.user.isAuth(),
 							score: _this.user.getScore()
 						}), 'Header', true, true);
-						_this.ListenLinks();
+						_this.listenLinks();
 						_this.router.go('/menu/');
 					})
 					.catch(function(e) {
@@ -890,7 +2160,7 @@ class SignInView extends View {
 		});
 	}
 
-	Validate(login, passw) {
+	validate(login, passw) {
 		let valid = true;
 		if(login.value.length < 4) {
 			Form.err('LoginForm', 'Login', 'Login is at least 4 characters.');
@@ -903,15 +2173,15 @@ class SignInView extends View {
 		return valid;
 	}
 
-	ConstructPage() {
+	constructPage() {
 		this.init();
-		this.Show('Header');
-		this.Show('LoginForm');
+		this.show('Header');
+		this.show('LoginForm');
 	}
 
-	DestroyPage() {
-		this.Hide('Header');
-		this.Hide('LoginForm');
+	destroyPage() {
+		this.hide('Header');
+		this.hide('LoginForm');
 	}
 
 }
@@ -920,7 +2190,7 @@ module.exports = SignInView;
 
 
 /***/ }),
-/* 20 */
+/* 32 */
 /***/ (function(module, exports) {
 
 module.exports = function (obj) {
@@ -971,15 +2241,18 @@ return __p
 }
 
 /***/ }),
-/* 21 */
+/* 33 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
+/* global require */
+/* global module */
 
 
-const View = __webpack_require__(0);
-const Form = __webpack_require__(3);
-const Header = __webpack_require__(1);
+
+const View = __webpack_require__(1);
+const Form = __webpack_require__(7);
+const Header = __webpack_require__(2);
 
 class SignUpView extends View {
 
@@ -1023,20 +2296,20 @@ class SignUpView extends View {
 			score: this.user.getScore()
 		}), 'Header');
 		if(this.dom.insertDom(this.body, this.form, 'SignUpForm')) {
-			this.ListenSubmit();
+			this.listenSubmit();
 		}
-		this.ListenLinks();
+		this.listenLinks();
 	}
 
-	ListenSubmit() {
-		this.dom.gTAG(this.form, 'button')[0].addEventListener('click', event => {
+	listenSubmit() {
+		this.form.getElementsByTagName('button')[0].addEventListener('click', event => {
 			event.preventDefault();
 
-			let login = this.dom.gID('SignUpForm_Login');
-			let email = this.dom.gID('SignUpForm_Email');
-			let passw = this.dom.gID('SignUpForm_Password');
+			let login = document.getElementById('SignUpForm_Login');
+			let email = document.getElementById('SignUpForm_Email');
+			let passw = document.getElementById('SignUpForm_Password');
 
-			if(this.Validate(login, passw, email)) {
+			if(this.validate(login, passw, email)) {
 				const _this = this;
 				this.user.signup(login.value, passw.value, email.value)
 					.then(function() {
@@ -1046,12 +2319,12 @@ class SignUpView extends View {
 							.then(function() {
 								_this.dom.removeDOM('LoginForm');
 								_this.dom.removeDOM('SignUpForm');
-								_this.Hide('Header');
+								_this.hide('Header');
 								_this.dom.insertDom(_this.body, Header.rend({
 									loggedin : _this.user.isAuth(),
 									score: _this.user.getScore()
 								}), 'Header', true, true);
-								_this.ListenLinks();
+								_this.listenLinks();
 								_this.router.go('/menu/');
 							});
 					})
@@ -1063,7 +2336,7 @@ class SignUpView extends View {
 		});
 	}
 
-	Validate(login, passw, email) {
+	validate(login, passw, email) {
 		let valid = true;
 		if(login.value.length < 4) {
 			Form.err('SignUpForm', 'Login', 'Login has to be at least 4 characters.');
@@ -1074,22 +2347,22 @@ class SignUpView extends View {
 			valid = false;
 		}
 
-		if (!/^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(email.value)) {
+		if (!/^(([^<>()\\.,;:\s@"]+(\.[^<>()\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(email.value)) {
 			Form.err('SignUpForm', 'Email', 'This is not valid email.');
 			valid = false;
 		}
 		return valid;
 	}
 
-	ConstructPage() {
+	constructPage() {
 		this.init();
-		this.Show('Header');
-		this.Show('SignUpForm');
+		this.show('Header');
+		this.show('SignUpForm');
 	}
 
-	DestroyPage() {
-		this.Hide('Header');
-		this.Hide('SignUpForm');
+	destroyPage() {
+		this.hide('Header');
+		this.hide('SignUpForm');
 	}
 
 }
@@ -1098,14 +2371,17 @@ module.exports = SignUpView;
 
 
 /***/ }),
-/* 22 */
+/* 34 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
+/* global require */
+/* global module */
 
 
-const View = __webpack_require__(0);
-const Header = __webpack_require__(1);
+
+const View = __webpack_require__(1);
+const Header = __webpack_require__(2);
 
 class LogoutView extends View {
 
@@ -1117,12 +2393,12 @@ class LogoutView extends View {
 		LogoutView._instance = this;
 	}
 
-	ConstructPage() {
+	constructPage() {
 		const _this = this;
 		this.user.logout()
 			.then(function() {
 				_this.dom.removeDOM('Scores');
-				_this.Hide('Header');
+				_this.hide('Header');
 				_this.dom.insertDom(_this.body, Header.rend({
 					loggedin : _this.user.isAuth(),
 					score: _this.user.getScore()
@@ -1134,13 +2410,65 @@ class LogoutView extends View {
 			});
 	}
 
-	DestroyPage() {
+	destroyPage() {
 
 	}
 
 }
 
 module.exports = LogoutView;
+
+
+/***/ }),
+/* 35 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/* global require */
+/* global module */
+
+
+
+const Dot = __webpack_require__(0);
+
+const WIDTH = 100;
+const HEIGHT = 100;
+const JUMPPOWER = 33;
+
+const RUN = 0;
+const ONAIR = 1;
+const BEND = 2;
+const BENDEDONAIR = 3;
+
+class Score {
+
+	constructor () {
+        if(Score._instance) {
+			return Score._instance;
+		}
+        Score._instance = this;
+    }
+
+    init() {
+        this._time = 0;
+        this._score = 0;
+    }
+
+    extra(bonus) {
+        this._score += Number(bonus);
+    }
+
+    tick() {
+        this._time++;
+    }
+
+    get scoreValue() {
+        return Math.floor(Number(this._time) * 0.1) + Number(this._score);
+    }
+
+}
+
+module.exports = Score;
 
 
 /***/ })

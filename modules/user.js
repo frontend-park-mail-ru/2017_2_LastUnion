@@ -1,3 +1,6 @@
+/* global require */
+/* global module */
+
 'use strict';
 
 const API = require('./api.js');
@@ -9,18 +12,9 @@ class User {
 			return User._instance;
 		}
 		User._instance = this;
-
 		this.api = new API;
 		this._loggedin = false;
 		this._proto = {};
-	}
-
-	isAuth() {
-		return this._loggedin;
-	}
-
-	getScore() {
-		return 322;
 	}
 
 	checkResponse(response) {
@@ -33,21 +27,76 @@ class User {
 		return response.data;
 	}
 
+	isAuth() {
+		return this._loggedin;
+	}
+
+	getScore() {
+		const _this = this;
+		// Is this correct 
+		this.api.sendReq('user/get_score', 'GET').then(function(response) {
+			_this._proto.score = _this.checkResponse(response);
+		});
+		
+		if (typeof this._proto.score === 'undefned' || this._proto.score == null)
+			return 0;
+		return this._proto.score;
+	}
+
+	setScore(score) {
+		const _this = this;
+		return this.api.sendReq('user/set_score/' + score, 'GET').then(function(response) {
+			_this._proto.score = score;
+			_this.checkResponse(response);
+		});
+	}
+
+	getScores() {
+		let score = 0;
+		if(this._loggedin) {
+			score = this._proto.score;
+		}
+		return {
+			'Scores' : [
+				{
+					'user' : 'Jhon',
+					'place' : '1',
+					'score' : '999',
+				},
+				{
+					'user' : 'Mike',
+					'place' : '2',
+					'score' : '888'
+				},
+				{
+					'user' : 'Bredd',
+					'place' : '3',
+					'score' : '777'
+				}
+			],
+			'User' : {
+				'place' : '999',
+				'score' : score
+			}
+		};
+	}
+
 	login(login, password) {
 		const _this = this;
-		return this.api.call('user/signin', 'POST', {
+		return this.api.sendReq('user/signin', 'POST', {
 			userName: login,
 			userPassword: password
 		}).then(function(response) {
 			_this.checkResponse(response);
 			_this._proto.login = login;
 			_this._loggedin = true;
+			_this.getScore();
 		});
 	}
 
 	signup(login, password, email) {
 		const _this = this;
-		return this.api.call('user/signup', 'POST', {
+		return this.api.sendReq('user/signup', 'POST', {
 			userName: login,
 			userPassword: password,
 			userEmail: email
@@ -58,7 +107,7 @@ class User {
 
 	logout() {
 		const _this = this;
-		return this.api.call('user/logout', 'POST').then(function(response) {
+		return this.api.sendReq('user/logout', 'POST').then(function(response) {
 			_this.checkResponse(response);
 			_this._proto = {};
 			_this._loggedin = false;

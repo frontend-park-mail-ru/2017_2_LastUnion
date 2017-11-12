@@ -1,8 +1,13 @@
+/* global require */
+/* global module */
+
 'use strict';
 
 const View = require('../modules/view');
 const Game = require('./templates/game/game');
 const Header = require('../views/templates/header/header');
+
+const GameController = require('../game/controller');
 
 class GameView extends View {
 
@@ -12,7 +17,6 @@ class GameView extends View {
 			return GameView._instance;
 		}
 		GameView._instance = this;
-
 		this.init();
 	}
 
@@ -21,19 +25,24 @@ class GameView extends View {
 			loggedin : this.user.isAuth(),
 			score: this.user.getScore()
 		}), 'Header');
-		this.dom.insertDom(this.body, Game.rend({}), 'Game');
-		this.ListenLinks();
+		if(this.dom.insertDom(this.body, Game.rend({}), 'Game')) {
+			Game.resize();
+			this.GameController = new GameController();
+			this.GameController.initGame(false);
+			this.GameController.play();
+		}
+		this.listenLinks();
 	}
 
-	ConstructPage() {
+	constructPage() {
 		this.init();
-		this.Show('Header');
-		this.Show('Game');
+		this.show('Header');
+		this.show('Game');
 	}
 
-	DestroyPage() {
-		this.Hide('Header');
-		this.Hide('Game');
+	destroyPage() {
+		this.hide('Header');
+		this.hide('Game');
 	}
 
 }

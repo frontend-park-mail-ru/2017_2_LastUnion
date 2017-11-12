@@ -11,17 +11,17 @@
                 </tr>
             </thead>
             <tbody>
-                <% for(var i=0; i<users.length; i++) { %>
+                <% for(var i=0; i<Scores.length; i++) { %>
                 <tr>
-                    <th scope="row"><%= place[i] %></th>
-                    <th><%= users[i] %></th>
-                    <th><%= score[i] %></th>
+                    <th scope="row"><%= Scores[i].place %></th>
+                    <th><%= Scores[i].user %></th>
+                    <th><%= Scores[i].score %></th>
                 </tr>
                 <% } %>
                 <tr>
-                    <th scope="row"><%= userplace %></th>
+                    <th scope="row"><%= User.place %></th>
                     <th>YOU</th>
-                    <th><%= userscore %></th>
+                    <th><%= User.score %></th>
                 </tr>
             </tbody>
         </table>
