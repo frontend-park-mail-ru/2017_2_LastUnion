@@ -78,7 +78,7 @@ class MidObstacle extends WorldObject {
 			
 			result.playerEffect = function (player, gameSettings) {
 				player.changePosition(-gameSettings.horSpeed*1.5,0);
-								  };
+			};
 			
 			return result;
 		}

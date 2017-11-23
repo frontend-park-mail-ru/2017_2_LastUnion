@@ -75,7 +75,7 @@ class PitObstacle extends WorldObject {
 			
 			result.playerEffect = function (player, gameSettings) {
 				player.changePosition(-gameSettings.horSpeed*0.5,-55);
-								  };
+			};
 			
 			return result;
 		}

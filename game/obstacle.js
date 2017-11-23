@@ -12,11 +12,11 @@ const typesAmount = 2;
 const spikeColor = '#000000';
 
 function GetRandomNLessThen(Restrict) {
-	 return Math.floor(Math.random() * Restrict);
+	return Math.floor(Math.random() * Restrict);
 }
 
 function GetRandomNInRange(a, b) {
-	 return Math.floor(Math.random() * (b + 1 - a) + a);
+    return Math.floor(Math.random() * (b + 1 - a) + a);
 }
 
 class Obstacle {

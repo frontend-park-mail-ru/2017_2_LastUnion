@@ -85,7 +85,7 @@ class UpperObstacle extends WorldObject {
 			
 			result.playerEffect = function (player, gameSettings) {
 				player.changePosition(-gameSettings.horSpeed,0);
-								  };
+			};
 			
 			return result;
 		}

@@ -27,7 +27,6 @@ class InputController {
 					_this.Controller.reset(true);
 				}
 				break;
-				break;
 			}
 		});
 
