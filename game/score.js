@@ -17,28 +17,28 @@ const BENDEDONAIR = 3;
 class Score {
 
 	constructor () {
-        if(Score._instance) {
+		if(Score._instance) {
 			return Score._instance;
 		}
-        Score._instance = this;
-    }
+		Score._instance = this;
+	}
 
-    init() {
-        this._time = 0;
-        this._score = 0;
-    }
+	init() {
+		this._time = 0;
+		this._score = 0;
+	}
 
-    extra(bonus) {
-        this._score += Number(bonus);
-    }
+	extra(bonus) {
+		this._score += Number(bonus);
+	}
 
-    tick() {
-        this._time++;
-    }
+	tick() {
+		this._time++;
+	}
 
-    get scoreValue() {
-        return Math.floor(Number(this._time) * 0.1) + Number(this._score);
-    }
+	get scoreValue() {
+		return Math.floor(Number(this._time) * 0.1) + Number(this._score);
+	}
 
 }
 

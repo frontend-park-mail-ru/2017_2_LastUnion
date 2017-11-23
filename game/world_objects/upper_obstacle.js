@@ -11,37 +11,37 @@ const Y = 295;
 const WIDTH = 50;
 const HEIGHT = 100;
 
-const SQUARECOLOUR = "#201919";
+const SQUARECOLOUR = '#201919';
 
 const SPIKES = new Image();
 SPIKES.src = '/img/spike.png';         
 
 class UpperObstacle extends WorldObject {
 	
-	GetWidth () { return WIDTH }; 
-	GetHeight () { return HEIGHT };
+	GetWidth () { return WIDTH; } 
+	GetHeight () { return HEIGHT; }
 	
 	draw (gameSettings) {
 		// drawing central square
 		gameSettings.canvas.fillStyle = SQUARECOLOUR;
 		gameSettings.canvas.fillRect(
-            this.x*gameSettings.scale, 
-            (Y+WIDTH/2)*gameSettings.scale, 
-            WIDTH*gameSettings.scale, 
-            (HEIGHT-WIDTH)*gameSettings.scale
-        );
+			this.x*gameSettings.scale, 
+			(Y+WIDTH/2)*gameSettings.scale, 
+			WIDTH*gameSettings.scale, 
+			(HEIGHT-WIDTH)*gameSettings.scale
+		);
 		
 		// upper spikes (upper half of png)
 		gameSettings.canvas.drawImage(SPIKES, 0, 0, 300, 150,
-										this.x*gameSettings.scale,
-										Y*gameSettings.scale,
-										WIDTH*gameSettings.scale, WIDTH/2*gameSettings.scale);
+			this.x*gameSettings.scale,
+			Y*gameSettings.scale,
+			WIDTH*gameSettings.scale, WIDTH/2*gameSettings.scale);
 							
 		// bottom spikes (bottom half of png)
 		gameSettings.canvas.drawImage(SPIKES, 0, 150, 300, 150,
-										this.x*gameSettings.scale,
-										(Y+HEIGHT-WIDTH/2)*gameSettings.scale-1,
-										WIDTH*gameSettings.scale, WIDTH/2*gameSettings.scale);
+			this.x*gameSettings.scale,
+			(Y+HEIGHT-WIDTH/2)*gameSettings.scale-1,
+			WIDTH*gameSettings.scale, WIDTH/2*gameSettings.scale);
 	}
 	
 	// returns object containing: is there a collision (true/false)
@@ -50,22 +50,22 @@ class UpperObstacle extends WorldObject {
 	// 							  player effect of collision - function(player, sceneInfo)
 	CheckCollision(playerUpperLeft, playerBottomRight) {
 		let result = {
-				'isCollided' : false,
-				'isFatal' : false,
-				'scoreEffect' : function (score, gameSettings) {},
-				'playerEffect' : function (player, gameSettings) {},
-		}
+			'isCollided' : false,
+			'isFatal' : false,
+			'scoreEffect' : function (score, gameSettings) {},
+			'playerEffect' : function (player, gameSettings) {},
+		};
 		
 		// check spikes
 		let playerMidTop = new Dot(
-								(playerUpperLeft.x + playerBottomRight.x)/2,
-								playerUpperLeft.y
-							);
+			(playerUpperLeft.x + playerBottomRight.x)/2,
+			playerUpperLeft.y
+		);
 							
 		let spikeCenterBottom = new Dot(
-								this.x+WIDTH/2,
-								Y + HEIGHT - WIDTH/2
-							);
+			this.x+WIDTH/2,
+			Y + HEIGHT - WIDTH/2
+		);
 		
 		// check bottom circle half
 		let dist = MathGeom.GetDistance(playerMidTop, spikeCenterBottom);
@@ -84,8 +84,8 @@ class UpperObstacle extends WorldObject {
 			result.isFatal = false;
 			
 			result.playerEffect = function (player, gameSettings) {
-										player.changePosition(-gameSettings.horSpeed,0);
-								  }
+				player.changePosition(-gameSettings.horSpeed,0);
+								  };
 			
 			return result;
 		}

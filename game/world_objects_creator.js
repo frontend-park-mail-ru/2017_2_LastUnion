@@ -15,10 +15,10 @@ class WorldObject {
 	// 							  player effect of collision - function(player, sceneInfo)
 	CheckCollision(playerUpperLeft, playerBottomRight) {
 		let result = {
-				'isCollided' : false,
-				'height' : function(scoreController, sceneInfo) {},
-				'width' : function(player, sceneInfo) {},
-		}
+			'isCollided' : false,
+			'height' : function(scoreController, sceneInfo) {},
+			'width' : function(player, sceneInfo) {},
+		};
 		
 		return result;
 	}

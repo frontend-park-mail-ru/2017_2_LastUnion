@@ -16,17 +16,17 @@ GEM.src = '/img/gem.png';
 
 class MidGem extends WorldObject {
 	
-	GetWidth () { return WIDTH }; 
-	GetHeight () { return HEIGHT };
+	GetWidth () { return WIDTH; } 
+	GetHeight () { return HEIGHT; }
 	
 	draw (gameSettings) {
 		
 		// spikes (upper half of png)
 		gameSettings.canvas.drawImage(GEM,
-										(this.x-WIDTH/2)*gameSettings.scale,
-										(Y-HEIGHT/2)*gameSettings.scale,
-										25,25
-									);
+			(this.x-WIDTH/2)*gameSettings.scale,
+			(Y-HEIGHT/2)*gameSettings.scale,
+			25,25
+		);
 	}
 	
 	// returns object containing: is there a collision (true/false)
@@ -35,16 +35,16 @@ class MidGem extends WorldObject {
 	// 							  player effect of collision - function(player, sceneInfo)
 	CheckCollision(playerUpperLeft, playerBottomRight) {
 		let result = {
-				'isCollided' : false,
-				'isFatal' : false,
-				'scoreEffect' : function (score, gameSettings) {},
-				'playerEffect' : function (player, gameSettings) {},
-		}
+			'isCollided' : false,
+			'isFatal' : false,
+			'scoreEffect' : function (score, gameSettings) {},
+			'playerEffect' : function (player, gameSettings) {},
+		};
 			
 		let playerMidBottom = new Dot(
-								(playerUpperLeft.x + playerBottomRight.x)/2,
-								playerBottomRight.y
-							);	
+			(playerUpperLeft.x + playerBottomRight.x)/2,
+			playerBottomRight.y
+		);	
 			
 		// check non-Fatal collision
 		if (playerMidBottom.x-WIDTH <= this.x && this.x <= playerMidBottom.x + WIDTH && 
@@ -55,7 +55,7 @@ class MidGem extends WorldObject {
 			
 			result.scoreEffect = function (score, gameSettings) {
 				score.extra(20);
-			}
+			};
 			
 			// gem disappears in left side of screen
 			this.x = -25;

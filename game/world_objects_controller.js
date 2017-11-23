@@ -18,18 +18,18 @@ const Types = {
 	PIT : 2,
 	MIDGEM : 3,
 	UPGEM: 4,
-}
+};
 
 	
 class WorldObjectsController {
 
 	constructor() {		
 		this.objectsArray = []; 
-    }
+	}
     
-    resetObjects () { 
-        this.objectsArray = []; 
-    }
+	resetObjects () { 
+		this.objectsArray = []; 
+	}
 	
 	getObjectsAmount() {
 		return this.objectsArray.length;
@@ -42,25 +42,25 @@ class WorldObjectsController {
 		
 		this.objectsArray.forEach(function(worldObject, index, array) {
 			res = worldObject.CheckCollision(playerUpperLeft, playerBottomRight);
-            if (!found && res.isCollided) {
+			if (!found && res.isCollided) {
 				found = true;
 				foundRes = res;
 			}
-        });
+		});
 
 		return foundRes;
 	}
 	
 	redrawAllObjects(gameSettings) {  //drawing info contents canvas context, scale, etc..
 		this.objectsArray.forEach(function(worldObject, index, array) {
-            worldObject.draw(gameSettings);
-        });									
+			worldObject.draw(gameSettings);
+		});									
 	}
 
 	moveAllObjects(horSpeed) {
 		this.objectsArray.forEach(function(worldObject, index, array) {
-            worldObject.x = worldObject.x - horSpeed;
-        });
+			worldObject.x = worldObject.x - horSpeed;
+		});
 		
 		// deliting left object that's away from screen
 		if (this.objectsArray[0].x < -this.objectsArray[0].GetWidth()) {
@@ -70,11 +70,11 @@ class WorldObjectsController {
 	
 	CreateObjectByType(type, x) {
 		switch (type) {
-			case Types.UP : return new UpperObstacle(x);
-			case Types.MID : return new MidObstacle(x);
-			case Types.PIT : return new PitObstacle(x);
-			case Types.MIDGEM : return new MidGem(x);
-			case Types.UPGEM : return new UpperGem(x);
+		case Types.UP : return new UpperObstacle(x);
+		case Types.MID : return new MidObstacle(x);
+		case Types.PIT : return new PitObstacle(x);
+		case Types.MIDGEM : return new MidGem(x);
+		case Types.UPGEM : return new UpperGem(x);
 		}
 	}
 	

@@ -49,7 +49,7 @@ class GameController {
 	}
 	runScore(gameSettings) {
 		this.ScoreController.tick();
-		this.text("Score: " + this.ScoreController.scoreValue, 60, 30 * gameSettings.scale, "#000000");
+		this.text('Score: ' + this.ScoreController.scoreValue, 60, 30 * gameSettings.scale, '#000000');
 	}
 
 	runPlayer(gameSettings) {
@@ -102,12 +102,12 @@ class GameController {
 					'scale' : _this.gameCanvas.width / DEFAULT_W,
 					'defaultW' : DEFAULT_W,
 					'horSpeed' : HORSPEED,
-				}
+				};
 	
-				_this.gameCtx.fillStyle = "#FFFFFF";
-				_this.gameCtx.strokeStyle = "#000000";
+				_this.gameCtx.fillStyle = '#FFFFFF';
+				_this.gameCtx.strokeStyle = '#000000';
 				_this.gameCtx.clearRect(0, 0, _this.gameCanvas.width, _this.gameCanvas.height);
-				_this.gameCtx.fillStyle = "#000000";
+				_this.gameCtx.fillStyle = '#000000';
 				_this.gameCtx.fillRect(0, _this.gameCanvas.height / 2, _this.gameCanvas.width, _this.gameCanvas.height / 2);
 				
 				_this.runScore(gameSettings);
@@ -121,7 +121,7 @@ class GameController {
 						const newScore = _this.ScoreController.scoreValue;
 						if(newScore > currentScore) {
 							_this.UserController.setScore(newScore);
-							document.getElementsByClassName("navbar-scores")[0].innerHTML = "Your score is: "  +  newScore;
+							document.getElementsByClassName('navbar-scores')[0].innerHTML = 'Your score is: '  +  newScore;
 						}
 					}
 				}
@@ -139,14 +139,14 @@ class GameController {
 
 	text(source, y, size, color) {
 		this.gameCtx.fillStyle = color;
-		this.gameCtx.font = size + "px Arial";
-		this.gameCtx.textAlign="center";
+		this.gameCtx.font = size + 'px Arial';
+		this.gameCtx.textAlign='center';
 		this.gameCtx.fillText(source, this.gameCanvas.width / 2, y - size);
 	}
 
 	setOpacity() {
 		this.gameCtx.globalAlpha = 0.8;
-		this.gameCtx.fillStyle = "#FFFFFF";
+		this.gameCtx.fillStyle = '#FFFFFF';
 		this.gameCtx.fillRect(0, 0, this.gameCanvas.width, this.gameCanvas.height);
 		this.gameCtx.globalAlpha = 1.0;
 	}
@@ -169,14 +169,14 @@ class GameController {
 
 	startOverlay() {
 		this.setOpacity();
-		this.text("LASTUNION presents!", this.gameCanvas.height / 2, 60, "#000000");
-		this.text("Press SPACE to start", this.gameCanvas.height / 2 + 30, 30, "#555555");
+		this.text('LASTUNION presents!', this.gameCanvas.height / 2, 60, '#000000');
+		this.text('Press SPACE to start', this.gameCanvas.height / 2 + 30, 30, '#555555');
 	}
 
 	pauseOverlay() {
 		this.setOpacity();
-		this.text("Pause", this.gameCanvas.height / 2, 60, "#000000");
-		this.text("Press SPACE to continue", this.gameCanvas.height / 2 + 30, 30, "#555555");
+		this.text('Pause', this.gameCanvas.height / 2, 60, '#000000');
+		this.text('Press SPACE to continue', this.gameCanvas.height / 2 + 30, 30, '#555555');
 	}
 
 	gameover(gameSettings) {
@@ -186,16 +186,16 @@ class GameController {
 
 	gameoverOverlay(gameSettings) {
 		this.setOpacity();
-		this.text("Game Over!", 300  * gameSettings.scale, 60 * gameSettings.scale, "#000000");
-		this.text("Press SPACE to run again!", 250  * gameSettings.scale + 70 * gameSettings.scale, 30  * gameSettings.scale, "#555555");
-		this.text("Your score: " + this.ScoreController.scoreValue, (250 + 70 + 160)  * gameSettings.scale, 60  * gameSettings.scale, "#000000");
+		this.text('Game Over!', 300  * gameSettings.scale, 60 * gameSettings.scale, '#000000');
+		this.text('Press SPACE to run again!', 250  * gameSettings.scale + 70 * gameSettings.scale, 30  * gameSettings.scale, '#555555');
+		this.text('Your score: ' + this.ScoreController.scoreValue, (250 + 70 + 160)  * gameSettings.scale, 60  * gameSettings.scale, '#000000');
 
 		const nekro = new Image();
 		nekro.src = '/img/nekro.png';
 		const _this = this;
 		nekro.onload = function() {
 			_this.gameCtx.drawImage(nekro, _this.gameCanvas.width / 2 - 100 * gameSettings.scale, gameSettings.scale * (-25), 200  * gameSettings.scale, 200  * gameSettings.scale);
-		}
+		};
 	}
 	
 }

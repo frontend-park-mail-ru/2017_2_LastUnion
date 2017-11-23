@@ -6,10 +6,10 @@
 const Types = {
 	UP : 0,
 	GROUND : 1,
-}
+};
 
 const typesAmount = 2;
-const spikeColor = "#000000";
+const spikeColor = '#000000';
 
 function GetRandomNLessThen(Restrict) {
 	 return Math.floor(Math.random() * Restrict);
@@ -35,23 +35,23 @@ class Obstacle {
 	}
 	
 	static drawUpperObstacleAt(drawingInfo, x) {
-		drawingInfo.canvas.fillStyle = "#440000";
-		drawingInfo.canvas.strokeStyle = "#FF0000";
+		drawingInfo.canvas.fillStyle = '#440000';
+		drawingInfo.canvas.strokeStyle = '#FF0000';
 		drawingInfo.canvas.fillRect(x, 100, 50, 100);
 		
 		drawingInfo.canvas.beginPath();
 		drawingInfo.canvas.moveTo(x,100);
 		
 		let spikeX = 5;
-        const spikeHeight = 10;
+		const spikeHeight = 10;
         
 		while (spikeX < 50) {
 			drawingInfo.canvas.lineTo(
-                x + spikeX, 
-                98 - (spikeHeight + (spikeX / 5) * (spikeX / 5 % 2)) * (spikeX / 5 % 2)
-            );
+				x + spikeX, 
+				98 - (spikeHeight + (spikeX / 5) * (spikeX / 5 % 2)) * (spikeX / 5 % 2)
+			);
 			spikeX = spikeX + 5;
-        }
+		}
         
 		drawingInfo.canvas.lineTo(x + 50, 100);
 		drawingInfo.canvas.fillStyle = spikeColor;
@@ -64,10 +64,10 @@ class Obstacle {
         
 		while (spikeX < 50) {
 			drawingInfo.canvas.lineTo(
-                x + spikeX,
-                202 + (spikeHeight + (spikeX / 5) * (spikeX / 5 % 2)) * (spikeX / 5 % 2));
+				x + spikeX,
+				202 + (spikeHeight + (spikeX / 5) * (spikeX / 5 % 2)) * (spikeX / 5 % 2));
 			spikeX = spikeX + 5;
-        }
+		}
         
 		drawingInfo.canvas.lineTo(x + 50, 200);
 		drawingInfo.canvas.fillStyle = spikeColor;
@@ -76,24 +76,24 @@ class Obstacle {
 	
 	CheckUpperObstacleFatal(upperMidPoint, lowerMidPoint) {
 		return (
-            this.x < upperMidPoint.x && 
+			this.x < upperMidPoint.x && 
             upperMidPoint.x < this.x + this.width &&
             200 <= upperMidPoint.y && 
             upperMidPoint.y <= 210
-        );
+		);
 	}
 	
 	CheckGroundObstacleFatal (upperMidPoint, lowerMidPoint) {
 		return (
-            this.x < upperMidPoint.x && 
+			this.x < upperMidPoint.x && 
             upperMidPoint.x < this.x + this.width &&
             lowerMidPoint.y > 190
-        );
+		);
 	}
 	
 	static drawGroundObstacleAt (drawingInfo, x) {
-		drawingInfo.canvas.fillStyle = "#440000";
-		drawingInfo.canvas.strokeStyle = "#FF0000";
+		drawingInfo.canvas.fillStyle = '#440000';
+		drawingInfo.canvas.strokeStyle = '#FF0000';
 		drawingInfo.canvas.fillRect(x, 200, 50, 100);
 		
 		drawingInfo.canvas.beginPath();
@@ -103,10 +103,10 @@ class Obstacle {
 		const spikeHeight = 10;
 		while (spikeX < 50) {
 			drawingInfo.canvas.lineTo(
-                x + spikeX,
-                198 - (spikeHeight + (spikeX / 5) * (spikeX / 5 % 2)) * (spikeX / 5 % 2));
+				x + spikeX,
+				198 - (spikeHeight + (spikeX / 5) * (spikeX / 5 % 2)) * (spikeX / 5 % 2));
 			spikeX = spikeX + 5;
-        }
+		}
         
 		drawingInfo.canvas.lineTo(x + 50, 200);
 		drawingInfo.canvas.fillStyle = spikeColor;
@@ -119,8 +119,8 @@ class ObstacleCreator {
 
 	static CreateByType(type, x) {
 		switch (type) {
-			case Types.UP : return ObstacleCreator.CreateUpperObstacle(x);
-			case Types.GROUND : return ObstacleCreator.CreateGroundObstacle(x);
+		case Types.UP : return ObstacleCreator.CreateUpperObstacle(x);
+		case Types.GROUND : return ObstacleCreator.CreateGroundObstacle(x);
 		}
 	}
 	
@@ -146,11 +146,11 @@ class ObstaclesController {
 
 	constructor() {		
 		this.obstaclesArray = []; 
-    }
+	}
     
-    resetObstacles () { 
-        this.obstaclesArray = []; 
-    }
+	resetObstacles () { 
+		this.obstaclesArray = []; 
+	}
 	
 	get obstaclesAmount() {
 		return this.obstaclesArray.length;
@@ -163,23 +163,23 @@ class ObstaclesController {
 	checkFatalCollisions(upperMidPoint, lowerMidPoint) {
 		let flag = false;
 		this.obstaclesArray.forEach(function(obstacle, index, array) {
-            if (obstacle.checkFatal(upperMidPoint, lowerMidPoint)) 
-                flag = true;
-        });
+			if (obstacle.checkFatal(upperMidPoint, lowerMidPoint)) 
+				flag = true;
+		});
 
 		return flag;
 	}
 	
 	redrawAllObstacles(drawingInfo) {  //drawing info contents canvas context, scale, etc..
 		this.obstaclesArray.forEach(function(obstacle, index, array) {
-            obstacle.drawAt(drawingInfo, obstacle.x);
-        });									
+			obstacle.drawAt(drawingInfo, obstacle.x);
+		});									
 	}
 
 	moveAllObstacles(horSpeed) {
 		this.obstaclesArray.forEach(function(item, index, array) {
-            item.x = item.x - horSpeed;
-        });
+			item.x = item.x - horSpeed;
+		});
 		
 		// deliting left object that's away from screen
 		if (this.obstaclesArray[0].x < -this.obstaclesArray[0].width) {
