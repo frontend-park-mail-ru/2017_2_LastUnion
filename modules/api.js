@@ -2,16 +2,21 @@
 
 'use strict';
 
+//const HOST = 'localhost:8080';
+//const PROTOCOL = 'http://';
+const PROTOCOL = 'https://';
 const HOST = 'lastunion.herokuapp.com';
+
 
 class API {
 
 	constructor() {
+		this._protocol = PROTOCOL;
 		this._host = HOST;
 	}
 
 	sendReq(method, httpMethod, params) {
-		const url = 'https://' + this._host + '/api/' + method;
+		const url = this._protocol + this._host + '/api/' + method;
 		const httpRequest = {
 			method: httpMethod,
 			headers: {
