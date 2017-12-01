@@ -60,7 +60,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 8);
+/******/ 	return __webpack_require__(__webpack_require__.s = 9);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -75,48 +75,48 @@
 
 class Dot {
     
-    constructor(x, y) {
-        if(!y || y == 'undefined') {
-            this._x = 0;
-            this._y = 0;
-        } else {
-            this._x = x;
-            this._y = y;
-        }
-    }
+	constructor(x, y) {
+		if(!y || y == 'undefined') {
+			this._x = 0;
+			this._y = 0;
+		} else {
+			this._x = x;
+			this._y = y;
+		}
+	}
 
-    update(x, y) {
-        this._x += x;
-        this._y += y;
-    }
+	update(x, y) {
+		this._x += x;
+		this._y += y;
+	}
 
-    get x() {
-        return this._x;
-    }
+	get x() {
+		return this._x;
+	}
 
-    set x(__x) {
-        this._x = __x;
-    }
+	set x(__x) {
+		this._x = __x;
+	}
 
-    get y() {
-        return this._y;
-    }
+	get y() {
+		return this._y;
+	}
 
-    set y(__y) {
-        this._y = __y;
-    }
+	set y(__y) {
+		this._y = __y;
+	}
 
-    newCoords(x, y) {
-        this._x = x;
-        this._y = y;
-    }
+	newCoords(x, y) {
+		this._x = x;
+		this._y = y;
+	}
 
-    get coords() {
-        return {
-            'x' : this._x,
-            'y' : this._y
-        }
-    }
+	get coords() {
+		return {
+			'x' : this._x,
+			'y' : this._y
+		};
+	}
 
 }
 
@@ -133,8 +133,8 @@ module.exports = Dot;
 
 
 const Router = __webpack_require__(5);
-const DOM = __webpack_require__(11);
-const User = __webpack_require__(12);
+const DOM = __webpack_require__(12);
+const User = __webpack_require__(6);
 
 class View {
 
@@ -255,10 +255,10 @@ class WorldObject {
 	// 							  player effect of collision - function(player, sceneInfo)
 	CheckCollision(playerUpperLeft, playerBottomRight) {
 		let result = {
-				'isCollided' : false,
-				'scoreEffect' : function(scoreController, gameSettings) {},
-				'playerEffect' : function(player, gameSettings) {},
-		}
+			'isCollided' : false,
+			'scoreEffect' : function(scoreController, gameSettings) {},
+			'playerEffect' : function(player, gameSettings) {},
+		};
 		
 		return result;
 	}
@@ -276,7 +276,7 @@ module.exports = WorldObject;
 
 
 
-const UrlCom = __webpack_require__(9);
+const UrlCom = __webpack_require__(10);
 
 class Router {
 
@@ -341,479 +341,6 @@ module.exports = Router;
 
 /***/ }),
 /* 6 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-/* global require */
-/* global module */
-
-
-
-const Dot = __webpack_require__(0);
-
-const WIDTH = 100;
-const HEIGHT = 100;
-const JUMPPOWER = 33;
-
-const RUN = 0;
-const ONAIR = 1;
-const BEND = 2;
-const BENDEDONAIR = 3;
-
-class Player {
-
-	constructor () {
-        if(Player._instance) {
-			return Player._instance;
-		}
-        Player._instance = this;
-    }
-
-    init() {
-        this._state = 0;
-        this._action = null;
-        this.gameover = false;
-
-        this.time = 0;
-        this.skin = 0;
-		this.dialogVisible = false;
-
-        this.jumpTime = 0;
-        this.verticalAcceleration = 10;
-        this.offtop = 0;
-
-        const bm = new Dot(0,0);
-        const br = new Dot( WIDTH / 2, 0 ); // doesn't work. I hz pochemy
-		br.x = WIDTH / 2;
-        const tr = new Dot(WIDTH / 2, HEIGHT);
-        const tl = new Dot(-WIDTH / 2, HEIGHT);
-
-        this.geometry = {
-            'bm' : bm,
-            'br' : br,
-            'tr' : tr,
-            'tl' : tl,
-        };
-
-        this.playerSkinRun = [];
-        for(let i = 0; i < 4; i++) {
-            let playerImg = new Image();
-            playerImg.src = '/img/player0' + i + '.png';
-            this.playerSkinRun.push(playerImg);
-        }
-		
-		this.dlgImg = new Image();   
-        this.dlgImg.src = '/img/fck.png';
-
-    }
-
-    draw(gameSettings) {
-        const centerX = gameSettings.width / 2;
-        const centerY = gameSettings.height / 2;
-        gameSettings.canvas.fillStyle = "#000000";
-
-        let sceneCoords = {};
-        for(let dot in this.geometry) {
-            sceneCoords[dot] = new Dot();
-            sceneCoords[dot].x = (gameSettings.defaultW/2 + this.geometry[dot].x) * gameSettings.scale
-            sceneCoords[dot].y = (gameSettings.defaultW/4 - this.geometry[dot].y) * gameSettings.scale
-        }
-
-        
-        gameSettings.canvas.drawImage(
-            this.playerSkinRun[this.skin],
-            sceneCoords['tl'].x, 
-            sceneCoords['tl'].y,
-            WIDTH * gameSettings.scale, 
-            (this.topRightCoords.y - this.bottomRightCoords.y) * gameSettings.scale
-        );
-        
-
-		if(this.dialogVisible && sceneCoords['tl'].x < 200) {
-            gameSettings.canvas.drawImage(
-                this.dlgImg,
-                sceneCoords['tr'].x + WIDTH, 
-                sceneCoords['tr'].y - HEIGHT,
-                100 * gameSettings.scale, 
-                100 * gameSettings.scale
-            );
-        }
-
-        if(sceneCoords['tl'].x <= 0) {
-            this.gameover = true;
-        }
-		
-
-		// show control points
-		/*gameSettings.canvas.fillStyle = "#FFFF00";
-		for(let dot in this.geometry) {
-			if (dot == 'br') gameSettings.canvas.fillStyle = "#00FF00";
-			if (dot == 'tr') gameSettings.canvas.fillStyle = "#0000FF";
-			if (dot == 'tl') gameSettings.canvas.fillStyle = "#FF00FF";
-           gameSettings.canvas.fillRect((this.geometry[dot].x+960-7)*gameSettings.scale, (480-this.geometry[dot].y-7)*gameSettings.scale, 14, 14);
-        }*/
-    }
-
-    trigger() {
-        this.bendedTired();
-        this.tick();
-        if(!this._action || this._action === null) {
-            return this.gameover;
-        }
-        this._action();
-        return this.gameover;
-    }
-
-    changePosition(x,y) {
-        for(let d in this.geometry) {
-            this.geometry[d].update(x, y);
-        }
-    }
-
-    bendedTired() {
-        if(this.bended) {
-            this.offtop -= 3;
-            this.changePosition(-3, 0);
-        } else {
-            if(this.offtop < 0) {
-                this.offtop += 6;
-                this.changePosition(6, 0);
-            }
-        }
-    }
-
-    tick() {
-        this.time++;
-        if(this.time % 4 == 0) {
-            this.skin == 3 ? this.skin = 0 : this.skin++;
-        }
-		if(this.time % 40 == 0) {
-            this.dialog();
-        }
-    }
-	
-	dialog() {
-        this.dialogVisible == false ? this.dialogVisible = true : this.dialogVisible = false;
-    }
-
-    jump() {
-        if(this._action === null) {
-            this.action = this.jumpAction;
-        }
-        this.jumpStop = false;
-    }
-
-    jumpFinish() {
-        this.jumpStop = true;
-    }
-
-    jumpAction() {
-        if(this.jumpTime == 0) {
-            this.bended ? this.state = BENDEDONAIR : this.state = ONAIR; 
-            this.jumpLambda = 0;
-        }
-
-        this.jumpLambda = JUMPPOWER * this.jumpTime - (this.verticalAcceleration * Math.pow(this.jumpTime, 2) / 2) - this.jumpLambda;
-        this.jumpTime += 0.8;
-
-        if(this.bottomCenterCoords.y + this.jumpLambda < 0) {
-            this.changePosition(0, -this.bottomCenterCoords.y);
-            this.jumpTime = 0;
-            if(this.jumpStop) {
-                this.action = null;
-            }
-            if(this.state == ONAIR) {
-                this.run();
-            }
-            return;
-        }
-        this.changePosition(0, this.jumpLambda);
-    }
-
-    duck() {
-        if(!this.bended) {
-            this.state == ONAIR ? this.state = BENDEDONAIR : this.state = BEND;
-            this.topRightCoords.update(0, -HEIGHT / 2);
-			this.topLeftCoords.update(0, -HEIGHT / 2);
-        }
-    }
-
-    run() {
-        if(this.bended) {
-            this.topRightCoords.update(0, HEIGHT / 2);
-			this.topLeftCoords.update(0, HEIGHT / 2);
-        }
-        this.state = RUN;
-    }
-
-    voice() {
-        
-    }
-
-    get state() {
-        return this._state;
-    }
-
-    set state(st) {
-        this._state = st;
-    }
-
-    set action(f) {
-        this._action = f;
-    }
-
-    get bottomCenterCoords() {
-        return this.geometry.bm;
-    }
-
-    get topLeftCoords() {
-        return this.geometry.tl;
-    }
-
-    get topRightCoords() {
-        return this.geometry.tr;
-    }
-
-    get bottomRightCoords() {
-        return this.geometry.br;
-    }
-
-    get bended() {
-        return this.state > 1;
-    }
-
-}
-
-module.exports = Player;
-
-
-/***/ }),
-/* 7 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-/* global require */
-/* global module */
-
-
-
-module.exports = {
-	rend : function(params) {
-		const template = __webpack_require__(32);
-		let html = template(params);
-		const elem = document.createElement('div');
-		elem.innerHTML = html;
-		const inputs = elem.getElementsByTagName('input');
-		for(let i=0; i < inputs.length; i++)
-		{
-			let id = inputs[i].getAttribute('id');
-			inputs[i].addEventListener('focus', () => {
-				document.getElementById(id + '_err').hidden = 'true';
-			});
-		}
-		return elem;
-	},
-
-	err : function(form, input, msg) {
-		const span = document.getElementById(form + '_' + input + '_err');
-		span.innerHTML = msg;
-		span.hidden = false;
-		document.getElementById(form + '_loader').hidden = 'true';
-		document.getElementById(form + '_btn').style.display = 'inline-block';
-	},
-
-	ok : function(id) {
-		document.getElementById(id + '_err').hidden = 'true';
-	},
-
-	revert : function(form) {
-		document.getElementById(form + '_loader').hidden = 'true';
-		document.getElementById(form + '_btn').style.display = 'inline-block';
-	},
-
-	submit : function(form) {
-		document.getElementById(form + '_btn').style.display = 'none';
-		document.getElementById(form + '_loader').hidden = false;
-		document.getElementById(form + '_Global_err').innerHTML = '';
-	}
-
-};
-
-
-/***/ }),
-/* 8 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-/* global require */
-
-
-const Router = __webpack_require__(5);
-const R = new Router();
-
-//const MenuView = require('./views/menu');
-const GameView = __webpack_require__(10);
-const ScoresView = __webpack_require__(25);
-const MenuView = __webpack_require__(28);
-const SignInView = __webpack_require__(31);
-const SignUpView = __webpack_require__(33);
-const LogoutView = __webpack_require__(34);
-
-R.addUrl('/', MenuView);
-R.addUrl('/play', GameView);
-R.addUrl('/scores', ScoresView);
-R.addUrl('/menu', MenuView);
-R.addUrl('/signin', SignInView);
-R.addUrl('/signup', SignUpView);
-R.addUrl('/logout', LogoutView);
-
-R.loadPage();
-
-
-/***/ }),
-/* 9 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-/* global module */
-
-
-
-class UrlCom {
-
-	constructor(url, view) {
-		this.url = url;
-		this.view = view;
-		this.instance = null;
-	}
-
-	load() {
-		if(!this.instance) {
-			this.instance = new this.view();
-		}
-
-		this.instance.constructPage();
-	}
-
-	destroy() {
-		this.instance.destroyPage();
-		this.instance = null;
-	}
-
-}
-
-module.exports = UrlCom;
-
-
-/***/ }),
-/* 10 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-/* global require */
-/* global module */
-
-
-
-const View = __webpack_require__(1);
-const Game = __webpack_require__(14);
-const Header = __webpack_require__(2);
-
-const GameController = __webpack_require__(17);
-
-class GameView extends View {
-
-	constructor() {
-		super();
-		if(GameView._instance) {
-			return GameView._instance;
-		}
-		GameView._instance = this;
-		this.init();
-	}
-
-	init() {
-		this.dom.insertDom(this.body, Header.rend({
-			loggedin : this.user.isAuth(),
-			score: this.user.getScore()
-		}), 'Header');
-		if(this.dom.insertDom(this.body, Game.rend({}), 'Game')) {
-			Game.resize();
-			this.GameController = new GameController();
-			this.GameController.initGame(false);
-			this.GameController.play();
-		}
-		this.listenLinks();
-	}
-
-	constructPage() {
-		this.init();
-		this.show('Header');
-		this.show('Game');
-	}
-
-	destroyPage() {
-		this.hide('Header');
-		this.hide('Game');
-	}
-
-}
-
-module.exports = GameView;
-
-
-/***/ }),
-/* 11 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-/* global module */
-
-
-
-class DOM {
-
-	constructor() {
-		if(DOM._instance) {
-			return DOM._instance;
-		}
-		DOM._instance = this;
-
-		this.loadedBlocks = {};
-	}
-
-	insertDom(parent, elem, id, upd, first) {
-		if (!this.loadedBlocks[id] || typeof this.loadedBlocks[id] === 'undefined' || upd == true) {
-			if(upd) {
-				console.log('Reloading ' + id + ' in DOM');
-				this.removeDOM(id);
-			}
-			elem.hidden = 'true';
-			(typeof first === 'undefined' || first == false) ? parent.appendChild(elem) : parent.insertBefore(elem, parent.firstChild);
-			this.loadedBlocks[id] = { 'html' : elem, 'listened' : false };
-			console.log('Loaded ' + id + ' in DOM');
-			return true;
-		}
-		return false;
-	}
-
-	removeDOM(id) {
-		if(!this.loadedBlocks[id] || typeof this.loadedBlocks[id] === 'undefined') {
-			console.log('Can\'t remove ' + id + ' from DOM. Item not exists.');
-			return false;
-		}
-		this.loadedBlocks[id].html.remove();
-		delete this.loadedBlocks[id];
-		console.log('Removed ' + id + ' from DOM');
-	}
-
-}
-
-module.exports = DOM;
-
-
-/***/ }),
-/* 12 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -936,6 +463,482 @@ class User {
 }
 
 module.exports = User;
+
+
+/***/ }),
+/* 7 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/* global require */
+/* global module */
+
+
+
+const Dot = __webpack_require__(0);
+
+const WIDTH = 100;
+const HEIGHT = 100;
+const JUMPPOWER = 33;
+
+const RUN = 0;
+const ONAIR = 1;
+const BEND = 2;
+const BENDEDONAIR = 3;
+
+class Player {
+
+	constructor () {
+		if(Player._instance) {
+			return Player._instance;
+		}
+		Player._instance = this;
+	}
+
+	init() {
+		this._state = 0;
+		this._action = null;
+		this.gameover = false;
+
+		this.time = 0;
+		this.skin = 0;
+		this.dialogVisible = false;
+
+		this.jumpTime = 0;
+		this.verticalAcceleration = 10;
+		this.offtop = 0;
+
+		const bm = new Dot(0, 0);
+		const br = new Dot(WIDTH / 2, 0); // doesn't work. I hz pochemy
+		br.x = WIDTH / 2;
+		const tr = new Dot(WIDTH / 2, HEIGHT);
+		const tl = new Dot(-WIDTH / 2, HEIGHT);
+
+		this.geometry = {
+			'bm' : bm,
+			'br' : br,
+			'tr' : tr,
+			'tl' : tl,
+		};
+
+		this.playerSkinRun = [];
+		for(let i = 0; i < 4; i++) {
+			let playerImg = new Image();
+			playerImg.src = '/img/player0' + i + '.png';
+			this.playerSkinRun.push(playerImg);
+		}
+		
+		this.dlgImg = new Image();   
+		this.dlgImg.src = '/img/fck.png';
+
+	}
+
+	draw(gameSettings) {
+		const centerX = gameSettings.width / 2;
+		const centerY = gameSettings.height / 2;
+		gameSettings.canvas.fillStyle = '#000000';
+
+		let sceneCoords = {};
+		for(let dot in this.geometry) {
+			sceneCoords[dot] = new Dot();
+			sceneCoords[dot].x = (gameSettings.defaultW/2 + this.geometry[dot].x) * gameSettings.scale;
+			sceneCoords[dot].y = (gameSettings.defaultW/4 - this.geometry[dot].y) * gameSettings.scale;
+		}
+
+        
+		gameSettings.canvas.drawImage(
+			this.playerSkinRun[this.skin],
+			sceneCoords['tl'].x, 
+			sceneCoords['tl'].y,
+			WIDTH * gameSettings.scale, 
+			(this.topRightCoords.y - this.bottomRightCoords.y) * gameSettings.scale
+		);
+        
+
+		if(this.dialogVisible && sceneCoords['tl'].x < 200) {
+			gameSettings.canvas.drawImage(
+				this.dlgImg,
+				sceneCoords['tr'].x + WIDTH, 
+				sceneCoords['tr'].y - HEIGHT,
+				100 * gameSettings.scale, 
+				100 * gameSettings.scale
+			);
+		}
+
+		if(sceneCoords['tl'].x <= 0) {
+			this.gameover = true;
+		}	
+
+		// show control points
+		/*gameSettings.canvas.fillStyle = "#FFFF00";
+		for(let dot in this.geometry) {
+			if (dot == 'br') gameSettings.canvas.fillStyle = "#00FF00";
+			if (dot == 'tr') gameSettings.canvas.fillStyle = "#0000FF";
+			if (dot == 'tl') gameSettings.canvas.fillStyle = "#FF00FF";
+           gameSettings.canvas.fillRect((this.geometry[dot].x+960-7)*gameSettings.scale, (480-this.geometry[dot].y-7)*gameSettings.scale, 14, 14);
+        }*/
+	}
+
+	trigger() {
+		this.bendedTired();
+		this.tick();
+		if(!this._action || this._action === null) {
+			return this.gameover;
+		}
+		this._action();
+		return this.gameover;
+	}
+
+	changePosition(x,y) {
+		for(let d in this.geometry) {
+			this.geometry[d].update(x, y);
+		}
+	}
+
+	bendedTired() {
+		if(this.bended) {
+			this.offtop -= 3;
+			this.changePosition(-3, 0);
+		} else {
+			if(this.offtop < 0) {
+				this.offtop += 6;
+				this.changePosition(6, 0);
+			}
+		}
+	}
+
+	tick() {
+		this.time++;
+		if(this.time % 4 == 0) {
+			this.skin == 3 ? this.skin = 0 : this.skin++;
+		}
+		if(this.time % 40 == 0) {
+			this.dialog();
+		}
+	}
+	
+	dialog() {
+		this.dialogVisible == false ? this.dialogVisible = true : this.dialogVisible = false;
+	}
+
+	jump() {
+		if(this._action === null) {
+			this.action = this.jumpAction;
+		}
+		this.jumpStop = false;
+	}
+
+	jumpFinish() {
+		this.jumpStop = true;
+	}
+
+	jumpAction() {
+		if(this.jumpTime == 0) {
+			this.bended ? this.state = BENDEDONAIR : this.state = ONAIR; 
+			this.jumpLambda = 0;
+		}
+
+		this.jumpLambda = JUMPPOWER * this.jumpTime - (this.verticalAcceleration * Math.pow(this.jumpTime, 2) / 2) - this.jumpLambda;
+		this.jumpTime += 0.8;
+
+		if(this.bottomCenterCoords.y + this.jumpLambda < 0) {
+			this.changePosition(0, -this.bottomCenterCoords.y);
+			this.jumpTime = 0;
+			if(this.jumpStop) {
+				this.action = null;
+			}
+			if(this.state == ONAIR) {
+				this.run();
+			}
+			return;
+		}
+		this.changePosition(0, this.jumpLambda);
+	}
+
+	duck() {
+		if(!this.bended) {
+			this.state == ONAIR ? this.state = BENDEDONAIR : this.state = BEND;
+			this.topRightCoords.update(0, -HEIGHT / 2);
+			this.topLeftCoords.update(0, -HEIGHT / 2);
+		}
+	}
+
+	run() {
+		if(this.bended) {
+			this.topRightCoords.update(0, HEIGHT / 2);
+			this.topLeftCoords.update(0, HEIGHT / 2);
+		}
+		this.state = RUN;
+	}
+
+	get state() {
+		return this._state;
+	}
+
+	set state(st) {
+		this._state = st;
+	}
+
+	set action(f) {
+		this._action = f;
+	}
+
+	get bottomCenterCoords() {
+		return this.geometry.bm;
+	}
+
+	get topLeftCoords() {
+		return this.geometry.tl;
+	}
+
+	get topRightCoords() {
+		return this.geometry.tr;
+	}
+
+	get bottomRightCoords() {
+		return this.geometry.br;
+	}
+
+	get bended() {
+		return this.state > 1;
+	}
+
+	get height() {
+		return Math.abs(this.geometry.tl._y - this.geometry.br._y);
+	}
+
+	get width() {
+		return Math.abs(this.geometry.tl._x - this.geometry.br._x);
+	}
+
+}
+
+module.exports = Player;
+
+
+/***/ }),
+/* 8 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/* global require */
+/* global module */
+
+
+
+module.exports = {
+	rend : function(params) {
+		const template = __webpack_require__(33);
+		let html = template(params);
+		const elem = document.createElement('div');
+		elem.innerHTML = html;
+		const inputs = elem.getElementsByTagName('input');
+		for(let i=0; i < inputs.length; i++)
+		{
+			let id = inputs[i].getAttribute('id');
+			inputs[i].addEventListener('focus', () => {
+				document.getElementById(id + '_err').hidden = 'true';
+			});
+		}
+		return elem;
+	},
+
+	err : function(form, input, msg) {
+		const span = document.getElementById(form + '_' + input + '_err');
+		span.innerHTML = msg;
+		span.hidden = false;
+		document.getElementById(form + '_loader').hidden = 'true';
+		document.getElementById(form + '_btn').style.display = 'inline-block';
+	},
+
+	ok : function(id) {
+		document.getElementById(id + '_err').hidden = 'true';
+	},
+
+	revert : function(form) {
+		document.getElementById(form + '_loader').hidden = 'true';
+		document.getElementById(form + '_btn').style.display = 'inline-block';
+	},
+
+	submit : function(form) {
+		document.getElementById(form + '_btn').style.display = 'none';
+		document.getElementById(form + '_loader').hidden = false;
+		document.getElementById(form + '_Global_err').innerHTML = '';
+	}
+
+};
+
+
+/***/ }),
+/* 9 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/* global require */
+
+
+const Router = __webpack_require__(5);
+const R = new Router();
+
+//const MenuView = require('./views/menu');
+const GameView = __webpack_require__(11);
+const ScoresView = __webpack_require__(26);
+const MenuView = __webpack_require__(29);
+const SignInView = __webpack_require__(32);
+const SignUpView = __webpack_require__(34);
+const LogoutView = __webpack_require__(35);
+
+R.addUrl('/', MenuView);
+R.addUrl('/play', GameView);
+R.addUrl('/scores', ScoresView);
+R.addUrl('/menu', MenuView);
+R.addUrl('/signin', SignInView);
+R.addUrl('/signup', SignUpView);
+R.addUrl('/logout', LogoutView);
+
+R.loadPage();
+
+
+/***/ }),
+/* 10 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/* global module */
+
+
+
+class UrlCom {
+
+	constructor(url, view) {
+		this.url = url;
+		this.view = view;
+		this.instance = null;
+	}
+
+	load() {
+		if(!this.instance) {
+			this.instance = new this.view();
+		}
+
+		this.instance.constructPage();
+	}
+
+	destroy() {
+		this.instance.destroyPage();
+		this.instance = null;
+	}
+
+}
+
+module.exports = UrlCom;
+
+
+/***/ }),
+/* 11 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/* global require */
+/* global module */
+
+
+
+const View = __webpack_require__(1);
+const Game = __webpack_require__(14);
+const Header = __webpack_require__(2);
+
+const GameController = __webpack_require__(17);
+
+class GameView extends View {
+
+	constructor() {
+		super();
+		if(GameView._instance) {
+			return GameView._instance;
+		}
+		GameView._instance = this;
+		this.init();
+	}
+
+	init() {
+		this.dom.insertDom(this.body, Header.rend({
+			loggedin : this.user.isAuth(),
+			score: this.user.getScore()
+		}), 'Header');
+		if(this.dom.insertDom(this.body, Game.rend({}), 'Game')) {
+			Game.resize();
+			this.GameController = new GameController();
+			this.GameController.initGame(false);
+			this.GameController.play();
+		}
+		this.listenLinks();
+	}
+
+	constructPage() {
+		this.init();
+		this.show('Header');
+		this.show('Game');
+	}
+
+	destroyPage() {
+		this.hide('Header');
+		this.hide('Game');
+	}
+
+}
+
+module.exports = GameView;
+
+
+/***/ }),
+/* 12 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/* global module */
+
+
+
+class DOM {
+
+	constructor() {
+		if(DOM._instance) {
+			return DOM._instance;
+		}
+		DOM._instance = this;
+
+		this.loadedBlocks = {};
+	}
+
+	insertDom(parent, elem, id, upd, first) {
+		if (!this.loadedBlocks[id] || typeof this.loadedBlocks[id] === 'undefined' || upd == true) {
+			if(upd) {
+				console.log('Reloading ' + id + ' in DOM');
+				this.removeDOM(id);
+			}
+			elem.hidden = 'true';
+			(typeof first === 'undefined' || first == false) ? parent.appendChild(elem) : parent.insertBefore(elem, parent.firstChild);
+			this.loadedBlocks[id] = { 'html' : elem, 'listened' : false };
+			console.log('Loaded ' + id + ' in DOM');
+			return true;
+		}
+		return false;
+	}
+
+	removeDOM(id) {
+		if(!this.loadedBlocks[id] || typeof this.loadedBlocks[id] === 'undefined') {
+			console.log('Can\'t remove ' + id + ' from DOM. Item not exists.');
+			return false;
+		}
+		this.loadedBlocks[id].html.remove();
+		delete this.loadedBlocks[id];
+		console.log('Removed ' + id + ' from DOM');
+	}
+
+}
+
+module.exports = DOM;
 
 
 /***/ }),
@@ -1072,17 +1075,16 @@ return __p
 
 
 
+const FRAMETIME = 1;
 const DEFAULT_W = 1920;
-const HORSPEED = 25;
-const FRAMETIME = 35;
 
-const User = __webpack_require__(12);
+const User = __webpack_require__(6);
 
 const Dot = __webpack_require__(0);
-const Player = __webpack_require__(6);
+const Player = __webpack_require__(7);
 const InputController = __webpack_require__(18);
 const WorldObjectsController = __webpack_require__(19);
-const ScoreController = __webpack_require__(35);
+const ScoreController = __webpack_require__(25);
 
 class GameController {
 
@@ -1092,11 +1094,18 @@ class GameController {
 		}
 		GameController._instance = this;
 		
-		this.horSpeed = HORSPEED;
 		this.frameTime = FRAMETIME;
 
 		this.gameCanvas = document.getElementById('game');
 		this.gameCtx = this.gameCanvas.getContext('2d');
+		this.gameSettings = {
+			'canvas' : this.gameCtx,
+			'height' : this.gameCanvas.height,
+			'width' : this.gameCanvas.width,
+			'scale' : this.gameCanvas.width / DEFAULT_W,
+			'defaultW' : DEFAULT_W,
+			'horSpeed' : 2,
+		};
 
 		this.UserController = new User();
 		
@@ -1116,17 +1125,18 @@ class GameController {
 		this.WorldObjectsController.resetObjects();
 		this.ScoreController.init();
 	}
-	runScore(gameSettings) {
+
+	runScore() {
 		this.ScoreController.tick();
-		this.text("Score: " + this.ScoreController.scoreValue, 60, 30 * gameSettings.scale, "#000000");
+		this.text('Score: ' + this.ScoreController.scoreValue, 60, 30 * this.gameSettings.scale, '#000000');
 	}
 
-	runPlayer(gameSettings) {
+	runPlayer() {
 		this._over = this._over || this.PlayerController.trigger();
-		this.PlayerController.draw(gameSettings);
+		this.PlayerController.draw(this.gameSettings);
 	}
 
-	runObjects(gameSettings) {
+	runObjects() {
 		let topLeftCoords = this.PlayerController.topLeftCoords;
 		let playerUpperLeft = new Dot(topLeftCoords.x + DEFAULT_W/2, DEFAULT_W/16*8/2 - this.PlayerController.topLeftCoords.y);
 		
@@ -1138,18 +1148,18 @@ class GameController {
 			this.WorldObjectsController.addSeriesOfObjects(DEFAULT_W, 300, 150);
 		}
 		
-		this.WorldObjectsController.moveAllObjects(this.horSpeed);
-		this.WorldObjectsController.redrawAllObjects(gameSettings);
+		this.WorldObjectsController.moveAllObjects(this.gameSettings.horSpeed);
+		this.WorldObjectsController.redrawAllObjects(this.gameSettings);
 		
 		let check = this.WorldObjectsController.CheckAllCollisions(playerUpperLeft, playerBottomRight);
 		if (check && check.isCollided && check.isFatal) {
-			check.playerEffect(this.PlayerController, gameSettings);
-			check.scoreEffect(this.ScoreController, gameSettings);
+			check.playerEffect(this.PlayerController, this.gameSettings);
+			check.scoreEffect(this.ScoreController, this.gameSettings);
 			this._over = true;
 		}
 		else if (check && check.isCollided && !check.isFatal) {
-			check.scoreEffect(this.ScoreController,gameSettings);
-			check.playerEffect(this.PlayerController, gameSettings);
+			check.scoreEffect(this.ScoreController, this.gameSettings);
+			check.playerEffect(this.PlayerController, this.gameSettings);
 		}	
 				
 	}
@@ -1159,63 +1169,62 @@ class GameController {
 		this.play();
 	}
 
+	drawSurface() {
+		// Reset canvas
+		this.gameCtx.fillStyle = '#FFFFFF';
+		this.gameCtx.strokeStyle = '#000000';
+		this.gameCtx.clearRect(0, 0, this.gameSettings.width, this.gameSettings.height);
+
+		// Draw background
+		this.gameCtx.fillStyle = '#000000';
+		this.gameCtx.fillRect(0, this.gameSettings.height / 2, this.gameSettings.width, this.gameSettings.height / 2);
+	}
+
 	play() {
 		const _this = this;
 		if(this.started) {
+
 			this.game = setInterval(function () {
 				
-				let gameSettings = {
-					'canvas' : _this.gameCtx,
-					'height' : _this.gameCanvas.height,
-					'width' : _this.gameCanvas.width,
-					'scale' : _this.gameCanvas.width / DEFAULT_W,
-					'defaultW' : DEFAULT_W,
-					'horSpeed' : HORSPEED,
-				}
+				// Update canvas width
+				_this.gameSettings.height = _this.gameCanvas.height;
+				_this.gameSettings.width = _this.gameCanvas.width;
+				_this.gameSettings.scale = _this.gameCanvas.width / DEFAULT_W;
 	
-				_this.gameCtx.fillStyle = "#FFFFFF";
-				_this.gameCtx.strokeStyle = "#000000";
-				_this.gameCtx.clearRect(0, 0, _this.gameCanvas.width, _this.gameCanvas.height);
-				_this.gameCtx.fillStyle = "#000000";
-				_this.gameCtx.fillRect(0, _this.gameCanvas.height / 2, _this.gameCanvas.width, _this.gameCanvas.height / 2);
+				_this.drawSurface();
 				
-				_this.runScore(gameSettings);
-				_this.runObjects(gameSettings);
-				_this.runPlayer(gameSettings);
+				_this.runScore();
+				_this.runObjects();
+				_this.runPlayer();
 	
 				if(_this._over) {
-					_this.gameover(gameSettings);
+					_this.gameover();
 					if(_this.UserController.isAuth()) {
 						const currentScore = _this.UserController._proto.score;
 						const newScore = _this.ScoreController.scoreValue;
 						if(newScore > currentScore) {
 							_this.UserController.setScore(newScore);
-							document.getElementsByClassName("navbar-scores")[0].innerHTML = "Your score is: "  +  newScore;
+							document.getElementsByClassName('navbar-scores')[0].innerHTML = 'Your score is: '  +  newScore;
 						}
 					}
 				}
 				
 			}, this.frameTime);
 		} else {
-			this.startOverlay({
-				'canvas' : _this.gameCtx,
-				'height' : _this.gameCanvas.height,
-				'width' : _this.gameCanvas.width,
-				'scale' : _this.gameCanvas.width / DEFAULT_W,
-			});
+			this.startOverlay();
 		}
 	}
 
 	text(source, y, size, color) {
 		this.gameCtx.fillStyle = color;
-		this.gameCtx.font = size + "px Arial";
-		this.gameCtx.textAlign="center";
-		this.gameCtx.fillText(source, this.gameCanvas.width / 2, y - size);
+		this.gameCtx.font = size * this.gameSettings.scale + 'px Arial';
+		this.gameCtx.textAlign='center';
+		this.gameCtx.fillText(source, this.gameCanvas.width / 2, y * this.gameSettings.scale);
 	}
 
 	setOpacity() {
 		this.gameCtx.globalAlpha = 0.8;
-		this.gameCtx.fillStyle = "#FFFFFF";
+		this.gameCtx.fillStyle = '#FFFFFF';
 		this.gameCtx.fillRect(0, 0, this.gameCanvas.width, this.gameCanvas.height);
 		this.gameCtx.globalAlpha = 1.0;
 	}
@@ -1238,33 +1247,37 @@ class GameController {
 
 	startOverlay() {
 		this.setOpacity();
-		this.text("LASTUNION presents!", this.gameCanvas.height / 2, 60, "#000000");
-		this.text("Press SPACE to start", this.gameCanvas.height / 2 + 30, 30, "#555555");
+		this.text('LASTUNION presents!', this.gameCanvas.height / 2, 60, '#000000');
+		this.text('Press SPACE to start', this.gameCanvas.height / 2 + 30, 30, '#555555');
 	}
 
 	pauseOverlay() {
 		this.setOpacity();
-		this.text("Pause", this.gameCanvas.height / 2, 60, "#000000");
-		this.text("Press SPACE to continue", this.gameCanvas.height / 2 + 30, 30, "#555555");
+		this.text('Pause', this.gameCanvas.height / 2, 60, '#000000');
+		this.text('Press SPACE to continue', this.gameCanvas.height / 2 + 30, 30, '#555555');
 	}
 
-	gameover(gameSettings) {
+	gameover() {
 		clearInterval(this.game);
-		this.gameoverOverlay(gameSettings);
+		this.gameoverOverlay();
 	}
 
-	gameoverOverlay(gameSettings) {
+	gameoverOverlay() {
 		this.setOpacity();
-		this.text("Game Over!", 300  * gameSettings.scale, 60 * gameSettings.scale, "#000000");
-		this.text("Press SPACE to run again!", 250  * gameSettings.scale + 70 * gameSettings.scale, 30  * gameSettings.scale, "#555555");
-		this.text("Your score: " + this.ScoreController.scoreValue, (250 + 70 + 160)  * gameSettings.scale, 60  * gameSettings.scale, "#000000");
+
+		const imgHeight = 200 * this.gameSettings.scale;
+		const imgWidth = imgHeight
+
+		this.text('Game Over!', 250, 60, '#000000');
+		this.text('Press SPACE to run again!', 300, 30, '#555555');
+		this.text('Your score: ' + this.ScoreController.scoreValue, imgHeight + 360, 60, '#000000');
 
 		const nekro = new Image();
 		nekro.src = '/img/nekro.png';
 		const _this = this;
 		nekro.onload = function() {
-			_this.gameCtx.drawImage(nekro, _this.gameCanvas.width / 2 - 100 * gameSettings.scale, gameSettings.scale * (-25), 200  * gameSettings.scale, 200  * gameSettings.scale);
-		}
+			_this.gameCtx.drawImage(nekro, _this.gameCanvas.width / 2 - 100 * _this.gameSettings.scale, 0, imgWidth, imgHeight);
+		};
 	}
 	
 }
@@ -1282,45 +1295,44 @@ module.exports = GameController;
 
 
 
-const Player = __webpack_require__(6);
+const Player = __webpack_require__(7);
 
 class InputController {
 
 	constructor (Controller) {
-        this.PlayerController = new Player();
-        this.Controller = Controller;
+		this.PlayerController = new Player();
+		this.Controller = Controller;
 
-        const _this = this;
-        document.addEventListener('keydown', function(event) {
-            switch(event.keyCode) {
-                case 87:
-                    _this.PlayerController.jump();;
-                break;
-                case 83:
-                    _this.PlayerController.duck();
-                break;
-                case 32:
-                    if(!_this.Controller._over && _this.Controller.started) {
-                        _this.Controller.pause();
-                    } else {
-                        _this.Controller.reset(true);
-                    }
-                break;
-            break;
-            }
-        });
+		const _this = this;
+		document.addEventListener('keydown', function(event) {
+			switch(event.keyCode) {
+			case 87:
+				_this.PlayerController.jump();
+				break;
+			case 83:
+				_this.PlayerController.duck();
+				break;
+			case 32:
+				if(!_this.Controller._over && _this.Controller.started) {
+					_this.Controller.pause();
+				} else {
+					_this.Controller.reset(true);
+				}
+				break;
+			}
+		});
 
-        document.addEventListener('keyup', function(event) {
-            switch(event.keyCode) {
-                case 83:
-                    _this.PlayerController.run();
-                break;
-                case 87:
-                    _this.PlayerController.jumpFinish();;
-                break;
-            }
-        });
-    }
+		document.addEventListener('keyup', function(event) {
+			switch(event.keyCode) {
+			case 83:
+				_this.PlayerController.run();
+				break;
+			case 87:
+				_this.PlayerController.jumpFinish();
+				break;
+			}
+		});
+	}
 
 	
 }
@@ -1353,18 +1365,18 @@ const Types = {
 	PIT : 2,
 	MIDGEM : 3,
 	UPGEM: 4,
-}
+};
 
 	
 class WorldObjectsController {
 
 	constructor() {		
 		this.objectsArray = []; 
-    }
+	}
     
-    resetObjects () { 
-        this.objectsArray = []; 
-    }
+	resetObjects () { 
+		this.objectsArray = []; 
+	}
 	
 	getObjectsAmount() {
 		return this.objectsArray.length;
@@ -1377,25 +1389,25 @@ class WorldObjectsController {
 		
 		this.objectsArray.forEach(function(worldObject, index, array) {
 			res = worldObject.CheckCollision(playerUpperLeft, playerBottomRight);
-            if (!found && res.isCollided) {
+			if (!found && res.isCollided) {
 				found = true;
 				foundRes = res;
 			}
-        });
+		});
 
 		return foundRes;
 	}
 	
 	redrawAllObjects(gameSettings) {  //drawing info contents canvas context, scale, etc..
 		this.objectsArray.forEach(function(worldObject, index, array) {
-            worldObject.draw(gameSettings);
-        });									
+			worldObject.draw(gameSettings);
+		});									
 	}
 
 	moveAllObjects(horSpeed) {
 		this.objectsArray.forEach(function(worldObject, index, array) {
-            worldObject.x = worldObject.x - horSpeed;
-        });
+			worldObject.x = worldObject.x - horSpeed;
+		});
 		
 		// deliting left object that's away from screen
 		if (this.objectsArray[0].x < -this.objectsArray[0].GetWidth()) {
@@ -1405,11 +1417,11 @@ class WorldObjectsController {
 	
 	CreateObjectByType(type, x) {
 		switch (type) {
-			case Types.UP : return new UpperObstacle(x);
-			case Types.MID : return new MidObstacle(x);
-			case Types.PIT : return new PitObstacle(x);
-			case Types.MIDGEM : return new MidGem(x);
-			case Types.UPGEM : return new UpperGem(x);
+		case Types.UP : return new UpperObstacle(x);
+		case Types.MID : return new MidObstacle(x);
+		case Types.PIT : return new PitObstacle(x);
+		case Types.MIDGEM : return new MidGem(x);
+		case Types.UPGEM : return new UpperGem(x);
 		}
 	}
 	
@@ -1450,37 +1462,37 @@ const Y = 295;
 const WIDTH = 50;
 const HEIGHT = 100;
 
-const SQUARECOLOUR = "#201919";
+const SQUARECOLOUR = '#201919';
 
 const SPIKES = new Image();
 SPIKES.src = '/img/spike.png';         
 
 class UpperObstacle extends WorldObject {
 	
-	GetWidth () { return WIDTH }; 
-	GetHeight () { return HEIGHT };
+	GetWidth () { return WIDTH; } 
+	GetHeight () { return HEIGHT; }
 	
 	draw (gameSettings) {
 		// drawing central square
 		gameSettings.canvas.fillStyle = SQUARECOLOUR;
 		gameSettings.canvas.fillRect(
-            this.x*gameSettings.scale, 
-            (Y+WIDTH/2)*gameSettings.scale, 
-            WIDTH*gameSettings.scale, 
-            (HEIGHT-WIDTH)*gameSettings.scale
-        );
+			this.x*gameSettings.scale, 
+			(Y+WIDTH/2)*gameSettings.scale, 
+			WIDTH*gameSettings.scale, 
+			(HEIGHT-WIDTH)*gameSettings.scale
+		);
 		
 		// upper spikes (upper half of png)
 		gameSettings.canvas.drawImage(SPIKES, 0, 0, 300, 150,
-										this.x*gameSettings.scale,
-										Y*gameSettings.scale,
-										WIDTH*gameSettings.scale, WIDTH/2*gameSettings.scale);
+			this.x*gameSettings.scale,
+			Y*gameSettings.scale,
+			WIDTH*gameSettings.scale, WIDTH/2*gameSettings.scale);
 							
 		// bottom spikes (bottom half of png)
 		gameSettings.canvas.drawImage(SPIKES, 0, 150, 300, 150,
-										this.x*gameSettings.scale,
-										(Y+HEIGHT-WIDTH/2)*gameSettings.scale-1,
-										WIDTH*gameSettings.scale, WIDTH/2*gameSettings.scale);
+			this.x*gameSettings.scale,
+			(Y+HEIGHT-WIDTH/2)*gameSettings.scale-1,
+			WIDTH*gameSettings.scale, WIDTH/2*gameSettings.scale);
 	}
 	
 	// returns object containing: is there a collision (true/false)
@@ -1489,22 +1501,22 @@ class UpperObstacle extends WorldObject {
 	// 							  player effect of collision - function(player, sceneInfo)
 	CheckCollision(playerUpperLeft, playerBottomRight) {
 		let result = {
-				'isCollided' : false,
-				'isFatal' : false,
-				'scoreEffect' : function (score, gameSettings) {},
-				'playerEffect' : function (player, gameSettings) {},
-		}
+			'isCollided' : false,
+			'isFatal' : false,
+			'scoreEffect' : function (score, gameSettings) {},
+			'playerEffect' : function (player, gameSettings) {},
+		};
 		
 		// check spikes
 		let playerMidTop = new Dot(
-								(playerUpperLeft.x + playerBottomRight.x)/2,
-								playerUpperLeft.y
-							);
+			(playerUpperLeft.x + playerBottomRight.x)/2,
+			playerUpperLeft.y
+		);
 							
 		let spikeCenterBottom = new Dot(
-								this.x+WIDTH/2,
-								Y + HEIGHT - WIDTH/2
-							);
+			this.x+WIDTH/2,
+			Y + HEIGHT - WIDTH/2
+		);
 		
 		// check bottom circle half
 		let dist = MathGeom.GetDistance(playerMidTop, spikeCenterBottom);
@@ -1523,8 +1535,8 @@ class UpperObstacle extends WorldObject {
 			result.isFatal = false;
 			
 			result.playerEffect = function (player, gameSettings) {
-										player.changePosition(-gameSettings.horSpeed,0);
-								  }
+				player.changePosition(-gameSettings.horSpeed,0);
+			};
 			
 			return result;
 		}
@@ -1553,31 +1565,31 @@ const Y = 405;
 const WIDTH = 50;
 const HEIGHT = 100;
 
-const SQUARECOLOUR = "#201919";
+const SQUARECOLOUR = '#201919';
 
 const SPIKES = new Image();
 SPIKES.src = '/img/spike.png';         
 
 class MidObstacle extends WorldObject {
 	
-	GetWidth () { return WIDTH }; 
-	GetHeight () { return HEIGHT };
+	GetWidth () { return WIDTH; } 
+	GetHeight () { return HEIGHT; }
 	
 	draw (gameSettings) {
 		// drawing central square
 		gameSettings.canvas.fillStyle = SQUARECOLOUR;
 		gameSettings.canvas.fillRect(
-            this.x*gameSettings.scale, 
-            (Y+WIDTH/2)*gameSettings.scale, 
-            WIDTH*gameSettings.scale, 
-            (HEIGHT-WIDTH)*gameSettings.scale
-        );
+			this.x*gameSettings.scale, 
+			(Y+WIDTH/2)*gameSettings.scale, 
+			WIDTH*gameSettings.scale, 
+			(HEIGHT-WIDTH)*gameSettings.scale
+		);
 		
 		// upper spikes (upper half of png)
 		gameSettings.canvas.drawImage(SPIKES, 0, 0, 300, 150,
-										this.x*gameSettings.scale,
-										Y*gameSettings.scale+1,
-										WIDTH*gameSettings.scale, WIDTH/2*gameSettings.scale);
+			this.x*gameSettings.scale,
+			Y*gameSettings.scale+1,
+			WIDTH*gameSettings.scale, WIDTH/2*gameSettings.scale);
 	}
 	
 	// returns object containing: is there a collision (true/false)
@@ -1586,22 +1598,22 @@ class MidObstacle extends WorldObject {
 	// 							  player effect of collision - function(player, sceneInfo)
 	CheckCollision(playerUpperLeft, playerBottomRight) {
 		let result = {
-				'isCollided' : false,
-				'isFatal' : false,
-				'scoreEffect' : function (score, gameSettings) {},
-				'playerEffect' : function (player, gameSettings) {},
-		}
+			'isCollided' : false,
+			'isFatal' : false,
+			'scoreEffect' : function (score, gameSettings) {},
+			'playerEffect' : function (player, gameSettings) {},
+		};
 		
 		// check spikes
 		let playerMidBottom = new Dot(
-								(playerUpperLeft.x + playerBottomRight.x)/2,
-								playerBottomRight.y
-							);
+			(playerUpperLeft.x + playerBottomRight.x)/2,
+			playerBottomRight.y
+		);
 							
 		let spikeCenterBottom = new Dot(
-								this.x+WIDTH/2,
-								Y + WIDTH/2
-							);
+			this.x+WIDTH/2,
+			Y + WIDTH/2
+		);
 									
 		// check top circle half
 		let dist = MathGeom.GetDistance(playerMidBottom, spikeCenterBottom);
@@ -1619,8 +1631,8 @@ class MidObstacle extends WorldObject {
 			result.isFatal = false;
 			
 			result.playerEffect = function (player, gameSettings) {
-										player.changePosition(-gameSettings.horSpeed*1.5,0);
-								  }
+				player.changePosition(-gameSettings.horSpeed*1.5,0);
+			};
 			
 			return result;
 		}
@@ -1649,31 +1661,31 @@ const Y = 480;
 const WIDTH = 100;
 const HEIGHT = 100;
 
-const SQUARECOLOUR = "#FFFFFF";
+const SQUARECOLOUR = '#FFFFFF';
 
 const SPIKES = new Image();
 SPIKES.src = '/img/spike.png';         
 
 class PitObstacle extends WorldObject {
 	
-	GetWidth () { return WIDTH }; 
-	GetHeight () { return HEIGHT };
+	GetWidth () { return WIDTH; } 
+	GetHeight () { return HEIGHT; }
 	
 	draw (gameSettings) {
 		// drawing central square
 		gameSettings.canvas.fillStyle = SQUARECOLOUR;
 		gameSettings.canvas.fillRect(
-            this.x*gameSettings.scale, 
-            Y*gameSettings.scale-1, 
-            WIDTH*gameSettings.scale, 
-            (HEIGHT)*gameSettings.scale
-        );
+			this.x*gameSettings.scale, 
+			Y*gameSettings.scale-1, 
+			WIDTH*gameSettings.scale, 
+			(HEIGHT)*gameSettings.scale
+		);
 		
 		// spikes (upper half of png)
 		gameSettings.canvas.drawImage(SPIKES, 0, 0, 300, 150,
-										this.x*gameSettings.scale,
-										(Y+HEIGHT-WIDTH/2)*gameSettings.scale+1,
-										WIDTH*gameSettings.scale, WIDTH/2*gameSettings.scale);
+			this.x*gameSettings.scale,
+			(Y+HEIGHT-WIDTH/2)*gameSettings.scale+1,
+			WIDTH*gameSettings.scale, WIDTH/2*gameSettings.scale);
 	}
 	
 	// returns object containing: is there a collision (true/false)
@@ -1682,22 +1694,22 @@ class PitObstacle extends WorldObject {
 	// 							  player effect of collision - function(player, sceneInfo)
 	CheckCollision(playerUpperLeft, playerBottomRight) {
 		let result = {
-				'isCollided' : false,
-				'isFatal' : false,
-				'scoreEffect' : function (score, gameSettings) {},
-				'playerEffect' : function (player, gameSettings) {},
-		}
+			'isCollided' : false,
+			'isFatal' : false,
+			'scoreEffect' : function (score, gameSettings) {},
+			'playerEffect' : function (player, gameSettings) {},
+		};
 		
 		// check spikes
 		let playerMidBottom = new Dot(
-								(playerUpperLeft.x + playerBottomRight.x)/2,
-								playerBottomRight.y
-							);
+			(playerUpperLeft.x + playerBottomRight.x)/2,
+			playerBottomRight.y
+		);
 							
 		let spikeCenterBottom = new Dot(
-								this.x+WIDTH/2,
-								Y + WIDTH/2
-							);
+			this.x+WIDTH/2,
+			Y + WIDTH/2
+		);
 							
 		if (this.x <= playerMidBottom.x && playerMidBottom.x <= this.x+WIDTH && playerMidBottom.y > Y+5) {
 			result.isCollided = true;
@@ -1712,8 +1724,8 @@ class PitObstacle extends WorldObject {
 			result.isFatal = false;
 			
 			result.playerEffect = function (player, gameSettings) {
-										player.changePosition(-gameSettings.horSpeed*0.5,-55);
-								  }
+				player.changePosition(-gameSettings.horSpeed*0.5,-55);
+			};
 			
 			return result;
 		}
@@ -1747,17 +1759,17 @@ GEM.src = '/img/gem.png';
 
 class MidGem extends WorldObject {
 	
-	GetWidth () { return WIDTH }; 
-	GetHeight () { return HEIGHT };
+	GetWidth () { return WIDTH; } 
+	GetHeight () { return HEIGHT; }
 	
 	draw (gameSettings) {
 		
 		// spikes (upper half of png)
 		gameSettings.canvas.drawImage(GEM,
-										(this.x-WIDTH/2)*gameSettings.scale,
-										(Y-HEIGHT/2)*gameSettings.scale,
-										25,25
-									);
+			(this.x-WIDTH/2)*gameSettings.scale,
+			(Y-HEIGHT/2)*gameSettings.scale,
+			25,25
+		);
 	}
 	
 	// returns object containing: is there a collision (true/false)
@@ -1766,16 +1778,16 @@ class MidGem extends WorldObject {
 	// 							  player effect of collision - function(player, sceneInfo)
 	CheckCollision(playerUpperLeft, playerBottomRight) {
 		let result = {
-				'isCollided' : false,
-				'isFatal' : false,
-				'scoreEffect' : function (score, gameSettings) {},
-				'playerEffect' : function (player, gameSettings) {},
-		}
+			'isCollided' : false,
+			'isFatal' : false,
+			'scoreEffect' : function (score, gameSettings) {},
+			'playerEffect' : function (player, gameSettings) {},
+		};
 			
 		let playerMidBottom = new Dot(
-								(playerUpperLeft.x + playerBottomRight.x)/2,
-								playerBottomRight.y
-							);	
+			(playerUpperLeft.x + playerBottomRight.x)/2,
+			playerBottomRight.y
+		);	
 			
 		// check non-Fatal collision
 		if (playerMidBottom.x-WIDTH <= this.x && this.x <= playerMidBottom.x + WIDTH && 
@@ -1786,7 +1798,7 @@ class MidGem extends WorldObject {
 			
 			result.scoreEffect = function (score, gameSettings) {
 				score.extra(20);
-			}
+			};
 			
 			// gem disappears in left side of screen
 			this.x = -25;
@@ -1823,17 +1835,17 @@ GEM.src = '/img/gem.png';
 
 class UpperGem extends WorldObject {
 	
-	GetWidth () { return WIDTH }; 
-	GetHeight () { return HEIGHT };
+	GetWidth () { return WIDTH; } 
+	GetHeight () { return HEIGHT; }
 	
 	draw (gameSettings) {
 		
 		// spikes (upper half of png)
 		gameSettings.canvas.drawImage(GEM,
-										(this.x-WIDTH/2)*gameSettings.scale,
-										(Y-HEIGHT/2)*gameSettings.scale,
-										25,25
-									);
+			(this.x-WIDTH/2)*gameSettings.scale,
+			(Y-HEIGHT/2)*gameSettings.scale,
+			25,25
+		);
 	}
 	
 	// returns object containing: is there a collision (true/false)
@@ -1842,16 +1854,16 @@ class UpperGem extends WorldObject {
 	// 							  player effect of collision - function(player, sceneInfo)
 	CheckCollision(playerUpperLeft, playerBottomRight) {
 		let result = {
-				'isCollided' : false,
-				'isFatal' : false,
-				'scoreEffect' : function (score, gameSettings) {},
-				'playerEffect' : function (player, gameSettings) {},
-		}
+			'isCollided' : false,
+			'isFatal' : false,
+			'scoreEffect' : function (score, gameSettings) {},
+			'playerEffect' : function (player, gameSettings) {},
+		};
 			
 		let playerMidBottom = new Dot(
-								(playerUpperLeft.x + playerBottomRight.x)/2,
-								playerBottomRight.y
-							);	
+			(playerUpperLeft.x + playerBottomRight.x)/2,
+			playerBottomRight.y
+		);	
 			
 		// check non-Fatal collision
 		if (playerMidBottom.x-WIDTH <= this.x && this.x <= playerMidBottom.x + WIDTH && 
@@ -1862,7 +1874,7 @@ class UpperGem extends WorldObject {
 			
 			result.scoreEffect = function (score, gameSettings) {
 				score.extra(40);
-			}
+			};
 			
 			// gem disappears in left side of screen
 			this.x = -25;
@@ -1886,8 +1898,60 @@ module.exports = UpperGem;
 
 
 
+const Dot = __webpack_require__(0);
+
+const WIDTH = 100;
+const HEIGHT = 100;
+const JUMPPOWER = 33;
+
+const RUN = 0;
+const ONAIR = 1;
+const BEND = 2;
+const BENDEDONAIR = 3;
+
+class Score {
+
+	constructor () {
+		if(Score._instance) {
+			return Score._instance;
+		}
+		Score._instance = this;
+	}
+
+	init() {
+		this._time = 0;
+		this._score = 0;
+	}
+
+	extra(bonus) {
+		this._score += Number(bonus);
+	}
+
+	tick() {
+		this._time++;
+	}
+
+	get scoreValue() {
+		return Math.floor(Number(this._time) * 0.1) + Number(this._score);
+	}
+
+}
+
+module.exports = Score;
+
+
+/***/ }),
+/* 26 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/* global require */
+/* global module */
+
+
+
 const View = __webpack_require__(1);
-const Scores = __webpack_require__(26);
+const Scores = __webpack_require__(27);
 const Header = __webpack_require__(2);
 
 class ScoresView extends View {
@@ -1933,7 +1997,7 @@ module.exports = ScoresView;
 
 
 /***/ }),
-/* 26 */
+/* 27 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* global require */
@@ -1941,7 +2005,7 @@ module.exports = ScoresView;
 
 module.exports = {
 	rend : function(params){
-		const template = __webpack_require__(27);
+		const template = __webpack_require__(28);
 		let html = template(params);
 		const elem = document.createElement('div');
 		elem.innerHTML = html;
@@ -1951,7 +2015,7 @@ module.exports = {
 
 
 /***/ }),
-/* 27 */
+/* 28 */
 /***/ (function(module, exports) {
 
 module.exports = function (obj) {
@@ -1980,7 +2044,7 @@ return __p
 }
 
 /***/ }),
-/* 28 */
+/* 29 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1990,7 +2054,7 @@ return __p
 
 
 const View = __webpack_require__(1);
-const Menu = __webpack_require__(29);
+const Menu = __webpack_require__(30);
 const Header = __webpack_require__(2);
 
 class MenuView extends View {
@@ -2034,7 +2098,7 @@ module.exports = MenuView;
 
 
 /***/ }),
-/* 29 */
+/* 30 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* global require */
@@ -2042,7 +2106,7 @@ module.exports = MenuView;
 
 module.exports = {
 	rend : function(params){
-		const template = __webpack_require__(30);
+		const template = __webpack_require__(31);
 		let html = template(params);
 		const elem = document.createElement('div');
 		elem.innerHTML = html;
@@ -2052,7 +2116,7 @@ module.exports = {
 
 
 /***/ }),
-/* 30 */
+/* 31 */
 /***/ (function(module, exports) {
 
 module.exports = function (obj) {
@@ -2075,7 +2139,7 @@ return __p
 }
 
 /***/ }),
-/* 31 */
+/* 32 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2085,7 +2149,7 @@ return __p
 
 
 const View = __webpack_require__(1);
-const Form = __webpack_require__(7);
+const Form = __webpack_require__(8);
 const Header = __webpack_require__(2);
 
 class SignInView extends View {
@@ -2190,7 +2254,7 @@ module.exports = SignInView;
 
 
 /***/ }),
-/* 32 */
+/* 33 */
 /***/ (function(module, exports) {
 
 module.exports = function (obj) {
@@ -2241,7 +2305,7 @@ return __p
 }
 
 /***/ }),
-/* 33 */
+/* 34 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2251,7 +2315,7 @@ return __p
 
 
 const View = __webpack_require__(1);
-const Form = __webpack_require__(7);
+const Form = __webpack_require__(8);
 const Header = __webpack_require__(2);
 
 class SignUpView extends View {
@@ -2371,7 +2435,7 @@ module.exports = SignUpView;
 
 
 /***/ }),
-/* 34 */
+/* 35 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2417,58 +2481,6 @@ class LogoutView extends View {
 }
 
 module.exports = LogoutView;
-
-
-/***/ }),
-/* 35 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-/* global require */
-/* global module */
-
-
-
-const Dot = __webpack_require__(0);
-
-const WIDTH = 100;
-const HEIGHT = 100;
-const JUMPPOWER = 33;
-
-const RUN = 0;
-const ONAIR = 1;
-const BEND = 2;
-const BENDEDONAIR = 3;
-
-class Score {
-
-	constructor () {
-        if(Score._instance) {
-			return Score._instance;
-		}
-        Score._instance = this;
-    }
-
-    init() {
-        this._time = 0;
-        this._score = 0;
-    }
-
-    extra(bonus) {
-        this._score += Number(bonus);
-    }
-
-    tick() {
-        this._time++;
-    }
-
-    get scoreValue() {
-        return Math.floor(Number(this._time) * 0.1) + Number(this._score);
-    }
-
-}
-
-module.exports = Score;
 
 
 /***/ })
