@@ -36,8 +36,8 @@ class Player {
 		this.verticalAcceleration = 10;
 		this.offtop = 0;
 
-		const bm = new Dot(0,0);
-		const br = new Dot( WIDTH / 2, 0 ); // doesn't work. I hz pochemy
+		const bm = new Dot(0, 0);
+		const br = new Dot(WIDTH / 2, 0); // doesn't work. I hz pochemy
 		br.x = WIDTH / 2;
 		const tr = new Dot(WIDTH / 2, HEIGHT);
 		const tl = new Dot(-WIDTH / 2, HEIGHT);
@@ -95,8 +95,7 @@ class Player {
 
 		if(sceneCoords['tl'].x <= 0) {
 			this.gameover = true;
-		}
-		
+		}	
 
 		// show control points
 		/*gameSettings.canvas.fillStyle = "#FFFF00";
@@ -200,10 +199,6 @@ class Player {
 		this.state = RUN;
 	}
 
-	voice() {
-        
-	}
-
 	get state() {
 		return this._state;
 	}
@@ -234,6 +229,14 @@ class Player {
 
 	get bended() {
 		return this.state > 1;
+	}
+
+	get height() {
+		return Math.abs(this.geometry.tl._y - this.geometry.br._y);
+	}
+
+	get width() {
+		return Math.abs(this.geometry.tl._x - this.geometry.br._x);
 	}
 
 }

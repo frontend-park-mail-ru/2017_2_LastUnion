@@ -1,22 +1,22 @@
 <!-- HEADER -->
-<header>
-    <nav class="navbar navbar-default" role="navigation" align="center">
+<header class="header">
+    <nav class="header__nav navbar navbar-default" role="navigation" align="center">
         <div class="container-fluid">
             <div class="navbar-header">
-                <a class="navbar-brand" href="/">
-                    <img src="img/logo.png" alt="Logo" />
+                <a class="header__nav__brand navbar-brand" href="/">
+                    <img class="header__nav__brand__img" src="img/logo.png" alt="Logo" />
                     <span>LastUnion GAME</span>
                 </a>
                 <% if (loggedin) { %>
-                <span class="nav navbar-nav navbar-text navbar-scores">Your score is: <%= score %></span>
+                <span class="header__nav__scores nav navbar-nav navbar-text">Your score is: <%= score %></span>
                 <% } %>
-                <ul class="nav navbar-nav navbar-right user-menu">
+                <ul class="nav navbar-nav navbar-right header__nav__menu_user">
                     <% if (loggedin) { %>
-                      <li><a href="/logout">Log out</a></li>
+                      <li><a class="header__nav__menu_user__a" href="/logout">Log out</a></li>
                     <% } else { %>
-                      <li><a href="/signin">Sign IN</a></li>
-                      <p class="nav navbar-nav navbar-text">or</p>
-                      <li><a href="/signup">Sign UP</a></li>
+                      <li><a class="header__nav__menu_user__a" href="/signin">Sign IN</a></li>
+                      <p class="header__nav__menu_user__p nav navbar-nav navbar-text">or</p>
+                      <li><a class="header__nav__menu_user__a" href="/signup">Sign UP</a></li>
                     <% } %>
                 </ul>
             </div>  
