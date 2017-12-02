@@ -15,6 +15,8 @@ a {
 
 /* HEADER */
 
+/* FIX BOOTSTRAP HEADER COLLAPSE */
+
 .navbar-collapse.collapse {
   display: block!important;
 }
@@ -35,7 +37,9 @@ a {
   width: 100%;
 }
 
-header nav {
+/* END BOOTSTRAP FIX */
+
+.header__nav {
   border: 3px solid #000 !important;
   width: 100%;
   border-radius: 0px !important;
@@ -43,52 +47,52 @@ header nav {
   height: 80px;
 }
 
-nav .navbar-brand {
+.header__nav__brand {
   color: @subcolor !important;
   font-weight: bold;
   font-size: 26px;
 }
 
-nav .navbar-brand img {
-  display: inline-block;
+.header__nav__brand__img {
+  display: inline-block !important;
   height: 45px;
   top: -5px;
   position: relative;
 }
 
-.navbar-scores {
+.header__nav__scores {
   padding: 8px 20px 0px 20px !important;
   font-size: 18px;
 }
 
-nav ul.user-menu {
+.header__nav__menu_user {
   margin: 0px !important;
 }
 
-nav ul.user-menu p {
+.header__nav__menu_user__p {
   font-size: 14px;
   padding: 27px 0;
-  margin: 0px;
+  margin: 0px !important;
 }
 
-nav ul.user-menu a {
+.header__nav__menu_user__a {
   color: @subcolor !important;
   font-weight: bold;
   font-size: 26px;
-  padding: 27px 20px;
+  padding: 27px 20px !important;
 }
 
-nav ul.user-menu a:hover {
+.header__nav__menu_user__a:hover {
   text-decoration: underline;
 }
 
 @media screen and (max-width: 700px) {
  
-  nav ul.user-menu a {
+  .header__nav__menu_user__a {
     font-size: 18px;
   }
 
-  nav .navbar-brand {
+  .header__nav__brand {
     font-size: 18px;
   }
 
@@ -96,8 +100,17 @@ nav ul.user-menu a:hover {
 
 /* FORMS */
 
-.container.form {
+.wrapper {
+  margin: auto;
   text-align: center;
+  width: 350px;
+}
+
+.form {
+  text-align: center;
+  width: 350px;
+  margin: auto;
+  border: 2px solid #000;
 }
 
 .pseudo {
@@ -107,7 +120,7 @@ nav ul.user-menu a:hover {
   position: relative;
 }
 
-.container.form::before {
+.wrapper::before {
   background-image: url('/img/rocks.png');
   top: 5px;
   width: 350px; 
@@ -117,7 +130,7 @@ nav ul.user-menu a:hover {
 
 @deg : 180deg;
 
-.container.form::after {
+.wrapper::after {
   background-image: url('/img/rocks.png');
   width: 350px;
   height: 100px;
@@ -129,15 +142,7 @@ nav ul.user-menu a:hover {
   .pseudo;
 }
 
-.container.form form {
-  width: 350px;
-  margin: auto;
-  border: 2px solid #000;
-  padding: 20px;
-  margin-top: 0 50px 50px 50px;
-}
-
-.container.form .title {
+.form__title {
   text-align: center;
   width: 100%;
   display: block;
@@ -145,13 +150,13 @@ nav ul.user-menu a:hover {
   font-size: 42px;
 }
 
-.container.form input {
+.form__input {
   width: 100%;
   height: 40px;
   padding: 0 10px;
 }
 
-.container.form .loader {
+.form__loader {
   width: 46px;
   height: 46px;
   background: url('/img/logo.png') no-repeat;
@@ -176,29 +181,30 @@ nav ul.user-menu a:hover {
     -webkit-transform: rotate(0deg);
     transform: rotate(0deg);
   }
+
   100% {
     -webkit-transform: rotate(360deg);
     transform: rotate(360deg);
   }
 }
 
-.error-message {
+.message_error {
   color: #682A2A;
 }
 
-.error-message.global {
+.message_global {
   width: 100%;
   display: block;
   font-weight: bold;
   padding: 15px 0 0 0;
 }
 
-.container.form .btn {
+.form__btn {
   background: #000;
   color: #fff;
 }
 
-.container.form .btn:hover {
+.form__btn:hover {
   background: #fff;
   color: #000;
 }

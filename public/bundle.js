@@ -1047,17 +1047,17 @@ obj || (obj = {});
 var __t, __p = '', __j = Array.prototype.join;
 function print() { __p += __j.call(arguments, '') }
 with (obj) {
-__p += '<!-- HEADER -->\r\n<header>\r\n    <nav class="navbar navbar-default" role="navigation" align="center">\r\n        <div class="container-fluid">\r\n            <div class="navbar-header">\r\n                <a class="navbar-brand" href="/">\r\n                    <img src="img/logo.png" alt="Logo" />\r\n                    <span>LastUnion GAME</span>\r\n                </a>\r\n                ';
+__p += '<!-- HEADER -->\r\n<header class="header">\r\n    <nav class="header__nav navbar navbar-default" role="navigation" align="center">\r\n        <div class="container-fluid">\r\n            <div class="navbar-header">\r\n                <a class="header__nav__brand navbar-brand" href="/">\r\n                    <img class="header__nav__brand__img" src="img/logo.png" alt="Logo" />\r\n                    <span>LastUnion GAME</span>\r\n                </a>\r\n                ';
  if (loggedin) { ;
-__p += '\r\n                <span class="nav navbar-nav navbar-text navbar-scores">Your score is: ' +
+__p += '\r\n                <span class="header__nav__scores nav navbar-nav navbar-text">Your score is: ' +
 ((__t = ( score )) == null ? '' : __t) +
 '</span>\r\n                ';
  } ;
-__p += '\r\n                <ul class="nav navbar-nav navbar-right user-menu">\r\n                    ';
+__p += '\r\n                <ul class="nav navbar-nav navbar-right header__nav__menu_user">\r\n                    ';
  if (loggedin) { ;
-__p += '\r\n                      <li><a href="/logout">Log out</a></li>\r\n                    ';
+__p += '\r\n                      <li><a class="header__nav__menu_user__a" href="/logout">Log out</a></li>\r\n                    ';
  } else { ;
-__p += '\r\n                      <li><a href="/signin">Sign IN</a></li>\r\n                      <p class="nav navbar-nav navbar-text">or</p>\r\n                      <li><a href="/signup">Sign UP</a></li>\r\n                    ';
+__p += '\r\n                      <li><a class="header__nav__menu_user__a" href="/signin">Sign IN</a></li>\r\n                      <p class="header__nav__menu_user__p nav navbar-nav navbar-text">or</p>\r\n                      <li><a class="header__nav__menu_user__a" href="/signup">Sign UP</a></li>\r\n                    ';
  } ;
 __p += '\r\n                </ul>\r\n            </div>  \r\n         </div>\r\n    </nav>\r\n</header>\r\n<!-- HEADER -->\r\n';
 
@@ -1075,7 +1075,7 @@ return __p
 
 
 
-const FRAMETIME = 1;
+const FRAMETIME = 35;
 const DEFAULT_W = 1920;
 
 const User = __webpack_require__(6);
@@ -1104,7 +1104,7 @@ class GameController {
 			'width' : this.gameCanvas.width,
 			'scale' : this.gameCanvas.width / DEFAULT_W,
 			'defaultW' : DEFAULT_W,
-			'horSpeed' : 2,
+			'horSpeed' : 25,
 		};
 
 		this.UserController = new User();
@@ -2262,7 +2262,7 @@ obj || (obj = {});
 var __t, __p = '', __j = Array.prototype.join;
 function print() { __p += __j.call(arguments, '') }
 with (obj) {
-__p += '<!-- FORM -->\r\n<div class="container form">\r\n  <form>\r\n    <span class="title">' +
+__p += '<!-- FORM -->\r\n<div class="wrapper">\r\n  <form class="form">\r\n    <span class="form__title">' +
 ((__t = ( title )) == null ? '' : __t) +
 '</span>\r\n    ';
  for(var i = 0; i<inputs.length; i++) { ;
@@ -2282,23 +2282,23 @@ __p += '\r\n      <input type="' +
 ((__t = ( formname )) == null ? '' : __t) +
 '_' +
 ((__t = ( inputs[i].label )) == null ? '' : __t) +
-'" placeholder="' +
+'" class="form__input" placeholder="' +
 ((__t = ( inputs[i].placeholder )) == null ? '' : __t) +
 '">\r\n      <span id="' +
 ((__t = ( formname )) == null ? '' : __t) +
 '_' +
 ((__t = ( inputs[i].label )) == null ? '' : __t) +
-'_err" class="error-message"></span>\r\n    </div>\r\n    ';
+'_err" class="message_error"></span>\r\n    </div>\r\n    ';
  } ;
 __p += '\r\n    <button id="' +
 ((__t = ( formname )) == null ? '' : __t) +
-'_btn" class="btn btn-default">' +
+'_btn" class="form__btn btn btn-default">' +
 ((__t = ( button )) == null ? '' : __t) +
 '</button>\r\n    <div id="' +
 ((__t = ( formname )) == null ? '' : __t) +
-'_loader" class="loader" hidden></div>\r\n    <span id="' +
+'_loader" class="form__loader" hidden></div>\r\n    <span id="' +
 ((__t = ( formname )) == null ? '' : __t) +
-'_Global_err" class="global error-message"></span>\r\n  </form>\r\n</div>\r\n<!-- FORM -->\r\n';
+'_Global_err" class="message_global message_error"></span>\r\n  </form>\r\n</div>\r\n<!-- FORM -->\r\n';
 
 }
 return __p

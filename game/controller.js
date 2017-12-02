@@ -3,7 +3,7 @@
 
 'use strict';
 
-const FRAMETIME = 1;
+const FRAMETIME = 35;
 const DEFAULT_W = 1920;
 
 const User = require('../modules/user');
@@ -32,7 +32,7 @@ class GameController {
 			'width' : this.gameCanvas.width,
 			'scale' : this.gameCanvas.width / DEFAULT_W,
 			'defaultW' : DEFAULT_W,
-			'horSpeed' : 2,
+			'horSpeed' : 25,
 		};
 
 		this.UserController = new User();
