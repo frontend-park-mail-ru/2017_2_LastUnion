@@ -1,7 +1,14 @@
 language: node_js
-
 node_js:
-  - "8"
+- '8'
+script:
+- eval "$(ssh-agent -s)"
+- ssh-keyscan -H 92.53.91.116>> ~/.ssh/known_hosts
+- chmod 600 ../../lastunion_key
+- ssh-add ../../lastunion_key
+- npm run build
+- scp -r ./dist root@92.53.91.116:/var/www
 
-
-script: npm install && npm run lint
+before_install:
+- openssl aes-256-cbc -K $encrypted_402e7d50a36d_key -iv $encrypted_402e7d50a36d_iv
+  -in lastunion_key.enc -out ../../lastunion_key -d
