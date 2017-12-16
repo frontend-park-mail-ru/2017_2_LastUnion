@@ -6,7 +6,7 @@ script:
 - ssh-keyscan -H 92.53.91.116>> ~/.ssh/known_hosts
 - chmod 600 ../../lastunion_key
 - ssh-add ../../lastunion_key
-- npm run build
+- npm run
 - scp -r ./dist root@92.53.91.116:/var/www
 
 before_install:
