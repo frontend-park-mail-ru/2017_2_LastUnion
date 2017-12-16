@@ -7,7 +7,7 @@ script:
 - chmod 600 ../../lastunion_key
 - ssh-add ../../lastunion_key
 - npm run
-- scp -r ./dist root@92.53.91.116:/var/www
+- scp -r ./ root@92.53.91.116:/var/www
 
 before_install:
 - openssl aes-256-cbc -K $encrypted_402e7d50a36d_key -iv $encrypted_402e7d50a36d_iv
