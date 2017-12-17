@@ -7,6 +7,9 @@ script:
 - chmod 600 ../../lastunion_key
 - ssh-add ../../lastunion_key
 - npm run build
+- wget https://github.com/yui/yuicompressor/releases/download/v2.4.8/yuicompressor-2.4.8.jar
+- cd public/css
+- java -jar ../../yuicompressor-2.4.8.jar -o '.css$:.css' *.css 
 - scp -r ./public root@92.53.91.116:/var/www
 
 before_install:
