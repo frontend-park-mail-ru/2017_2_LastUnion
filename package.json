@@ -4,8 +4,9 @@
   "private": true,
   "main": "app.js",
   "scripts": {
-    "build": "webpack -w -p",
-    "start": "node ./bin/www"
+    "start": "npm run generate_bundle && npm run run_node",
+    "run_node": "node ./bin/www",
+    "generate_bundle": "webpack",
   },
   "dependencies": {
     "body-parser": "^1.13.3",
