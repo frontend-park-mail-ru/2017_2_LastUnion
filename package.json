@@ -4,6 +4,7 @@
   "private": true,
   "main": "app.js",
   "scripts": {
+    "build": "webpack -p",
     "start": "node ./bin/www"
   },
   "dependencies": {
@@ -32,8 +33,5 @@
     "mocha": "^3.0.2",
     "nyc": "^10.0.0",
     "supertest": "^2.0.0"
-  },
-  "scripts":{
-    "build": "webpack"
   }
 }
