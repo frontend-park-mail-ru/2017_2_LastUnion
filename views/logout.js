@@ -18,23 +18,21 @@ class LogoutView extends View {
 
 	constructPage() {
 		const _this = this;
-		try {
-			this.user.logout()
-				.then(function() {
-					_this.dom.removeDOM('Scores');
-					_this.hide('Header');
-					_this.dom.insertDom(_this.body, Header.rend({
-						loggedin : _this.user.isAuth(),
-						score: _this.user.getScore()
-					}), 'Header', true, true);
-					_this.router.go('/menu/');
-				})
-				.catch(function(e) {
-					alert(e);
-				});
-		} catch(e) {
-			alert(e);
-		}
+
+		this.user.logout()
+			.then(function() {
+				_this.dom.removeDOM('Scores');
+				_this.hide('Header');
+				_this.dom.insertDom(_this.body, Header.rend({
+					loggedin : _this.user.isAuth(),
+					score: _this.user.getScore()
+				}), 'Header', true, true);
+				_this.router.go('/menu/');
+			})
+			.catch(function(e) {
+				alert(e);
+			});
+
 	}
 
 	destroyPage() {

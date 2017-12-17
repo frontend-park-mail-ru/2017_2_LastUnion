@@ -34,13 +34,14 @@ class User {
 	getScore() {
 		const _this = this;
 		
-		try {
+		
 			this.api.sendReq('user/get_score', 'GET').then(function(response) {
-				_this._proto.score = _this.checkResponse(response);
+				try {
+					_this._proto.score = _this.checkResponse(response);
+				} catch(e) {
+					_this._proto.score = 0;
+				}
 			});
-		} catch(e) {
-			_this._proto.score = 0;
-		}
 		
 		if (typeof this._proto.score === 'undefned' || this._proto.score == null)
 			this._proto.score = 0;
@@ -87,36 +88,47 @@ class User {
 		};
 	}
 
-	login(login, password) {
+	login(login, password, errobj) {
 		const _this = this;
 		return this.api.sendReq('user/signin', 'POST', {
 			userName: login,
 			userPassword: password
 		}).then(function(response) {
-			_this.checkResponse(response);
-			_this._proto.login = login;
-			_this._loggedin = true;
-			_this.getScore();
+			try {
+				_this.checkResponse(response);
+				_this._proto.login = login;
+				_this._loggedin = true;
+			} catch(e) {
+				errobj.obj(errorobj.id, errorobj.spec, e);
+			}
 		});
 	}
 
-	signup(login, password, email) {
+	signup(login, password, email, errobj) {
 		const _this = this;
 		return this.api.sendReq('user/signup', 'POST', {
 			userName: login,
 			userPassword: password,
 			userEmail: email
 		}).then(function(response) {
-			_this.checkResponse(response);
+			try {
+				_this.checkResponse(response);
+			} catch(e) {
+				errobj.obj(errorobj.id, errorobj.spec, e);
+			}
 		});
 	}
 
 	logout() {
 		const _this = this;
 		return this.api.sendReq('user/logout', 'POST').then(function(response) {
-			_this.checkResponse(response);
-			_this._proto = {};
-			_this._loggedin = false;
+			try {
+				_this.checkResponse(response);
+				_this._proto = {};
+				_this._loggedin = false;
+			} catch(e) {
+				alert(e);
+			}
 		});
 	}
 
