@@ -11,6 +11,11 @@ class Router {
 		if(Router._instance) {
 			return Router._instance;
 		}
+
+		if(window.location.protocol != 'https:') {
+			location.href = 'https:' + window.location.href.substring(window.location.protocol.length);
+		}
+		
 		Router._instance = this;
 		this.urls = [];
 

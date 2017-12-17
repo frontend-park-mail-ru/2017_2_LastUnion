@@ -41,7 +41,7 @@ class View {
 		if(elem && typeof elem !== 'undefined') {
 			elem.html.hidden = true;
 		} else {
-			console.error('Can\'t hide. No such element: ' + obj);
+			console.log('Can\'t hide. No such element: ' + obj);
 		}
 	}
 
@@ -50,7 +50,7 @@ class View {
 		if(elem && typeof elem !== 'undefined') {
 			elem.html.hidden = false;
 		} else {
-			console.error('Can\'t show. No such element: ' + obj);
+			console.log('Can\'t show. No such element: ' + obj);
 		}
 	}
 

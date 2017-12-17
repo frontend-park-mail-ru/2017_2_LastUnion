@@ -38,7 +38,7 @@ class API {
 				return response.json();
 			},
 			function(response) {
-				console.error('Connection issues: ', response);
+				console.log('Connection issues: ', response);
 				return response;
 			});
 	}

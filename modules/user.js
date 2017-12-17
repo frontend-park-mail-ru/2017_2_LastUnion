@@ -33,22 +33,28 @@ class User {
 
 	getScore() {
 		const _this = this;
-		// Is this correct 
-		this.api.sendReq('user/get_score', 'GET').then(function(response) {
-			_this._proto.score = _this.checkResponse(response);
-		});
+		
+		try {
+			this.api.sendReq('user/get_score', 'GET').then(function(response) {
+				_this._proto.score = _this.checkResponse(response);
+			});
+		} catch(e) {
+			_this._proto.score = 0;
+		}
 		
 		if (typeof this._proto.score === 'undefned' || this._proto.score == null)
-			return 0;
+			this._proto.score = 0;
+
 		return this._proto.score;
 	}
 
 	setScore(score) {
 		const _this = this;
-		return this.api.sendReq('user/set_score/' + score, 'GET').then(function(response) {
+
+		this.api.sendReq('user/set_score/' + score, 'GET').then(function(response) {
 			_this._proto.score = score;
-			_this.checkResponse(response);
 		});
+
 	}
 
 	getScores() {

@@ -24,10 +24,20 @@ class MenuView extends View {
 			loggedin : this.user.isAuth(),
 			score: this.user.getScore()
 		}), 'Header');
-		this.dom.insertDom(this.body, Menu.rend({
-			'menuitems' : ['Play', 'Scores'],
-			'links' : ['/play/', '/scores/'],
-		}), 'Menu');
+
+		const items = {
+			'menuitems' : ['Play', 'About', 'Rules'],
+			'links' : ['/play/', '/about/', '/rules/'],
+		}
+		if(this.user.isAuth()) {
+			items.menuitems.push('Scores');
+			items.links.push('/scores/');
+		}
+
+		this.dom.insertDom(this.body, Menu.rend(
+			items
+		), 'Menu');
+
 		this.listenLinks();
 	}
 
