@@ -11,6 +11,8 @@ script:
 - cd public/css
 - java -jar ../../yuicompressor-2.4.8.jar -o '.css$:.css' *.css 
 - cd ../../
+- sudo npm install -g uglify-js@github:mishoo/UglifyJS2#harmony
+- uglifyjs public/bundle.js -o public/bundle.js
 - scp -r ./public root@92.53.91.116:/var/www
 
 before_install:
