@@ -6,7 +6,7 @@
   "scripts": {
     "start": "npm run generate_bundle && npm run run_node",
     "run_node": "node ./bin/www",
-    "generate_bundle": "webpack",
+    "generate_bundle": "webpack"
   },
   "dependencies": {
     "body-parser": "^1.13.3",
