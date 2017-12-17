@@ -1,7 +1,18 @@
 language: node_js
-
 node_js:
-  - "8"
+- '8'
+script:
+- eval "$(ssh-agent -s)"
+- ssh-keyscan -H 92.53.91.116>> ~/.ssh/known_hosts
+- chmod 600 ../../lastunion_key
+- ssh-add ../../lastunion_key
+- npm run build
+- wget https://github.com/yui/yuicompressor/releases/download/v2.4.8/yuicompressor-2.4.8.jar
+- cd public/css
+- java -jar ../../yuicompressor-2.4.8.jar -o '.css$:.css' *.css 
+- cd ../../
+- scp -r ./public root@92.53.91.116:/var/www
 
-
-script: npm install && npm run lint
+before_install:
+- openssl aes-256-cbc -K $encrypted_402e7d50a36d_key -iv $encrypted_402e7d50a36d_iv
+  -in lastunion_key.enc -out ../../lastunion_key -d
