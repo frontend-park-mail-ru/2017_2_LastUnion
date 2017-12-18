@@ -33,7 +33,7 @@ class User {
 
 	getScore() {
 		const _this = this;
-		
+
 		if (typeof this._proto.score === 'undefned' || this._proto.score == null) {
 			_this._proto.score = 0;
 			this.api.sendReq('user/get_score', 'GET').then(function(response) {

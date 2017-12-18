@@ -13,6 +13,7 @@ class API {
 	constructor() {
 		this._protocol = PROTOCOL;
 		this._host = HOST;
+		this._cookie = null;
 	}
 
 	sendReq(method, httpMethod, params) {
@@ -22,7 +23,7 @@ class API {
 			headers: {
 				'Content-type': 'application/json',
 				'Access-Control-Request-Method': httpMethod,
-				'Cookie': null
+				'Cookie': this._cookie
 			},
 			mode: 'cors',
 			credentials: 'include',
@@ -35,6 +36,9 @@ class API {
 
 		return fetch(url, httpRequest).then(
 			function(response) {
+				if (!response.ok) {
+					throw Error(response.statusText);
+				}
 				console.log('Success');
 				return response.json();
 			},
@@ -43,7 +47,7 @@ class API {
 				return response;
 			})
 			.catch(function(error) {
-
+				console.log('Bad request: ', error);
 			});
 	}
 
