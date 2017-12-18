@@ -32,8 +32,11 @@ class User {
 	}
 
 	getScore() {
-		const _this = this;
+		if(!this.isAuth()) {
+			return 0;
+		}
 
+		const _this = this;
 		if (typeof this._proto.score === 'undefned' || this._proto.score == null) {
 			_this._proto.score = 0;
 			this.api.sendReq('user/get_score', 'GET').then(function(response) {
