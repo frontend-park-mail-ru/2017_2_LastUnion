@@ -34,17 +34,16 @@ class User {
 	getScore() {
 		const _this = this;
 		
-		
+		if (typeof this._proto.score === 'undefned' || this._proto.score == null) {
+			_this._proto.score = 0;
 			this.api.sendReq('user/get_score', 'GET').then(function(response) {
 				try {
 					_this._proto.score = _this.checkResponse(response);
 				} catch(e) {
-					_this._proto.score = 0;
+					console.log("Scores service unavailable.")
 				}
 			});
-		
-		if (typeof this._proto.score === 'undefned' || this._proto.score == null)
-			this._proto.score = 0;
+		}
 
 		return this._proto.score;
 	}

@@ -15,8 +15,6 @@ class MenuView extends View {
 			return MenuView._instance;
 		}
 		MenuView._instance = this;
-
-		this.init();
 	}
 
 	init() {
