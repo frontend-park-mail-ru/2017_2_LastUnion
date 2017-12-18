@@ -6,15 +6,15 @@ script:
 - ssh-keyscan -H 92.53.91.116>> ~/.ssh/known_hosts
 - chmod 600 ../../lastunion_key
 - ssh-add ../../lastunion_key
-- npm run build
-- wget https://github.com/yui/yuicompressor/releases/download/v2.4.8/yuicompressor-2.4.8.jar
-- cd public/css
-- java -jar ../../yuicompressor-2.4.8.jar -o '.css$:.css' *.css 
+- npm run generate_bundle
 - cd ../../
-- sudo npm install -g uglify-js@github:mishoo/UglifyJS2#harmony
+- npm install -g uglify-js@github:mishoo/UglifyJS2#harmony
 - uglifyjs public/bundle.js -o public/bundle.js
 - scp -r ./public root@92.53.91.116:/var/www
-
+- ssh root@92.53.91.116
+- cd /var/www/public
+- uglifycss css/style.css --output css/style.css
+- uglifyjs bundle.js -o bundle.js
 before_install:
 - openssl aes-256-cbc -K $encrypted_402e7d50a36d_key -iv $encrypted_402e7d50a36d_iv
   -in lastunion_key.enc -out ../../lastunion_key -d
