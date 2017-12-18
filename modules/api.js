@@ -21,7 +21,8 @@ class API {
 			method: httpMethod,
 			headers: {
 				'Content-type': 'application/json',
-				'Access-Control-Request-Method': httpMethod
+				'Access-Control-Request-Method': httpMethod,
+				'Cookie': null
 			},
 			mode: 'cors',
 			credentials: 'include',
@@ -42,7 +43,7 @@ class API {
 				return response;
 			})
 			.catch(function(error) {
-				
+
 			});
 	}
 
