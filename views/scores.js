@@ -30,7 +30,7 @@ class ScoresView extends View {
 
 	constructPage() {
 		this.show('Header');
-		if (this.user.isAuth()) {
+		if (!this.user.isAuth()) {
 			console.error('Access denied.');
 			this.router.go('/signin/');
 		} else {
