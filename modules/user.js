@@ -13,9 +13,7 @@ class User {
 		}
 		User._instance = this;
 		this.api = new API;
-		this._loggedin = false;
 		this._proto = {};
-		this.getUser();
 	}
 
 	checkResponse(response) {
@@ -34,14 +32,16 @@ class User {
 
 	getUser() {
 		const _this = this;
-		this.api.sendReq('user/data', 'GET').then(function(response) {
+		return this.api.sendReq('user/data', 'GET').then(function(response) {
 			try {
 				_this.checkResponse(response);
 				_this._loggedin = true;
 				_this._proto.score = response.data.userHighScore;
 				_this._proto.login = response.data.userLogin;
+				return true;
 			} catch(e) {
-				console.log("Scores service unavailable.")
+				_this._loggedin = false;
+				return false;
 			}
 		});
 	}

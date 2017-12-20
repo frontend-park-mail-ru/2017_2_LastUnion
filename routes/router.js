@@ -4,6 +4,7 @@
 'use strict';
 
 import UrlCom from './urlcom';
+import User from '../modules/user';
 
 class Router {
 
@@ -66,7 +67,14 @@ class Router {
 
 		this.CurrentRoute = Route;
 		console.log('Loaded new page: ' + url);
-		Route.load();
+		const user = new User();
+		if(typeof user.isAuth() === 'undefined') {
+			user.getUser().then(function() {
+				Route.load();
+			});
+		} else {
+			Route.load();
+		}
 	}
 }
 
