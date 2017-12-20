@@ -3,17 +3,6 @@
 
 'use strict';
 
-const Dot = require('./dot');
-
-const WIDTH = 100;
-const HEIGHT = 100;
-const JUMPPOWER = 33;
-
-const RUN = 0;
-const ONAIR = 1;
-const BEND = 2;
-const BENDEDONAIR = 3;
-
 class Score {
 
 	constructor () {
@@ -42,4 +31,4 @@ class Score {
 
 }
 
-module.exports = Score;
+export default Score;

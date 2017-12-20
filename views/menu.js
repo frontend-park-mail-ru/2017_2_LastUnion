@@ -3,9 +3,9 @@
 
 'use strict';
 
-const View = require('../modules/view');
-const Menu = require('./templates/menu/menu');
-const Header = require('../views/templates/header/header');
+import View from '../modules/view';
+import Menu from './templates/menu/menu';
+import Header from '../views/templates/header/header';
 
 class MenuView extends View {
 
@@ -52,4 +52,4 @@ class MenuView extends View {
 
 }
 
-module.exports = MenuView;
+export default MenuView;

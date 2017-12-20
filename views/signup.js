@@ -3,9 +3,9 @@
 
 'use strict';
 
-const View = require('../modules/view');
-const Form = require('./templates/form/form');
-const Header = require('../views/templates/header/header');
+import View from '../modules/view';
+import Form from './templates/form/form';
+import Header from '../views/templates/header/header';
 
 class SignUpView extends View {
 
@@ -122,4 +122,4 @@ class SignUpView extends View {
 
 }
 
-module.exports = SignUpView;
+export default SignUpView;

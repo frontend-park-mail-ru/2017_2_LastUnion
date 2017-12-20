@@ -1,19 +1,19 @@
 <!-- FORM -->
-<div class="wrapper">
+<div class="block block_center spikes">
   <form class="form">
     <span class="form__title"><%= title %></span>
     <% for(var i = 0; i<inputs.length; i++) { %>
-    <div class="form-group">
+
       <% if(labels_enable) { %>
-      <label class="control-label" for="<%= formname %>_<%=inputs[i].label %>">
+      <label for="<%= formname %>_<%=inputs[i].label %>">
         <%= inputs[i].label %>
       </label>
       <% } %>
       <input type="<%= inputs[i].type %>" id="<%= formname %>_<%= inputs[i].label %>" class="form__input" placeholder="<%= inputs[i].placeholder %>">
       <span id="<%= formname %>_<%= inputs[i].label %>_err" class="message_error"></span>
-    </div>
+
     <% } %>
-    <button id="<%= formname %>_btn" class="form__btn btn btn-default"><%= button %></button>
+    <button id="<%= formname %>_btn" class="form__btn"><%= button %></button>
     <div id="<%= formname %>_loader" class="form__loader" hidden></div>
     <span id="<%= formname %>_Global_err" class="message_global message_error"></span>
   </form>

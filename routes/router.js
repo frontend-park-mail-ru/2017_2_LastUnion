@@ -3,7 +3,7 @@
 
 'use strict';
 
-const UrlCom = require('./urlcom');
+import UrlCom from './urlcom';
 
 class Router {
 
@@ -52,9 +52,6 @@ class Router {
 		}
 
 		const Route = this.urls.filter(function(urlObj) {
-			// later better use regular expression
-			// but here we just compare 2 strings
-			// console.log(urlObj.url, url, urlObj.url == url);
 			return (urlObj.url == url);
 		})[0];
 
@@ -62,10 +59,15 @@ class Router {
 			this.CurrentRoute.destroy();
 			console.log('Destroyed page ' + this.CurrentRoute.url);
 		}
+
+		if(typeof Route === 'undefined' || Route === null) {
+			Route = this.urls[0];
+		}
+
 		this.CurrentRoute = Route;
 		console.log('Loaded new page: ' + url);
 		Route.load();
 	}
 }
 
-module.exports = Router;
+export default Router;

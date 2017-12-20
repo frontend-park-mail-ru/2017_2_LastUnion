@@ -3,13 +3,13 @@
 
 'use strict';
 
-const MathGeom = require('./math_geom.js');
+import MathGeom from './math_geom.js';
 
-const UpperObstacle = require('./world_objects/upper_obstacle.js');
-const MidObstacle = require('./world_objects/mid_obstacle.js');
-const PitObstacle = require('./world_objects/pit_obstacle.js');
-const MidGem = require('./world_objects/mid_gem.js');
-const UpperGem = require('./world_objects/upper_gem.js');
+import UpperObstacle from './world_objects/upper_obstacle.js';
+import MidObstacle from './world_objects/mid_obstacle.js';
+import PitObstacle from './world_objects/pit_obstacle.js';
+import MidGem from './world_objects/mid_gem.js';
+import UpperGem from './world_objects/upper_gem.js';
 
 const typesAmount = 5;
 const Types = {
@@ -95,4 +95,4 @@ class WorldObjectsController {
 	}
 }
 
-module.exports = WorldObjectsController;
+export default WorldObjectsController;

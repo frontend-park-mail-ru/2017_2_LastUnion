@@ -3,7 +3,7 @@
 
 export default {
 	rend : function(params){
-		const template = require('./header.ejs');
+		const template = require('./about.ejs');
 		let html = template(params);
 		const elem = document.createElement('div');
 		elem.innerHTML = html;

@@ -1,7 +1,7 @@
 /* global require */
 /* global module */
 
-module.exports = {
+export default {
 	rend : function(params){
 		const template = require('./menu.ejs');
 		let html = template(params);

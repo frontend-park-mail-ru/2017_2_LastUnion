@@ -3,8 +3,8 @@
 
 'use strict';
 
-const View = require('../modules/view');
-const Header = require('../views/templates/header/header');
+import View from '../modules/view';
+import Header from '../views/templates/header/header';
 
 class LogoutView extends View {
 
@@ -41,4 +41,4 @@ class LogoutView extends View {
 
 }
 
-module.exports = LogoutView;
+export default LogoutView;

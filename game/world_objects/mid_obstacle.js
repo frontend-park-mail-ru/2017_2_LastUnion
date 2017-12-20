@@ -3,9 +3,9 @@
 
 'use strict';
 
-const Dot = require('../dot');
-const MathGeom = require('../math_geom.js');
-const WorldObject = require('./world_object.js');
+import Dot from '../dot';
+import MathGeom from '../math_geom.js';
+import WorldObject from './world_object.js';
 
 const Y = 405;
 const WIDTH = 50;
@@ -20,7 +20,7 @@ class MidObstacle extends WorldObject {
 	
 	GetWidth () { return WIDTH; } 
 	GetHeight () { return HEIGHT; }
-	
+
 	draw (gameSettings) {
 		// drawing central square
 		gameSettings.canvas.fillStyle = SQUARECOLOUR;
@@ -87,4 +87,4 @@ class MidObstacle extends WorldObject {
 	}
 }
 
-module.exports = MidObstacle;
+export default MidObstacle;

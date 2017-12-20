@@ -3,7 +3,7 @@
 
 'use strict';
 
-const API = require('./api.js');
+import API from './api.js';
 
 class User {
 
@@ -136,4 +136,4 @@ class User {
 
 }
 
-module.exports = User;
+export default User;

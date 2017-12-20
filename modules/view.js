@@ -3,9 +3,9 @@
 
 'use strict';
 
-const Router = require('../routes/router');
-const DOM = require('./dom');
-const User = require('./user');
+import Router from '../routes/router';
+import DOM from './dom';
+import User from './user';
 
 class View {
 
@@ -56,4 +56,4 @@ class View {
 
 }
 
-module.exports = View;
+export default View;

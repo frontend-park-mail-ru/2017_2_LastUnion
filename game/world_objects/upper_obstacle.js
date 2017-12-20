@@ -3,9 +3,9 @@
 
 'use strict';
 
-const Dot = require('../dot');
-const MathGeom = require('../math_geom.js');
-const WorldObject = require('./world_object.js');
+import Dot from '../dot';
+import MathGeom from '../math_geom.js';
+import WorldObject from './world_object.js';
 
 const Y = 295;
 const WIDTH = 50;
@@ -17,7 +17,7 @@ const SPIKES = new Image();
 SPIKES.src = '/img/spike.png';         
 
 class UpperObstacle extends WorldObject {
-	
+
 	GetWidth () { return WIDTH; } 
 	GetHeight () { return HEIGHT; }
 	
@@ -94,4 +94,4 @@ class UpperObstacle extends WorldObject {
 	}
 }
 
-module.exports = UpperObstacle;
+export default UpperObstacle;
