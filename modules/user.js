@@ -31,6 +31,20 @@ class User {
 		return this._loggedin;
 	}
 
+	getUser() {
+		const _this = this;
+		this.api.sendReq('user/data', 'GET').then(function(response) {
+			try {
+				_this.checkResponse(response);
+				_this._loggedin = true;
+				_this._proto.score = response.data.userHighScore;
+				_this._proto.login = response.data.userLogin;
+			} catch(e) {
+				console.log("Scores service unavailable.")
+			}
+		});
+	}
+
 	getScore() {
 		if(!this.isAuth()) {
 			return 0;
@@ -101,8 +115,9 @@ class User {
 				_this._proto.login = login;
 				_this._loggedin = true;
 			} catch(e) {
-				errobj.obj(errorobj.id, errorobj.spec, e);
+				errobj.obj.err(errobj.id, errobj.spec, e);
 			}
+			return _this._loggedin;
 		});
 	}
 
@@ -115,8 +130,10 @@ class User {
 		}).then(function(response) {
 			try {
 				_this.checkResponse(response);
+				return true;
 			} catch(e) {
-				errobj.obj(errorobj.id, errorobj.spec, e);
+				errobj.obj.err(errobj.id, errobj.spec, e);
+				return false;
 			}
 		});
 	}
