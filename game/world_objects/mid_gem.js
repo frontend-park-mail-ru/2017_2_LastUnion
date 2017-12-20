@@ -2,10 +2,9 @@
 /* global module */
 
 'use strict';
-
-const Dot = require('../dot');
-const MathGeom = require('../math_geom.js');
-const WorldObject = require('./world_object.js');
+import Dot from '../dot';
+import MathGeom from '../math_geom.js';
+import WorldObject from './world_object.js';
 
 const Y = 420;
 const WIDTH = 25;
@@ -15,7 +14,7 @@ const GEM = new Image();
 GEM.src = '/img/gem.png';         
 
 class MidGem extends WorldObject {
-	
+
 	GetWidth () { return WIDTH; } 
 	GetHeight () { return HEIGHT; }
 	
@@ -67,4 +66,4 @@ class MidGem extends WorldObject {
 	}
 }
 
-module.exports = MidGem;
+export default MidGem;

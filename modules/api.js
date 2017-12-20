@@ -5,7 +5,7 @@
 //const HOST = 'localhost:8080';
 //const PROTOCOL = 'http://';
 const PROTOCOL = 'https://';
-const HOST = 'lastunion.herokuapp.com';
+const HOST = 'api.lastunion.ml';
 
 
 class API {
@@ -13,6 +13,7 @@ class API {
 	constructor() {
 		this._protocol = PROTOCOL;
 		this._host = HOST;
+		this._cookie = null;
 	}
 
 	sendReq(method, httpMethod, params) {
@@ -21,7 +22,8 @@ class API {
 			method: httpMethod,
 			headers: {
 				'Content-type': 'application/json',
-				'Access-Control-Request-Method': httpMethod
+				'Access-Control-Request-Method': httpMethod,
+				'Cookie': this._cookie
 			},
 			mode: 'cors',
 			credentials: 'include',
@@ -34,15 +36,21 @@ class API {
 
 		return fetch(url, httpRequest).then(
 			function(response) {
+				if (!response.ok) {
+					throw Error(response.statusText);
+				}
 				console.log('Success');
 				return response.json();
 			},
 			function(response) {
-				console.error('Connection issues: ', response);
+				console.log('Connection issues: ', response);
 				return response;
+			})
+			.catch(function(error) {
+				console.log('Bad request: ', error);
 			});
 	}
 
 }
 
-module.exports = API;
+export default API;

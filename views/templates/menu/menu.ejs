@@ -1,11 +1,11 @@
 <!-- MENU -->
-<div class="container bnek">
-  <div class="menu">
-    <ul>
-      <% for(var i = 0; i<menuitems.length; i++) { %>
-      <li><a href="<%= links[i] %>"><%= menuitems[i] %></a>
-      <% } %>
-    </ul>
-  </div>
+<div class="block block_center nekromantum">
+  <ul class="menu menu_bordered">
+    <% for(var i = 0; i<menuitems.length; i++) { %>
+    <li class="menu__item menu__item_filled">
+      <a class="menu__link menu__link_filled" href="<%= links[i] %>"><%= menuitems[i] %></a>
+    </li>
+    <% } %>
+  </ul>
 </div>
 <!-- MENU -->

@@ -24,4 +24,4 @@ class WorldObject {
 	}
 }
 
-module.exports = WorldObject;
+export default WorldObject;

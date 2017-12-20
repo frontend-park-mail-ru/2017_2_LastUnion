@@ -205,4 +205,4 @@ class ObstaclesController {
 	}
 }
 
-module.exports = ObstaclesController;
+export default ObstaclesController;

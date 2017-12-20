@@ -40,4 +40,4 @@ class DOM {
 
 }
 
-module.exports = DOM;
+export default DOM;

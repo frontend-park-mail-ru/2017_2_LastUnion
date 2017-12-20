@@ -3,7 +3,7 @@
 
 'use strict';
 
-module.exports = {
+export default {
 	GetRandomNLessThen : function GetRandomNLessThen(Restrict) {
 		return Math.floor(Math.random() * Restrict);
 	},

@@ -50,4 +50,4 @@ class Dot {
 
 }
 
-module.exports = Dot;
+export default Dot;

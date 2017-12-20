@@ -25,4 +25,4 @@ class UrlCom {
 
 }
 
-module.exports = UrlCom;
+export default UrlCom;

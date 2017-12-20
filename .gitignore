@@ -6,7 +6,6 @@ bower.json
 bundle.js
 gulpfile.js
 package-lock.json
-webpack.config.js
 .bowerrc
 .editorconfig
 .yo-rc.json
@@ -14,3 +13,7 @@ public/bundle.js
 typings/
 .vscode/
 .css
+.log
+~
+.un~
+.js~

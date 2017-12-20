@@ -3,7 +3,7 @@
 
 'use strict';
 
-const Player = require('./player');
+import Player from './player';
 
 class InputController {
 
@@ -45,4 +45,4 @@ class InputController {
 	
 }
 
-module.exports = InputController;
+export default InputController;

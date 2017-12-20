@@ -3,8 +3,8 @@
 
 'use strict';
 
-const View = require('../modules/view');
-const Header = require('../views/templates/header/header');
+import View from '../modules/view';
+import Header from '../views/templates/header/header';
 
 class LogoutView extends View {
 
@@ -18,6 +18,7 @@ class LogoutView extends View {
 
 	constructPage() {
 		const _this = this;
+
 		this.user.logout()
 			.then(function() {
 				_this.dom.removeDOM('Scores');
@@ -31,6 +32,7 @@ class LogoutView extends View {
 			.catch(function(e) {
 				alert(e);
 			});
+
 	}
 
 	destroyPage() {
@@ -39,4 +41,4 @@ class LogoutView extends View {
 
 }
 
-module.exports = LogoutView;
+export default LogoutView;

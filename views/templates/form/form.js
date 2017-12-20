@@ -3,7 +3,7 @@
 
 'use strict';
 
-module.exports = {
+export default {
 	rend : function(params) {
 		const template = require('./form.ejs');
 		let html = template(params);

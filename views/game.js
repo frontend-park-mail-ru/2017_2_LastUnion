@@ -3,11 +3,11 @@
 
 'use strict';
 
-const View = require('../modules/view');
-const Game = require('./templates/game/game');
-const Header = require('../views/templates/header/header');
+import View from '../modules/view';
+import Game from './templates/game/game';
+import Header from '../views/templates/header/header';
 
-const GameController = require('../game/controller');
+import GameController from '../game/controller';
 
 class GameView extends View {
 
@@ -47,4 +47,4 @@ class GameView extends View {
 
 }
 
-module.exports = GameView;
+export default GameView;

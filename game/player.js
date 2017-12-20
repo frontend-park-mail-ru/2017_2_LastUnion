@@ -3,7 +3,7 @@
 
 'use strict';
 
-const Dot = require('./dot');
+import Dot from './dot';
 
 const WIDTH = 100;
 const HEIGHT = 100;
@@ -241,4 +241,4 @@ class Player {
 
 }
 
-module.exports = Player;
+export default Player;

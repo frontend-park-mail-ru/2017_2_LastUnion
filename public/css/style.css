@@ -1,89 +1,149 @@
+* {
+  margin: 0;
+  padding: 0;
+}
+a {
+  text-decoration: none;
+}
 body {
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
   min-width: 600px;
-}
-a {
-  color: #00B7FF;
 }
 .loading {
   color: #ccc;
 }
 /* HEADER */
-/* FIX BOOTSTRAP HEADER COLLAPSE */
-.navbar-collapse.collapse {
-  display: block!important;
-}
-.navbar-nav > li,
-.navbar-nav {
-  float: left !important;
-}
-.navbar-nav.navbar-right:last-child {
-  margin-right: -15px !important;
-}
-.navbar-right {
-  float: right!important;
-}
-.navbar-header {
+.header {
+  border-bottom: 3px solid #000;
+  border-top: 3px solid #000;
   width: 100%;
-}
-/* END BOOTSTRAP FIX */
-.header__nav {
-  border: 3px solid #000 !important;
-  width: 100%;
-  border-radius: 0px !important;
-  background: #fff !important;
   height: 80px;
 }
-.header__nav__brand {
-  color: #4b2125 !important;
-  font-weight: bold;
-  font-size: 26px;
+.header__container {
+  height: 80px;
+  padding: 0 15px 0 15px;
+  margin: 0 auto 0 auto;
 }
-.header__nav__brand__img {
-  display: inline-block !important;
+.logo {
+  display: block;
+  float: left;
+  height: 50px;
+  padding: 15px;
+  text-decoration: none;
+}
+.logo__img {
   height: 45px;
-  top: -5px;
   position: relative;
+  display: inline-block;
 }
-.header__nav__scores {
-  padding: 8px 20px 0px 20px !important;
-  font-size: 18px;
-}
-.header__nav__menu_user {
-  margin: 0px !important;
-}
-.header__nav__menu_user__p {
-  font-size: 14px;
-  padding: 27px 0;
-  margin: 0px !important;
-}
-.header__nav__menu_user__a {
-  color: #4b2125 !important;
+.logo__text {
+  font-size: 20px;
+  line-height: 20px;
+  padding: 15px 0px;
+  position: relative;
+  top: -10px;
+  color: #000;
   font-weight: bold;
-  font-size: 26px;
-  padding: 27px 20px !important;
 }
-.header__nav__menu_user__a:hover {
+.menu {
+  display: block;
+  list-style: none;
+}
+.menu_bordered {
+  border: 3px solid #000;
+}
+.header__menu {
+  padding: 27px 20px;
+  float: right;
+  font-weight: bold;
+}
+.menu__item {
+  font-size: 26px;
+}
+.menu__item_inline {
+  display: inline-block;
+}
+.menu__item_filled:hover {
+  background: #000;
+}
+.menu__link {
+  color: #000;
+  display: block;
+}
+.menu__link:hover {
   text-decoration: underline;
 }
-@media screen and (max-width: 700px) {
-  .header__nav__menu_user__a {
-    font-size: 18px;
-  }
-  .header__nav__brand {
-    font-size: 18px;
-  }
+.menu__link_filled:hover {
+  color: #fff;
+}
+.menu__separator {
+  display: inline-block;
+  font-size: 14px;
+  padding: 0 10px;
+  margin: 0;
+}
+.header__text {
+  font-size: 26px;
+  padding: 27px 20px;
+}
+/* PAGES */
+.text {
+  padding: 20px;
+}
+.text_small {
+  font-size: 18px;
+}
+.game {
+  width: 98%;
+}
+.block {
+  width: 350px;
+  padding: 50px;
+}
+.block_wide {
+  width: 80%;
+}
+.block_center {
+  margin: auto;
+  text-align: center;
+}
+.block__title {
+  font-size: 26px;
+  padding: 20px;
+}
+.nekromantum::before {
+  background-image: url(/img/nekro.png);
+  height: 300px;
+  width: 300px;
+  margin: auto;
+  background-size: cover;
+  display: inline-block;
+  content: "";
+  position: relative;
+}
+.table {
+  margin: auto;
+  font-size: 22px;
+  font-weight: normal;
+}
+.table th {
+  padding: 5px 60px;
+}
+.table_border th {
+  border-bottom: 3px solid #000;
+}
+.team {
+  list-style: none;
+  text-align: right;
+  padding: 15px 0;
+}
+.guy {
+  width: 200px;
+  text-align: left;
+  float: left;
 }
 /* FORMS */
-.wrapper {
-  margin: auto;
-  text-align: center;
-  width: 350px;
-}
 .form {
-  text-align: center;
-  width: 350px;
-  margin: auto;
   border: 2px solid #000;
 }
 .pseudo {
@@ -92,7 +152,7 @@ a {
   content: "";
   position: relative;
 }
-.wrapper::before {
+.spikes::before {
   background-image: url('/img/rocks.png');
   top: 5px;
   width: 350px;
@@ -102,7 +162,7 @@ a {
   content: "";
   position: relative;
 }
-.wrapper::after {
+.spikes::after {
   background-image: url('/img/rocks.png');
   width: 350px;
   height: 100px;
@@ -120,13 +180,13 @@ a {
   text-align: center;
   width: 100%;
   display: block;
-  color: #4b2125;
   font-size: 42px;
 }
 .form__input {
-  width: 100%;
+  width: 343px;
   height: 40px;
-  padding: 0 10px;
+  padding: 5px 0;
+  margin: 10px 0;
 }
 .form__loader {
   width: 46px;
@@ -158,7 +218,9 @@ a {
   }
 }
 .message_error {
+  display: block;
   color: #682A2A;
+  width: 100%;
 }
 .message_global {
   width: 100%;
@@ -167,53 +229,27 @@ a {
   padding: 15px 0 0 0;
 }
 .form__btn {
-  background: #000;
-  color: #fff;
+  display: inline-block;
+  padding: 6px 12px;
+  margin-bottom: 0;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 1.42857143;
+  text-align: center;
+  white-space: nowrap;
+  vertical-align: middle;
+  -ms-touch-action: manipulation;
+  touch-action: manipulation;
+  cursor: pointer;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  background-image: none;
+  border: 1px solid transparent;
+  border-radius: 4px;
 }
 .form__btn:hover {
-  background: #fff;
-  color: #000;
-}
-/* MENU */
-.menu {
-  width: 350px;
-  margin: auto;
-  border: 2px solid #000;
-  padding: 30px 0;
-}
-.bnek {
-  text-align: center;
-}
-.bnek::before {
-  background-image: url('/img/nekro.png');
-  height: 300px;
-  width: 300px;
-  margin: auto;
-  background-size: cover;
-  display: inline-block;
-  content: "";
-  position: relative;
-}
-.menu ul {
-  list-style: none;
-  padding: 0px;
-  margin: 0px;
-}
-.menu ul li {
-  padding: 5px;
-  font-size: 22px;
-}
-.menu a {
-  display: block;
-  width: 100%;
-  height: 32px;
-  color: #4b2125;
-}
-.menu a:hover {
-  color: #fff;
-}
-.menu ul li:hover {
-  padding: 5px;
-  font-size: 22px;
   background: #000;
+  color: #fff;
 }

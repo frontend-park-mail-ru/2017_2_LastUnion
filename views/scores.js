@@ -3,9 +3,9 @@
 
 'use strict';
 
-const View = require('../modules/view');
-const Scores = require('../views/templates/scores/scores');
-const Header = require('../views/templates/header/header');
+import View from '../modules/view';
+import Scores from '../views/templates/scores/scores';
+import Header from '../views/templates/header/header';
 
 class ScoresView extends View {
 
@@ -30,7 +30,7 @@ class ScoresView extends View {
 
 	constructPage() {
 		this.show('Header');
-		if (!this.user.isAuth()) {
+		if (this.user.isAuth()) {
 			console.error('Access denied.');
 			this.router.go('/signin/');
 		} else {
@@ -46,4 +46,4 @@ class ScoresView extends View {
 
 }
 
-module.exports = ScoresView;
+export default ScoresView;

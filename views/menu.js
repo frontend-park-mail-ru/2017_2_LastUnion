@@ -3,9 +3,9 @@
 
 'use strict';
 
-const View = require('../modules/view');
-const Menu = require('./templates/menu/menu');
-const Header = require('../views/templates/header/header');
+import View from '../modules/view';
+import Menu from './templates/menu/menu';
+import Header from '../views/templates/header/header';
 
 class MenuView extends View {
 
@@ -15,8 +15,6 @@ class MenuView extends View {
 			return MenuView._instance;
 		}
 		MenuView._instance = this;
-
-		this.init();
 	}
 
 	init() {
@@ -24,10 +22,20 @@ class MenuView extends View {
 			loggedin : this.user.isAuth(),
 			score: this.user.getScore()
 		}), 'Header');
-		this.dom.insertDom(this.body, Menu.rend({
-			'menuitems' : ['Play', 'Scores'],
-			'links' : ['/play/', '/scores/'],
-		}), 'Menu');
+
+		const items = {
+			'menuitems' : ['Play', 'About', 'Rules'],
+			'links' : ['/play/', '/about/', '/rules/'],
+		}
+		if(this.user.isAuth()) {
+			items.menuitems.push('Scores');
+			items.links.push('/scores/');
+		}
+
+		this.dom.insertDom(this.body, Menu.rend(
+			items
+		), 'Menu');
+
 		this.listenLinks();
 	}
 
@@ -44,4 +52,4 @@ class MenuView extends View {
 
 }
 
-module.exports = MenuView;
+export default MenuView;

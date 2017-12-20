@@ -6,13 +6,13 @@
 const FRAMETIME = 35;
 const DEFAULT_W = 1920;
 
-const User = require('../modules/user');
+import User from '../modules/user';
 
-const Dot = require('./dot');
-const Player = require('./player');
-const InputController = require('./input');
-const WorldObjectsController = require('./world_objects_controller');
-const ScoreController = require('./score');
+import Dot from './dot';
+import Player from './player';
+import InputController from './input';
+import WorldObjectsController from './world_objects_controller';
+import ScoreController from './score';
 
 class GameController {
 
@@ -210,4 +210,4 @@ class GameController {
 	
 }
 
-module.exports = GameController;
+export default GameController;

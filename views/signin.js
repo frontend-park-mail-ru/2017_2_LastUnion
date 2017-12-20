@@ -3,9 +3,9 @@
 
 'use strict';
 
-const View = require('../modules/view');
-const Form = require('./templates/form/form');
-const Header = require('../views/templates/header/header');
+import View from '../modules/view';
+import Form from './templates/form/form';
+import Header from '../views/templates/header/header';
 
 class SignInView extends View {
 
@@ -58,11 +58,13 @@ class SignInView extends View {
 
 			if(this.validate(login, passw)) {
 				const _this = this;
-				this.user.login(login.value, passw.value)
+				const obj = { 'obj': Form, 'id': 'LoginForm', 'spec': 'Global' };
+				this.user.login(login.value, passw.value, obj)
 					.then(function() {
 						Form.revert('LoginForm');
 						_this.dom.removeDOM('LoginForm');
 						_this.dom.removeDOM('SignUpForm');
+						_this.dom.removeDOM('Menu');
 						_this.hide('Header');
 						_this.dom.insertDom(_this.body, Header.rend({
 							loggedin : _this.user.isAuth(),
@@ -105,4 +107,4 @@ class SignInView extends View {
 
 }
 
-module.exports = SignInView;
+export default SignInView;
