@@ -15,6 +15,7 @@ class User {
 		this.api = new API;
 		this._loggedin = false;
 		this._proto = {};
+		this.getUser();
 	}
 
 	checkResponse(response) {
