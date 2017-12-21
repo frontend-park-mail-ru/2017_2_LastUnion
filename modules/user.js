@@ -88,7 +88,7 @@ class User {
 			try {
 				const data = _this.checkResponse(response);
 				
-				let result = array();
+				let result = [];
 				data.forEach(function(element, index) {
 					if(_this._proto.login === element.userName) {
 						element.userName += ' <b>(YOU)</b>';
