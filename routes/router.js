@@ -56,9 +56,9 @@ class Router {
 
 
 	/**
-		* ???????
+		* Redirect to new page
 		*
-		* @param {string} url -  url srting
+		* @param {string} url -  url path to page
 		* @this {Router}
 	*/
 	go(url) {
@@ -72,9 +72,9 @@ class Router {
 
 
 	/**
-		* ?????????
+		* Select the view for the page and call the method of its construction
 		*
-		* @param {string} url srting
+		* @param {string} url -  url path to page
 		* @this {Router}
 	*/
 	loadPage(url) {
