@@ -32,6 +32,7 @@ class GameController {
 		this.frameTime = FRAMETIME;
 
 		this.gameCanvas = document.getElementById('game');
+		//this.gameCanvas.height -= 80;
 		this.gameCtx = this.gameCanvas.getContext('2d');
 		this.gameSettings = {
 			'canvas' : this.gameCtx,
@@ -41,6 +42,9 @@ class GameController {
 			'defaultW' : DEFAULT_W,
 			'horSpeed' : 20,
 		};
+
+		this._over = false;
+		this._pause = false;
 
 		this.UserController = new User();
 		
@@ -115,7 +119,7 @@ class GameController {
 				const newScore = this.ScoreController.scoreValue;
 				if(newScore > currentScore) {
 					this.UserController.setScore(newScore);
-					document.getElementById('header__cores').innerHTML = 'Your score is: '  +  newScore;
+					document.getElementById('header__scores').innerHTML = 'Your score is: '  +  newScore;
 				}
 			}
 		}
@@ -143,6 +147,16 @@ class GameController {
 			130 * this.gameSettings.scale, 
 			130 * this.gameSettings.scale
 		);
+
+		if( /Android|webOS|iPhone|iPad|iPod/i.test(navigator.userAgent) ) {
+			this.gameCtx.strokeStyle = '#ffffff';
+			this.gameCtx.strokeRect(100, this.gameSettings.height / 2 + 100 * this.gameSettings.scale, 200 * this.gameSettings.scale, 200 * this.gameSettings.scale);
+			this.gameCtx.strokeRect(this.gameSettings.width - 100 - 200 * this.gameSettings.scale, this.gameSettings.height / 2 + 100 * this.gameSettings.scale, 200 * this.gameSettings.scale, 200 * this.gameSettings.scale);
+			this.gameCtx.fillStyle = '#ffffff';
+			this.gameCtx.font = 64 * this.gameSettings.scale + 'px Arial';
+			this.gameCtx.fillText("W", 100 + 100 * this.gameSettings.scale, this.gameSettings.height / 2 + 200 * this.gameSettings.scale);
+			this.gameCtx.fillText("S", this.gameSettings.width - 100 - 100 * this.gameSettings.scale, this.gameSettings.height / 2 + 200 * this.gameSettings.scale);
+		}
 	}
 
 	play() {

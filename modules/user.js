@@ -91,7 +91,7 @@ class User {
 				let result = [];
 				data.forEach(function(element, index) {
 					if(_this._proto.login === element.userName) {
-						element.userName += ' <b>(YOU)</b>';
+						element.userName += '&nbsp;<b>(YOU)</b>';
 					}
 					result.push({
 						'user': element.userName,
