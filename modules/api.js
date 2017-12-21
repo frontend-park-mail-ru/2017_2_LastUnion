@@ -46,7 +46,10 @@ class API {
 				console.log('Connection issues: ', response);
 				return response;
 			}
-		)
+		).catch(function(error) {
+			console.log('Bad response: ' + error);
+			return error;
+		})
 	}
 
 }

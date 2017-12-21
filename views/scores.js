@@ -42,8 +42,9 @@ class ScoresView extends View {
 			console.error('Access denied.');
 			this.router.go('/signin/');
 		} else {
+			const _this = this;
 			this.initLeaderBoard().then(function() {
-				this.show('Scores');
+				_this.show('Scores');
 			});
 		}
 	}
