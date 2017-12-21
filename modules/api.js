@@ -30,7 +30,7 @@ class API {
 		* @return {promise}
 	*/
 	sendReq(method, httpMethod, params) {
-		const url = this._progit@github.com:Lagit@github.com:LastUnion/2017_2_LastUnion.gitstUnion/2017_2_LastUnion.gittocol + this._host + '/api/' + method;
+		const url = this._protocol + this._host + '/api/' + method;
 		const httpRequest = {
 			method: httpMethod,
 			headers: {
