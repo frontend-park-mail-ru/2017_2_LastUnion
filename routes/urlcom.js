@@ -2,7 +2,8 @@
 
 'use strict';
 
-/**Class represanting ??????*/
+/** Class representing functionality to
+		store view object and url associated with it. */
 class UrlCom {
 
 	/**
