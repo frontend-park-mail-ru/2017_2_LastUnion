@@ -31,6 +31,7 @@ class API {
 	 */
 	sendReq(method, httpMethod, params) {
 		const url =  this._protocol + this._host + '/api/' + method;
+		const httpRequest = {
 			method: httpMethod,
 			headers: {
 				'Content-type': 'application/json',
