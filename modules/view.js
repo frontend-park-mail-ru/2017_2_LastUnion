@@ -7,6 +7,7 @@ import Router from '../routes/router';
 import DOM from './dom';
 import User from './user';
 
+/** Class View represents View From MVC */
 class View {
 
 	constructor() {
@@ -19,7 +20,7 @@ class View {
 
 	listenLinks() {
 		const _this = this;
-		
+
 		for(let obj in this.dom.loadedBlocks) {
 			if(!this.dom.loadedBlocks[obj].listened) {
 				const links = this.dom.loadedBlocks[obj].html.getElementsByTagName('a');
