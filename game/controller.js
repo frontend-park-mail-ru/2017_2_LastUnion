@@ -21,6 +21,13 @@ class GameController {
 			return GameController._instance;
 		}
 		GameController._instance = this;
+
+		this.monsterSkinRun = [];
+		for(let i = 0; i < 3; i++) {
+			let monsterImg = new Image();
+			monsterImg.src = '/img/m' + i + '.png';
+			this.monsterSkinRun.push(monsterImg);
+		}
 		
 		this.frameTime = FRAMETIME;
 
@@ -32,7 +39,7 @@ class GameController {
 			'width' : this.gameCanvas.width,
 			'scale' : this.gameCanvas.width / DEFAULT_W,
 			'defaultW' : DEFAULT_W,
-			'horSpeed' : 25,
+			'horSpeed' : 20,
 		};
 
 		this.UserController = new User();
@@ -41,7 +48,6 @@ class GameController {
 		this.InputController = new InputController(this);
 		this.WorldObjectsController = new WorldObjectsController();
 		this.ScoreController = new ScoreController();
-		
 	}
 
 	initGame(_started) {
@@ -52,33 +58,25 @@ class GameController {
 		this.PlayerController.init();
 		this.WorldObjectsController.resetObjects();
 		this.ScoreController.init();
+		this.time = 0;
+		this.skin = 0;
 	}
 
-	runScore() {
+	runLogic() {
 		this.ScoreController.tick();
-		this.text('Score: ' + this.ScoreController.scoreValue, 60, 30 * this.gameSettings.scale, '#000000');
-	}
-
-	runPlayer() {
 		this._over = this._over || this.PlayerController.trigger();
-		this.PlayerController.draw(this.gameSettings);
-	}
 
-	runObjects() {
 		let topLeftCoords = this.PlayerController.topLeftCoords;
-		let playerUpperLeft = new Dot(topLeftCoords.x + DEFAULT_W/2, DEFAULT_W/16*8/2 - this.PlayerController.topLeftCoords.y);
-		
+		let playerUpperLeft = new Dot(topLeftCoords.x + DEFAULT_W/2, DEFAULT_W/16*8/2 - this.PlayerController.topLeftCoords.y);	
 		let bottomRightCoords = this.PlayerController.bottomRightCoords;
 		let playerBottomRight = new Dot(bottomRightCoords.x + DEFAULT_W/2, DEFAULT_W/16*8/2 - this.PlayerController.bottomRightCoords.y);
-		
 		
 		if (this.WorldObjectsController.getObjectsAmount() <= 0) {
 			this.WorldObjectsController.addSeriesOfObjects(DEFAULT_W, 300, 150);
 		}
-		
+
 		this.WorldObjectsController.moveAllObjects(this.gameSettings.horSpeed);
-		this.WorldObjectsController.redrawAllObjects(this.gameSettings);
-		
+
 		let check = this.WorldObjectsController.CheckAllCollisions(playerUpperLeft, playerBottomRight);
 		if (check && check.isCollided && check.isFatal) {
 			check.playerEffect(this.PlayerController, this.gameSettings);
@@ -88,8 +86,39 @@ class GameController {
 		else if (check && check.isCollided && !check.isFatal) {
 			check.scoreEffect(this.ScoreController, this.gameSettings);
 			check.playerEffect(this.PlayerController, this.gameSettings);
+		}
+		this.time++;
+		if(this.time % 4 == 0) {
+			this.skin == 2 ? this.skin = 0 : this.skin++;
 		}	
-				
+	}
+
+	redrawScene(prev) {
+		if(!this._over && !this._pause) {
+			this.gameSettings.height = this.gameCanvas.height;
+			this.gameSettings.width = this.gameCanvas.width;
+			this.gameSettings.scale = this.gameCanvas.width / DEFAULT_W;
+			
+			this.runLogic();
+
+			this.drawSurface();
+			this.text('Score: ' + this.ScoreController.scoreValue, 60, 30 * this.gameSettings.scale, '#000000');
+			this.WorldObjectsController.redrawAllObjects(this.gameSettings);
+			this.PlayerController.draw(this.gameSettings);
+
+			requestAnimationFrame(() => this.redrawScene());
+		}
+		if(this._over) {
+			this.gameover();
+			if(this.UserController.isAuth()) {
+				const currentScore = this.UserController._proto.score;
+				const newScore = this.ScoreController.scoreValue;
+				if(newScore > currentScore) {
+					this.UserController.setScore(newScore);
+					document.getElementById('header__cores').innerHTML = 'Your score is: '  +  newScore;
+				}
+			}
+		}
 	}
 
 	reset(_started) {
@@ -106,38 +135,20 @@ class GameController {
 		// Draw background
 		this.gameCtx.fillStyle = '#000000';
 		this.gameCtx.fillRect(0, this.gameSettings.height / 2, this.gameSettings.width, this.gameSettings.height / 2);
+
+		this.gameCtx.drawImage(
+			this.monsterSkinRun[this.skin],
+			0, 
+			this.gameSettings.height / 2 - 130 * this.gameSettings.scale,
+			130 * this.gameSettings.scale, 
+			130 * this.gameSettings.scale
+		);
 	}
 
 	play() {
 		const _this = this;
 		if(this.started) {
-
-			this.game = setInterval(function () {
-				
-				// Update canvas width
-				_this.gameSettings.height = _this.gameCanvas.height;
-				_this.gameSettings.width = _this.gameCanvas.width;
-				_this.gameSettings.scale = _this.gameCanvas.width / DEFAULT_W;
-	
-				_this.drawSurface();
-				
-				_this.runScore();
-				_this.runObjects();
-				_this.runPlayer();
-	
-				if(_this._over) {
-					_this.gameover();
-					if(_this.UserController.isAuth()) {
-						const currentScore = _this.UserController._proto.score;
-						const newScore = _this.ScoreController.scoreValue;
-						if(newScore > currentScore) {
-							_this.UserController.setScore(newScore);
-							document.getElementsByClassName('navbar-scores')[0].innerHTML = 'Your score is: '  +  newScore;
-						}
-					}
-				}
-				
-			}, this.frameTime);
+			requestAnimationFrame(() => this.redrawScene());
 		} else {
 			this.startOverlay();
 		}

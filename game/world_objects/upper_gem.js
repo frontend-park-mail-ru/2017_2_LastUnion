@@ -25,7 +25,7 @@ class UpperGem extends WorldObject {
 		gameSettings.canvas.drawImage(GEM,
 			(this.x-WIDTH/2)*gameSettings.scale,
 			(Y-HEIGHT/2)*gameSettings.scale,
-			25,25
+			25*gameSettings.scale,25*gameSettings.scale
 		);
 	}
 	

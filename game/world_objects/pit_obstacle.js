@@ -52,7 +52,7 @@ class PitObstacle extends WorldObject {
 		
 		// check spikes
 		let playerMidBottom = new Dot(
-			(playerUpperLeft.x + playerBottomRight.x)/2,
+			playerUpperLeft.x,// + playerBottomRight.x)/2,
 			playerBottomRight.y
 		);
 							
@@ -61,23 +61,21 @@ class PitObstacle extends WorldObject {
 			Y + WIDTH/2
 		);
 							
-		if (this.x <= playerMidBottom.x && playerMidBottom.x <= this.x+WIDTH && playerMidBottom.y > Y+5) {
+		if (this.x <= playerMidBottom.x && playerMidBottom.x <= this.x+WIDTH && playerBottomRight.x <= this.x + WIDTH && playerMidBottom.y > Y+5) {
 			result.isCollided = true;
 			result.isFatal = true;
-							
 			return result;
 		}
 		
 		// check non-Fatal collision
-		if (this.x <= playerMidBottom.x && playerMidBottom.x <= this.x+WIDTH && playerMidBottom.y >= Y-5) {
+		if (this.x <= playerMidBottom.x && playerMidBottom.x <= this.x + WIDTH && playerMidBottom.y >= Y-5 && playerBottomRight.x <= this.x + WIDTH + 30) {
 			result.isCollided = true;
-			result.isFatal = false;
-			
+			result.isFatal = true;
+			console.log(playerBottomRight.x, this.x + WIDTH * 1.8)
 			result.playerEffect = function (player, gameSettings) {
 				player.changePosition(-gameSettings.horSpeed*0.5,-55);
 			};
 			
-			return result;
 		}
 		
 		return result;

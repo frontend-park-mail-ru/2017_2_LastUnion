@@ -84,7 +84,7 @@ class User {
 		}
 
 		const _this = this;
-		return this.api.sendReq('user/get_scores?limit=' + limit + '&offset=' + offset, 'GET').then(function(response) {
+		return this.api.sendReq('user/get_scores?limit=' + limit + '&offset=' + offset + '&order=asc', 'GET').then(function(response) {
 			try {
 				const data = _this.checkResponse(response);
 				
