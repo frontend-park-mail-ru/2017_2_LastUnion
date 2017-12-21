@@ -6,8 +6,8 @@
 class DOM {
 
   /**
-    * Creates DOM instance (singleton)
-    *
+   * Creates DOM instance (singleton)
+   *
     * @this {DOM}
   */
 	constructor() {
@@ -20,16 +20,16 @@ class DOM {
 	}
 
   /**
-    * Inserts data into page
-    *
-    * @param {} parent -
-    * @param {} elem -
-    * @param {} id -
-    * @param {} upd -
-    * @param {} first
-    * @this {DOM}
-    * @return {boolean} - result of insertion
-  */
+   * Inserts data into page
+   *
+   * @param {} parent -
+   * @param {} elem -
+   * @param {} id -
+   * @param {} upd -
+   * @param {} first
+   * @this {DOM}
+   * @return {boolean} - result of insertion
+   */
 	insertDom(parent, elem, id, upd, first) {
 		if (!this.loadedBlocks[id] || typeof this.loadedBlocks[id] === 'undefined' || upd == true) {
 			if(upd) {
@@ -46,12 +46,12 @@ class DOM {
 	}
 
   /**
-    * Removes data from page
-    *
-    * @param {} id -
-    * @this {DOM}
-    * @return {boolean} - result of insertion
-  */
+   * Removes data from page
+   *
+   * @param {} id -
+   * @this {DOM}
+   * @return {boolean} - result of insertion
+   */
 	removeDOM(id) {
 		if(!this.loadedBlocks[id] || typeof this.loadedBlocks[id] === 'undefined') {
 			console.log('Can\'t remove ' + id + ' from DOM. Item not exists.');

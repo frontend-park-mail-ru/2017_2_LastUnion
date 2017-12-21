@@ -5,8 +5,12 @@
 
 import API from './api.js';
 
+/** Class User represents api for user like sigin, signup */
 class User {
-
+	/**
+	 *
+	 *
+	 */
 	constructor() {
 		if(User._instance) {
 			return User._instance;
@@ -16,6 +20,11 @@ class User {
 		this._proto = {};
 	}
 
+	/**
+	 *
+	 * @param response - backend response
+	 * @return data of response
+	 */
 	checkResponse(response) {
 		if(typeof response.result === 'undefined') {
 			throw response;
@@ -26,10 +35,21 @@ class User {
 		return response.data;
 	}
 
+	/**
+	 * Checks authentication user
+	 *
+	 * @return {boolean}
+	 */
 	isAuth() {
 		return this._loggedin;
 	}
 
+	/**
+	 * Get information about user from backend
+	 *
+	 * @this {User}
+	 * @return {boolean}
+	*/
 	getUser() {
 		const _this = this;
 		return this.api.sendReq('user/data', 'GET').then(function(response) {
@@ -46,6 +66,12 @@ class User {
 		});
 	}
 
+	/**
+	 * Get user game score
+	 *
+	 * @this {User}
+	 * @return {boolean}
+	 */
 	getScore() {
 		if(!this.isAuth()) {
 			return 0;
@@ -66,6 +92,11 @@ class User {
 		return this._proto.score;
 	}
 
+	/**
+	 * Save user game score to backend
+	 *
+	 * @this {User}
+	 */
 	setScore(score) {
 		const _this = this;
 
@@ -75,6 +106,12 @@ class User {
 
 	}
 
+	/**
+	 * Get users score list from backend
+	 *
+	 * @this {User}
+	 * @return {Array}
+	 */
 	getScores(limit, offset) {
 		let score = 0;
 		if(this._loggedin) {
@@ -87,7 +124,7 @@ class User {
 		return this.api.sendReq('user/get_scores?limit=' + limit + '&offset=' + offset + '&order=asc', 'GET').then(function(response) {
 			try {
 				const data = _this.checkResponse(response);
-				
+
 				let result = [];
 				data.forEach(function(element, index) {
 					if(_this._proto.login === element.userName) {
@@ -106,6 +143,14 @@ class User {
 		});
 	}
 
+	/**
+	 * Login user, sends request to backend
+	 *
+	 * @param {string} login - user login
+	 * @param {string} password - user password
+	 * @param {} errobj -
+	 * @this {User}
+	 */
 	login(login, password, errobj) {
 		const _this = this;
 		return this.api.sendReq('user/signin', 'POST', {
@@ -123,6 +168,16 @@ class User {
 		});
 	}
 
+	/**
+	 * Signup user, sends request to backend
+	 *
+	 * @param {string} login - user login
+	 * @param {string} password - user password
+	 * @param {string} email - user email
+	 * @param {} errobj -
+	 * @this {User}
+	 * @return {boolean}
+	 */
 	signup(login, password, email, errobj) {
 		const _this = this;
 		return this.api.sendReq('user/signup', 'POST', {
@@ -140,6 +195,11 @@ class User {
 		});
 	}
 
+	/**
+	 * Logout user
+	 *
+	 * @this {User}
+	 */
 	logout() {
 		const _this = this;
 		return this.api.sendReq('user/logout', 'POST').then(function(response) {

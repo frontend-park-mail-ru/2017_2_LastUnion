@@ -10,10 +10,10 @@ const HOST = 'api.lastunion.ml';
 /** Class representing api for work with application services */
 class API {
 	/**
-		* Creates api
-		*
-		* @this {API}
-	*/
+	 * Creates api
+	 *
+	 * @this {API}
+	 */
 	constructor() {
 		this._protocol = PROTOCOL;
 		this._host = HOST;
@@ -21,17 +21,16 @@ class API {
 	}
 
 	/**
-		* Send requset to backend
-		*
-		* @param {string} method - backend restfull api path (method)
-		* @param {string} httMethod - HTTP method (GET, POST)
-		* @param {string} params - request params
-		* @this {API}
-		* @return {promise}
-	*/
+	 * Send requset to backend
+	 *
+	 * @param {string} method - backend restfull api path (method)
+	 * @param {string} httMethod - HTTP method (GET, POST)
+	 * @param {string} params - request params
+	 * @this {API}
+	 * @return {promise}
+	 */
 	sendReq(method, httpMethod, params) {
-		const url = this._progit@github.com:Lagit@github.com:LastUnion/2017_2_LastUnion.gitstUnion/2017_2_LastUnion.gittocol + this._host + '/api/' + method;
-		const httpRequest = {
+		const url =  this._protocol + this._host + '/api/' + method;
 			method: httpMethod,
 			headers: {
 				'Content-type': 'application/json',
