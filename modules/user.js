@@ -8,8 +8,9 @@ import API from './api.js';
 /** Class User represents api for user like sigin, signup */
 class User {
 	/**
+	 * Creates User instance (singleton)
 	 *
-	 *
+	 * @this {User}
 	 */
 	constructor() {
 		if(User._instance) {
@@ -148,7 +149,7 @@ class User {
 	 *
 	 * @param {string} login - user login
 	 * @param {string} password - user password
-	 * @param {} errobj -
+	 * @param {Object} errobj - object, that shows error
 	 * @this {User}
 	 */
 	login(login, password, errobj) {
@@ -174,7 +175,7 @@ class User {
 	 * @param {string} login - user login
 	 * @param {string} password - user password
 	 * @param {string} email - user email
-	 * @param {} errobj -
+	 * @param {Object} errobj - object, that shows error
 	 * @this {User}
 	 * @return {boolean}
 	 */
