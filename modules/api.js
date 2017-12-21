@@ -36,10 +36,6 @@ class API {
 
 		return fetch(url, httpRequest).then(
 			function(response) {
-				if (!response.ok) {
-					return response.responseMessage;
-				}
-				console.log('Success');
 				return response.json();
 			},
 			function(response) {
