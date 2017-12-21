@@ -37,7 +37,7 @@ class API {
 		return fetch(url, httpRequest).then(
 			function(response) {
 				if (!response.ok) {
-					throw Error(response.statusText);
+					return response.statusText;
 				}
 				console.log('Success');
 				return response.json();
@@ -45,10 +45,8 @@ class API {
 			function(response) {
 				console.log('Connection issues: ', response);
 				return response;
-			})
-			.catch(function(error) {
-				console.log('Bad request: ', error);
-			});
+			}
+		)
 	}
 
 }

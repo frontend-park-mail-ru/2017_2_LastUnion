@@ -18,10 +18,10 @@ class User {
 
 	checkResponse(response) {
 		if(typeof response.result === 'undefined') {
-			throw new Error(response);
+			throw response;
 		}
 		if(response.result !== true) {
-			throw new Error(String(response.responseMessage));
+			throw response.responseMessage;
 		}
 		return response.data;
 	}
@@ -34,10 +34,10 @@ class User {
 		const _this = this;
 		return this.api.sendReq('user/data', 'GET').then(function(response) {
 			try {
-				_this.checkResponse(response);
+				const data = _this.checkResponse(response);
 				_this._loggedin = true;
-				_this._proto.score = response.data.userHighScore;
-				_this._proto.login = response.data.userLogin;
+				_this._proto.score = data.userHighScore;
+				_this._proto.login = data.userLogin;
 				return true;
 			} catch(e) {
 				_this._loggedin = false;
@@ -75,34 +75,35 @@ class User {
 
 	}
 
-	getScores() {
+	getScores(limit, offset) {
 		let score = 0;
 		if(this._loggedin) {
 			score = this._proto.score;
+		} else {
+			score = 0;
 		}
-		return {
-			'Scores' : [
-				{
-					'user' : 'Jhon',
-					'place' : '1',
-					'score' : '999',
-				},
-				{
-					'user' : 'Mike',
-					'place' : '2',
-					'score' : '888'
-				},
-				{
-					'user' : 'Bredd',
-					'place' : '3',
-					'score' : '777'
-				}
-			],
-			'User' : {
-				'place' : '999',
-				'score' : score
+
+		const _this = this;
+		return this.api.sendReq('user/get_scores?' + limit + '&offset' + offset, 'GET').then(function(response) {
+			try {
+				const data = _this.checkResponse(response);
+				
+				let result = array();
+				data.forEach(function(element, index) {
+					if(_this._proto.login === element.userName) {
+						element.userName += ' <b>(YOU)</b>';
+					}
+					result.push({
+						'user': element.userName,
+						'place': index + offset + 1,
+						'score': element.userHighScore
+					})
+				});
+				return result;
+			} catch(e) {
+				return false;
 			}
-		};
+		});
 	}
 
 	login(login, password, errobj) {
