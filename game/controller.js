@@ -115,7 +115,7 @@ class GameController {
 				const newScore = this.ScoreController.scoreValue;
 				if(newScore > currentScore) {
 					this.UserController.setScore(newScore);
-					document.getElementByID('header__cores').innerHTML = 'Your score is: '  +  newScore;
+					document.getElementById('header__cores').innerHTML = 'Your score is: '  +  newScore;
 				}
 			}
 		}
