@@ -11,6 +11,7 @@ const HOST = 'api.lastunion.ml';
 class API {
 	/**
 		* Creates api
+		*
 		* @this {API}
 	*/
 	constructor() {
@@ -21,9 +22,10 @@ class API {
 
 	/**
 		* Send requset to backend
-		* @param {string} method - method (GET, POST)\
+		*
+		* @param {string} method - backend restfull api path (method)
 		* @param {string} httMethod - HTTP method (GET, POST)
-		* @param {} - request params
+		* @param {string} params - request params
 		* @this {API}
 		* @return {promise}
 	*/

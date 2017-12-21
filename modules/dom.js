@@ -2,8 +2,14 @@
 
 'use strict';
 
+/** Class DOM represents api for work with DOM */
 class DOM {
 
+  /**
+    * Creates DOM instance (singleton)
+    *
+    * @this {DOM}
+  */
 	constructor() {
 		if(DOM._instance) {
 			return DOM._instance;
@@ -13,6 +19,17 @@ class DOM {
 		this.loadedBlocks = {};
 	}
 
+  /**
+    * Inserts data into page
+    *
+    * @param {} parent -
+    * @param {} elem -
+    * @param {} id -
+    * @param {} upd -
+    * @param {} first
+    * @this {DOM}
+    * @return {boolean} - result of insertion
+  */
 	insertDom(parent, elem, id, upd, first) {
 		if (!this.loadedBlocks[id] || typeof this.loadedBlocks[id] === 'undefined' || upd == true) {
 			if(upd) {
@@ -28,6 +45,13 @@ class DOM {
 		return false;
 	}
 
+  /**
+    * Removes data from page
+    *
+    * @param {} id -
+    * @this {DOM}
+    * @return {boolean} - result of insertion
+  */
 	removeDOM(id) {
 		if(!this.loadedBlocks[id] || typeof this.loadedBlocks[id] === 'undefined') {
 			console.log('Can\'t remove ' + id + ' from DOM. Item not exists.');
