@@ -87,7 +87,7 @@ class Player {
 			gameSettings.canvas.drawImage(
 				this.dlgImg,
 				sceneCoords['tr'].x, 
-				sceneCoords['tr'].y - HEIGHT,
+				sceneCoords['tr'].y - HEIGHT  * gameSettings.scale,
 				100 * gameSettings.scale, 
 				100 * gameSettings.scale
 			);

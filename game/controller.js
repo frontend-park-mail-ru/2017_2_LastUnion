@@ -139,7 +139,7 @@ class GameController {
 		this.gameCtx.drawImage(
 			this.monsterSkinRun[this.skin],
 			0, 
-			this.gameSettings.height / 2 - 100,
+			this.gameSettings.height / 2 - 130 * this.gameSettings.scale,
 			130 * this.gameSettings.scale, 
 			130 * this.gameSettings.scale
 		);
