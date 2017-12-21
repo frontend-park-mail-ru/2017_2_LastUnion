@@ -6,7 +6,7 @@
             <span class="logo__text">LastUnion GAME</span>
         </a>
         <% if (loggedin) { %>
-        <span class="header__text">Your score is: <%= score %></span>
+        <span class="header__text" id="header__scores">Your score is: <%= score %></span>
         <% } %>
         <ul class="header__menu menu">
             <% if (loggedin) { %>

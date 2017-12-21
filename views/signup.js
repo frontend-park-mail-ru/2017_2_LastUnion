@@ -66,26 +66,27 @@ class SignUpView extends View {
 				const _this = this;
 				const obj = { 'obj': Form, 'id': 'SignUpForm', 'spec': 'Global' };
 				this.user.signup(login.value, passw.value, email.value, obj)
-					.then(function() {
-						Form.revert('SignUpForm');
-						console.log('User ' + login.value + ' registered successfully!');
-						_this.user.login(login.value, passw.value)
-							.then(function() {
-								_this.dom.removeDOM('LoginForm');
-								_this.dom.removeDOM('SignUpForm');
-								_this.dom.removeDOM('Menu');
-								_this.hide('Header');
-								_this.dom.insertDom(_this.body, Header.rend({
-									loggedin : _this.user.isAuth(),
-									score: _this.user.getScore()
-								}), 'Header', true, true);
-								_this.listenLinks();
-								_this.router.go('/menu/');
-							});
+					.then(function(signup_success) {
+						if(signup_success) {
+							Form.revert('SignUpForm');
+							console.log('User ' + login.value + ' registered successfully!');
+							_this.user.login(login.value, passw.value)
+								.then(function(signin_success) {
+									if(signin_success) {
+										_this.dom.removeDOM('LoginForm');
+										_this.dom.removeDOM('SignUpForm');
+										_this.dom.removeDOM('Menu');
+										_this.hide('Header');
+										_this.dom.insertDom(_this.body, Header.rend({
+											loggedin : _this.user.isAuth(),
+											score: _this.user.getScore()
+										}), 'Header', true, true);
+										_this.listenLinks();
+										_this.router.go('/menu/');
+									}
+								});
+						}
 					})
-					.catch(function(e) {
-						Form.err('SignUpForm', 'Global', e);
-					});
 				Form.submit('SignUpForm');
 			}
 		});

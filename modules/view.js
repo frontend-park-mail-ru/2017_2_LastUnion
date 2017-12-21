@@ -7,8 +7,13 @@ import Router from '../routes/router';
 import DOM from './dom';
 import User from './user';
 
+/** Class View represents View From MVC */
 class View {
-
+	/**
+	 * Creates View
+	 *
+	 * @this {View}
+	 */
 	constructor() {
 		this.dom = new DOM();
 		this.user = new User();
@@ -16,10 +21,12 @@ class View {
 		this.body = document.getElementsByTagName('body')[0];
 	}
 
-
+	/**
+	 * Goes through loaded blocks and handle links events
+	 */
 	listenLinks() {
 		const _this = this;
-		
+
 		for(let obj in this.dom.loadedBlocks) {
 			if(!this.dom.loadedBlocks[obj].listened) {
 				const links = this.dom.loadedBlocks[obj].html.getElementsByTagName('a');
@@ -36,6 +43,12 @@ class View {
 		}
 	}
 
+	/**
+	 * hide block
+	 *
+	 * @param {HTMLElement} obj - element
+	 * @this {View}
+	 */
 	hide(obj) {
 		const elem = this.dom.loadedBlocks[obj];
 		if(elem && typeof elem !== 'undefined') {
@@ -45,6 +58,12 @@ class View {
 		}
 	}
 
+	/**
+	 * Shows rendered view
+	 *
+	 * @param {HTMLElement} obj - element
+	 * @this {View}
+	 */
 	show(obj) {
 		const elem = this.dom.loadedBlocks[obj];
 		if(elem && typeof elem !== 'undefined') {

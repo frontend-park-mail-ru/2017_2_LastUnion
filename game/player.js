@@ -86,8 +86,8 @@ class Player {
 		if(this.dialogVisible && sceneCoords['tl'].x < 200) {
 			gameSettings.canvas.drawImage(
 				this.dlgImg,
-				sceneCoords['tr'].x + WIDTH, 
-				sceneCoords['tr'].y - HEIGHT,
+				sceneCoords['tr'].x, 
+				sceneCoords['tr'].y - HEIGHT  * gameSettings.scale,
 				100 * gameSettings.scale, 
 				100 * gameSettings.scale
 			);

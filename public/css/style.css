@@ -83,12 +83,15 @@ body {
   margin: 0;
 }
 .header__text {
-  font-size: 26px;
-  padding: 27px 20px;
+  font-size: 18px;
+  padding: 32px 0px;
+  display: block;
+  float: left;
 }
 /* PAGES */
 .text {
   padding: 20px;
+  display: block;
 }
 .text_small {
   font-size: 18px;
@@ -98,7 +101,7 @@ body {
 }
 .block {
   width: 350px;
-  padding: 50px;
+  padding: 50px 0 0;
 }
 .block_wide {
   width: 80%;
@@ -109,7 +112,7 @@ body {
 }
 .block__title {
   font-size: 26px;
-  padding: 20px;
+  padding: 0 20px 20px;
 }
 .nekromantum::before {
   background-image: url(/img/nekro.png);
@@ -141,6 +144,36 @@ body {
   width: 200px;
   text-align: left;
   float: left;
+}
+.key {
+  display: block;
+  font-size: 22px;
+  font-weight: bold;
+  width: 20px;
+  height: 20px;
+  padding: 10px;
+  text-decoration: none;
+  border-width: 2px;
+  border-style: solid;
+  border-color: #000000;
+  border-image: initial;
+  margin: 10px auto;
+}
+.list {
+  list-style: none;
+  margin: auto;
+}
+.list__item_inline {
+  float: left;
+  width: 30%;
+  margin: 0px 1%;
+}
+.list__item {
+  text-align: center;
+}
+.list__img {
+  width: 100%;
+  max-width: 280px;
 }
 /* FORMS */
 .form {

@@ -20,22 +20,32 @@ class ScoresView extends View {
 			loggedin : this.user.isAuth(),
 			score: this.user.getScore()
 		}), 'Header');
+
+		this.userScores = null;
 	}
 
 	initLeaderBoard() {
-		const userScores = this.user.getScores();
-		this.dom.insertDom(this.body, Scores.rend(userScores), 'Scores');
-		this.listenLinks();
+		const _this = this;
+		return this.user.getScores(10,0).then(function(data) {
+			if(data !== false) {
+				_this.userScores = {'Scores': data };
+				_this.dom.insertDom(_this.body, Scores.rend(_this.userScores), 'Scores', true);
+				_this.listenLinks();
+			}
+			return data;
+		})
 	}
 
 	constructPage() {
 		this.show('Header');
-		if (this.user.isAuth()) {
+		if (!this.user.isAuth()) {
 			console.error('Access denied.');
 			this.router.go('/signin/');
 		} else {
-			this.initLeaderBoard();
-			this.show('Scores');
+			const _this = this;
+			this.initLeaderBoard().then(function() {
+				_this.show('Scores');
+			});
 		}
 	}
 

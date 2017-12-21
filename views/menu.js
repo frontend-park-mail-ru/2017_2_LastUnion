@@ -19,7 +19,7 @@ class MenuView extends View {
 
 	init() {
 		this.dom.insertDom(this.body, Header.rend({
-			loggedin : this.user.isAuth(),
+			loggedin: this.user.isAuth(),
 			score: this.user.getScore()
 		}), 'Header');
 

@@ -4,9 +4,15 @@
 'use strict';
 
 import UrlCom from './urlcom';
+import User from '../modules/user';
 
+/** Class represents router in application. Allows  url routing. */
 class Router {
-
+	/**
+	 * Creates Router instance
+	 *
+	 * @this {Router}
+	 */
 	constructor() {
 		if(Router._instance) {
 			return Router._instance;
@@ -25,15 +31,36 @@ class Router {
 		}, false);
 	}
 
+
+	/**
+	 * Match url route with its view
+	 *
+	 * @param {string} url - url string
+	 * @param {string} view - path to view
+	 * @this {Router}
+	 */
 	addUrl(url, view) {
 		const Url = new UrlCom(url, view);
 		this.urls.push(Url);
 	}
 
+	/**
+	 * Returns current path
+	 *
+	 * @this {Router}
+	 * @return {string} Current path
+	 */
 	getUrl() {
 		return window.location.pathname;
 	}
 
+
+	/**
+	 * Redirect to new page
+	 *
+	 * @param {string} url -  url path to page
+	 * @this {Router}
+	 */
 	go(url) {
 		if (window.location.pathname === url) {
 			return;
@@ -42,6 +69,14 @@ class Router {
 		this.loadPage(url);
 	}
 
+
+
+	/**
+	 * Select the view for the page and call the method of its construction
+	 *
+	 * @param {string} url -  url path to page
+	 * @this {Router}
+	 */
 	loadPage(url) {
 		if (!url || typeof url === 'undefined' || url == null) {
 			url = this.getUrl();
@@ -66,7 +101,14 @@ class Router {
 
 		this.CurrentRoute = Route;
 		console.log('Loaded new page: ' + url);
-		Route.load();
+		const user = new User();
+		if(typeof user.isAuth() === 'undefined') {
+			user.getUser().then(function() {
+				Route.load();
+			});
+		} else {
+			Route.load();
+		}
 	}
 }
 

@@ -22,6 +22,7 @@ class LogoutView extends View {
 		this.user.logout()
 			.then(function() {
 				_this.dom.removeDOM('Scores');
+				_this.dom.removeDOM('Menu');
 				_this.hide('Header');
 				_this.dom.insertDom(_this.body, Header.rend({
 					loggedin : _this.user.isAuth(),
