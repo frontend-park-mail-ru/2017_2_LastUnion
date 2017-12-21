@@ -26,7 +26,7 @@ class ScoresView extends View {
 
 	initLeaderBoard() {
 		const _this = this;
-		return this.user.getScores().then(function(data) {
+		return this.user.getScores(10,0).then(function(data) {
 			if(data !== false) {
 				_this.userScores = {'Scores': data };
 				_this.dom.insertDom(_this.body, Scores.rend(_this.userScores), 'Scores', true);
