@@ -50,7 +50,7 @@ class User {
 	 *
 	 * @this {User}
 	 * @return {boolean}
-	*/
+	 */
 	getUser() {
 		const _this = this;
 		return this.api.sendReq('user/data', 'GET').then(function(response) {

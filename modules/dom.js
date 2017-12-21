@@ -8,7 +8,7 @@ class DOM {
   /**
    * Creates DOM instance (singleton)
    *
-    * @this {DOM}
+   * @this {DOM}
   */
 	constructor() {
 		if(DOM._instance) {
@@ -22,11 +22,11 @@ class DOM {
   /**
    * Inserts data into page
    *
-   * @param {} parent -
-   * @param {} elem -
-   * @param {} id -
-   * @param {} upd -
-   * @param {} first
+   * @param {HTMLElement} parent - element parent
+   * @param {HTMLElement} elem - element to inser
+   * @param {string} id - id of element
+   * @param {boolean} upd - flag (is it need to update element if it exists)
+   * @param {boolean} first - flag (insert element at the beginnig of the DOM)
    * @this {DOM}
    * @return {boolean} - result of insertion
    */
@@ -48,7 +48,7 @@ class DOM {
   /**
    * Removes data from page
    *
-   * @param {} id -
+   * @param {string} id - id of element
    * @this {DOM}
    * @return {boolean} - result of insertion
    */

@@ -22,7 +22,7 @@ class View {
 	}
 
 	/**
-	 *
+	 * Goes through loaded blocks and handle links events
 	 */
 	listenLinks() {
 		const _this = this;
@@ -44,9 +44,9 @@ class View {
 	}
 
 	/**
+	 * hide block
 	 *
-	 *
-	 * @param {} obj -
+	 * @param {HTMLElement} obj - element
 	 * @this {View}
 	 */
 	hide(obj) {
@@ -61,7 +61,7 @@ class View {
 	/**
 	 * Shows rendered view
 	 *
-	 * @param {} obj -
+	 * @param {HTMLElement} obj - element
 	 * @this {View}
 	 */
 	show(obj) {
