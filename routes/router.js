@@ -6,8 +6,13 @@
 import UrlCom from './urlcom';
 import User from '../modules/user';
 
+/** Class represents router in application. Allows  url routing. */
 class Router {
-
+	/**
+		* Creates Router instance
+		*
+		* @this {Router}
+	*/
 	constructor() {
 		if(Router._instance) {
 			return Router._instance;
@@ -26,15 +31,36 @@ class Router {
 		}, false);
 	}
 
+
+	/**
+		* Match url route with its view
+		*
+		* @param {string} url - url string
+		* @param {string} view - path to view
+		* @this {Router}
+	*/
 	addUrl(url, view) {
 		const Url = new UrlCom(url, view);
 		this.urls.push(Url);
 	}
 
+	/**
+		* Returns current path
+		*
+		* @this {Router}
+		* @return {string} Current path
+	*/
 	getUrl() {
 		return window.location.pathname;
 	}
 
+
+	/**
+		* ???????
+		*
+		* @param {string} url -  url srting
+		* @this {Router}
+	*/
 	go(url) {
 		if (window.location.pathname === url) {
 			return;
@@ -43,6 +69,14 @@ class Router {
 		this.loadPage(url);
 	}
 
+
+
+	/**
+		* ?????????
+		*
+		* @param {string} url srting
+		* @this {Router}
+	*/
 	loadPage(url) {
 		if (!url || typeof url === 'undefined' || url == null) {
 			url = this.getUrl();
