@@ -18,6 +18,7 @@ class MenuView extends View {
 	}
 
 	init() {
+		console.log("INIT")
 		this.dom.insertDom(this.body, Header.rend({
 			loggedin: this.user.isAuth(),
 			score: this.user.getScore()

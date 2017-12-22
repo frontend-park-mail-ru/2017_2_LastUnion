@@ -118,6 +118,46 @@ class Opponent {
 	
 	dialog() {
 		this.dialogVisible == false ? this.dialogVisible = true : this.dialogVisible = false;
+    }
+    
+    get state() {
+		return this._state;
+	}
+
+	set state(st) {
+		this._state = st;
+	}
+
+	set action(f) {
+		this._action = f;
+	}
+
+	get bottomCenterCoords() {
+		return this.geometry.bm;
+	}
+
+	get topLeftCoords() {
+		return this.geometry.tl;
+	}
+
+	get topRightCoords() {
+		return this.geometry.tr;
+	}
+
+	get bottomRightCoords() {
+		return this.geometry.br;
+	}
+
+	get bended() {
+		return this.state > 1;
+	}
+
+	get height() {
+		return Math.abs(this.geometry.tl._y - this.geometry.br._y);
+	}
+
+	get width() {
+		return Math.abs(this.geometry.tl._x - this.geometry.br._x);
 	}
 
 }

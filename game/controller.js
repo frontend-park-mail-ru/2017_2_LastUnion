@@ -106,7 +106,7 @@ class GameController {
 			this.runLogic();
 
 			this.drawSurface();
-			this.text('Score: ' + this.ScoreController.scoreValue, 60 + 80, 30 * this.gameSettings.scale, '#000000');
+			this.text('Score: ' + this.ScoreController.scoreValue, 60 + 80, 30, '#000000');
 			this.WorldObjectsController.redrawAllObjects(this.gameSettings);
 			this.PlayerController.draw(this.gameSettings);
 
@@ -229,7 +229,7 @@ class GameController {
 		nekro.src = '/img/nekro.png';
 		const _this = this;
 		nekro.onload = function() {
-			_this.gameCtx.drawImage(nekro, _this.gameCanvas.width / 2 - 100 * _this.gameSettings.scale, 80, imgWidth, imgHeight);
+			_this.gameCtx.drawImage(nekro, _this.gameCanvas.width / 2 - 100 * _this.gameSettings.scale, 0, imgWidth, imgHeight);
 		};
 	}
 	
