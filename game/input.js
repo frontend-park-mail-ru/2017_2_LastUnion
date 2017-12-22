@@ -12,7 +12,12 @@ function copyTouch(touch) {
 class InputController {
 
 	constructor (Controller) {
-		this.PlayerController = new Player();
+		this.useNet = true;
+		if(Controller.amount == 1) {
+			this.PlayerController = new Player();
+			this.useNet = false;
+		}
+		
 		this.Controller = Controller;
 		this.ongoingTouches = [];
 
@@ -20,16 +25,26 @@ class InputController {
 		document.addEventListener('keydown', function(event) {
 			switch(event.keyCode) {
 			case 87:
-				_this.PlayerController.jump();
+				if(!_this.useNet) {
+					_this.PlayerController.jump();
+				} else {
+					_this.Controller.NetController.send('cj');
+				}
 				break;
 			case 83:
-				_this.PlayerController.duck();
+				if(!_this.useNet) {
+					_this.PlayerController.duck();
+				} else {
+					_this.Controller.NetController.send('cd');
+				}	
 				break;
 			case 32:
-				if(!_this.Controller._over && _this.Controller.started) {
-					_this.Controller.pause();
-				} else {
-					_this.Controller.reset(true);
+				if(!_this.useNet) {
+					if(!_this.Controller._over && _this.Controller.started) {
+						_this.Controller.pause();
+					} else {
+						_this.Controller.reset(true);
+					}
 				}
 				break;
 			}
@@ -38,11 +53,18 @@ class InputController {
 		document.addEventListener('keyup', function(event) {
 			switch(event.keyCode) {
 			case 83:
-				_this.PlayerController.run();
+				if(!_this.useNet) {
+					_this.PlayerController.run();
+				} else {
+					_this.Controller.NetController.send('cr');
+				}
 				break;
 			case 87:
-				_this.PlayerController.jumpFinish();
-				break;
+				if(!_this.useNet) {
+					_this.PlayerController.jumpFinish();
+				} else {
+					_this.Controller.NetController.send('cl');
+				}
 			}
 		});
 
@@ -56,15 +78,25 @@ class InputController {
 				if(!_this.Controller._over && _this.Controller.started) {
 					if(touches[i].pageY - 80 > _this.Controller.gameCanvas.height / 2) {
 						if(touches[i].pageX < _this.Controller.gameCanvas.width / 2) {
-							_this.PlayerController.jump();
+							if(!_this.useNet) {
+								_this.PlayerController.jump();
+							} else {
+								_this.Controller.NetController.send('cj');
+							}
 						} else {
-							_this.PlayerController.duck();
+							if(!_this.useNet) {
+								_this.PlayerController.duck();
+							} else {
+								_this.Controller.NetController.send('cd');
+							}
 						}
 					} else {
-						if(!_this.Controller._over && _this.Controller.started) {
-							_this.Controller.pause();
-						} else {
-							_this.Controller.reset(true);
+						if(!_this.useNet) {
+							if(!_this.Controller._over && _this.Controller.started) {
+								_this.Controller.pause();
+							} else {
+								_this.Controller.reset(true);
+							}
 						}
 					}
 				} else {
@@ -85,9 +117,17 @@ class InputController {
 				if(idx >= 0) {
 					if(_this.ongoingTouches[idx].pageY - 80 > _this.Controller.gameCanvas.height / 2) {
 						if(_this.ongoingTouches[idx].pageX < _this.Controller.gameCanvas.width / 2) {
-							_this.PlayerController.jumpFinish();
+							if(!_this.useNet) {
+								_this.PlayerController.jumpFinish();
+							} else {
+								_this.Controller.NetController.send('cl');
+							}
 						} else {
-							_this.PlayerController.run();
+							if(!_this.useNet) {
+								_this.PlayerController.run();
+							} else {
+								_this.Controller.NetController.send('cr');
+							}
 						}
 					}
 					_this.ongoingTouches.splice(idx, 1);
