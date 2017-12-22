@@ -106,7 +106,7 @@ class GameController {
 			this.runLogic();
 
 			this.drawSurface();
-			this.text('Score: ' + this.ScoreController.scoreValue, 60, 30 * this.gameSettings.scale, '#000000');
+			this.text('Score: ' + this.ScoreController.scoreValue, 60 + 80, 30 * this.gameSettings.scale, '#000000');
 			this.WorldObjectsController.redrawAllObjects(this.gameSettings);
 			this.PlayerController.draw(this.gameSettings);
 
@@ -206,8 +206,8 @@ class GameController {
 
 	pauseOverlay() {
 		this.setOpacity();
-		this.text('Pause', this.gameCanvas.height / 2, 60, '#000000');
-		this.text('Press SPACE to continue', this.gameCanvas.height / 2 + 30, 30, '#555555');
+		this.text('Pause', this.gameCanvas.height / 2 + 80, 60, '#000000');
+		this.text('Press SPACE to continue', this.gameCanvas.height / 2 + 30 + 80, 30, '#555555');
 	}
 
 	gameover() {
@@ -221,15 +221,15 @@ class GameController {
 		const imgHeight = 200 * this.gameSettings.scale;
 		const imgWidth = imgHeight
 
-		this.text('Game Over!', 250, 60, '#000000');
-		this.text('Press SPACE to run again!', 300, 30, '#555555');
-		this.text('Your score: ' + this.ScoreController.scoreValue, imgHeight + 360, 60, '#000000');
+		this.text('Game Over!', 250 + 80, 60, '#000000');
+		this.text('Press SPACE to run again!', 300 + 80, 30, '#555555');
+		this.text('Your score: ' + this.ScoreController.scoreValue, imgHeight + 360 + 80, 60, '#000000');
 
 		const nekro = new Image();
 		nekro.src = '/img/nekro.png';
 		const _this = this;
 		nekro.onload = function() {
-			_this.gameCtx.drawImage(nekro, _this.gameCanvas.width / 2 - 100 * _this.gameSettings.scale, 0, imgWidth, imgHeight);
+			_this.gameCtx.drawImage(nekro, _this.gameCanvas.width / 2 - 100 * _this.gameSettings.scale, 80, imgWidth, imgHeight);
 		};
 	}
 	

@@ -57,7 +57,6 @@ class MultiplayerController {
         this.Player.init();
         this.Opponent.init();
 		this.WorldObjectsController.resetObjects();
-		this.ScoreController.init();
 		this.time = 0;
 		this.skin = 0;
 	}
@@ -69,7 +68,7 @@ class MultiplayerController {
 			this.gameSettings.scale = this.gameCanvas.width / DEFAULT_W;
 
 			this.drawSurface();
-			this.text('Your score: ' + this.NetController.PlayerScore + ' and Your opponent score is ' + this.NetController.OpponentScore, 60, 25 * this.gameSettings.scale, '#000000');
+			this.text('Your score: ' + this.NetController.PlayerScore + ' and Your opponent score is ' + this.NetController.OpponentScore, 60 + 80, 25 * this.gameSettings.scale, '#000000');
 			this.NetController.World.redrawAllObjects(this.gameSettings);
             this.NetController.Player.draw(this.gameSettings);
             this.NetController.Opponent.draw(this.gameSettings);
