@@ -29,7 +29,7 @@ class MultiplayerController {
 			this.monsterSkinRun.push(monsterImg);
 		}
         this.amount = 2;
-		this.MultiplayerCanvas = document.getElementById('Multiplayer');
+		this.MultiplayerCanvas = document.getElementById('multiplayer');
 		this.MultiplayerCtx = this.MultiplayerCanvas.getContext('2d');
 		this.MultiplayerSettings = {
 			'canvas' : this.MultiplayerCtx,
