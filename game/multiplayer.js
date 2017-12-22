@@ -46,7 +46,7 @@ class MultiplayerController {
         this.NetController = new Net(this.Player, this.Opponent, this.WorldObjectsController);
         this.InputController = new InputController(this);
 
-		this.NetController.connect('ws://api.lastunion.ml/websocket');
+		this.NetController.connect('wss://api.lastunion.ml/websocket');
 		
 	}
 
