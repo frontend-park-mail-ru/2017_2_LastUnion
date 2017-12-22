@@ -9,7 +9,7 @@ script:
 - npm run generate_bundle
 - scp -r ./public root@92.53.91.116:/var/www
 - scp default.conf root@92.53.91.116:/etc/nginx/conf.d/default.conf
-- ssh root@92.53.91.116 'uglifycss /var/www/public/css/style.css --output /var/www/public/css/style.css | uglifyjs /var/www/public/bundle.js -o /var/www/public/bundle.js'
+- ssh root@92.53.91.116 'uglifycss /var/www/public/css/style.css --output /var/www/public/css/style.css | uglifyjs /var/www/public/bundle.js -o /var/www/public/bundle.js | service nginx restart'
 before_install:
 - openssl aes-256-cbc -K $encrypted_402e7d50a36d_key -iv $encrypted_402e7d50a36d_iv
   -in lastunion_key.enc -out ../../lastunion_key -d
