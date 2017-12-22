@@ -30,7 +30,7 @@ class MultiplayerController {
 		}
         this.amount = 2;
 		this.gameCanvas = document.getElementById('multiplayer');
-		this.gameCtx = this.MultiplayerCanvas.getContext('2d');
+		this.gameCtx = this.gameCanvas.getContext('2d');
 		this.gameSettings = {
 			'canvas' : this.gameCtx,
 			'height' : this.gameCanvas.height,
