@@ -29,13 +29,13 @@ class MultiplayerController {
 			this.monsterSkinRun.push(monsterImg);
 		}
         this.amount = 2;
-		this.MultiplayerCanvas = document.getElementById('multiplayer');
-		this.MultiplayerCtx = this.MultiplayerCanvas.getContext('2d');
-		this.MultiplayerSettings = {
-			'canvas' : this.MultiplayerCtx,
-			'height' : this.MultiplayerCanvas.height,
-			'width' : this.MultiplayerCanvas.width,
-			'scale' : this.MultiplayerCanvas.width / DEFAULT_W,
+		this.gameCanvas = document.getElementById('multiplayer');
+		this.gameCtx = this.MultiplayerCanvas.getContext('2d');
+		this.gameSettings = {
+			'canvas' : this.gameCtx,
+			'height' : this.gameCanvas.height,
+			'width' : this.gameCanvas.width,
+			'scale' : this.gameCanvas.width / DEFAULT_W,
 			'defaultW' : DEFAULT_W
 		};
 		
