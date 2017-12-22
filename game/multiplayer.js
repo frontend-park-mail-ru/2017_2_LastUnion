@@ -50,7 +50,7 @@ class MultiplayerController {
 		
 	}
 
-	initMultiplayer(_started) {
+	initGame(_started) {
 		this.started = _started;
 		this.game = null;
 		this._over = false;
@@ -81,7 +81,7 @@ class MultiplayerController {
 	}
 
 	reset(_started) {
-		this.initMultiplayer(_started);
+		this.initGame(_started);
 		this.play();
 	}
 
