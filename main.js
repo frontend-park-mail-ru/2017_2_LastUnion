@@ -6,6 +6,7 @@ const R = new Router();
 
 import NotFoundView from './views/404';
 import GameView from './views/game';
+import MultiplayerView from './views/multiplayer';
 import ScoresView from './views/scores';
 import MenuView from './views/menu';
 import AboutView from './views/about';
@@ -17,6 +18,7 @@ import LogoutView from './views/logout';
 R.addUrl('/404', NotFoundView); // should be added first (!)
 R.addUrl('/', MenuView);
 R.addUrl('/play', GameView);
+R.addUrl('/multiplayer', MultiplayerView);
 R.addUrl('/scores', ScoresView);
 R.addUrl('/menu', MenuView);
 R.addUrl('/about', AboutView);

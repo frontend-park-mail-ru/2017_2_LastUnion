@@ -15,6 +15,7 @@ const routes = [
 	'/about',
 	'/rules',
 	'/play',
+	'/multiplayer',
 	'/scores',
 	'/logout',
 	'/404'
