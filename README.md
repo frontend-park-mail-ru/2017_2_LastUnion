@@ -1,12 +1,35 @@
-# LastUnion presents!
-[Super runner](https://lastunion.ml/signup) <-- Click to play our awesome game!
+# Lastunion
+Игра в жанре раннер
 
-### Our team
-* [Dmitry Zaytsev](https://github.com/HaseProgram)
-* [Alexandr Barulev](https://github.com/HustonMmmavr)
-* [Oleg Strelnikov](https://github.com/strelnikoff)
+[Сайт где можно поиграть](https://lastunion.ml)
+## Состав команды LastUnion:
+1) <a href="https://github.com/HaseProgram" style="font-style: italic;">Дмитрий Зайцев</a> АПО 21
+2) <a href="https://github.com/strelnikoff" style="font-style: italic;">Стрельников Олег</a> АПО 21
+3) <a href="https://github.com/HustonMmmavr" style="font-style: italic;">Барулев Александр</a> АПО 21
 
-### Installation
+## Бекенд
+[Репозиторий бека](https://github.com/java-park-mail-ru/LastUnion-09-2017/)
+
+## Фронтенд
+[Репозиторий фронта](https://github.com/frontend-park-mail-ru/2017_2_LastUnion)
+
+## Использемые технологии
+Java version 1.8
+
+Spring boot 1.5.9
+
+JavaScript
+
+Nginx
+
+## Документация
+Посмотреть API сервера можно тут: <a href="https://app.swaggerhub.com/apis/HustonMmmavr/server_api/1.0.0" style="font-weight: bold">Описаие Апи</a>
+
+### Запуск
+```sh
+$ git clone https://github.com/frontend-park-mail-ru/2017_2_LastUnion
+$ cd 2017_2_LastUnion/
+```
 
 Our application requires [Node.js](https://nodejs.org/) v6+ to run.
 
