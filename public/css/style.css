@@ -18,7 +18,6 @@ body {
   border-top: 3px solid #000;
   width: 100%;
   height: 80px;
-  position: absolute;
 }
 .header__container {
   height: 80px;
@@ -96,9 +95,6 @@ body {
 }
 .text_small {
   font-size: 18px;
-}
-.game {
-  width: 98%;
 }
 .block {
   width: 350px;

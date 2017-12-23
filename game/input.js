@@ -12,17 +12,18 @@ function copyTouch(touch) {
 class InputController {
 
 	constructor (Controller) {
-		this.useNet = true;
-		if(Controller.amount == 1) {
-			this.PlayerController = new Player();
-			this.useNet = false;
-		}
+		this.PlayerController = new Player();
 		
 		this.Controller = Controller;
 		this.ongoingTouches = [];
 
 		const _this = this;
 		document.addEventListener('keydown', function(event) {
+			if(Controller.amount == 1) {	
+				_this.useNet = false;
+			} else {
+				_this.useNet = true;
+			}
 			switch(event.keyCode) {
 			case 87:
 				if(!_this.useNet) {
@@ -39,18 +40,27 @@ class InputController {
 				}	
 				break;
 			case 32:
-				if(!_this.useNet) {
-					if(!_this.Controller._over && _this.Controller.started) {
+				if(!_this.Controller._over && _this.Controller.started) {
+					if(!_this.useNet) {
 						_this.Controller.pause();
-					} else {
-						_this.Controller.reset(true);
 					}
+				} else {
+					if(_this.useNet) {
+						_this.Controller.NetController.send("{\"command\": \"Ready\", \"arguments\": \"bab\"}");
+						_this.Controller.ready();
+					} else
+					_this.Controller.reset(true);
 				}
 				break;
 			}
 		});
 
 		document.addEventListener('keyup', function(event) {
+			if(Controller.amount == 1) {	
+				this.useNet = false;
+			} else {
+				this.useNet = true;
+			}
 			switch(event.keyCode) {
 			case 83:
 				if(!_this.useNet) {
@@ -69,6 +79,11 @@ class InputController {
 		});
 
 		this.Controller.gameCanvas.addEventListener("touchstart", function(event) {
+			if(Controller.amount == 1) {	
+				this.useNet = false;
+			} else {
+				this.useNet = true;
+			}
 			event.preventDefault();
 			const ctx = _this.Controller.gameCtx;
 			let touches = event.changedTouches;
@@ -91,13 +106,19 @@ class InputController {
 							}
 						}
 					} else {
-						if(!_this.useNet) {
-							if(!_this.Controller._over && _this.Controller.started) {
+						
+						if(!_this.Controller._over && _this.Controller.started) {
+							if(!_this.useNet) {
 								_this.Controller.pause();
-							} else {
-								_this.Controller.reset(true);
 							}
+						} else {
+							if(_this.useNet) {
+								_this.Controller.NetController.send("{\"command\": \"Ready\", \"arguments\": \"bab\"}");
+								_this.Controller.ready();
+							} else
+								_this.Controller.reset(true);
 						}
+						
 					}
 				} else {
 					_this.Controller.reset(true);
@@ -108,6 +129,11 @@ class InputController {
 			}
 		}, false);
 		this.Controller.gameCanvas.addEventListener("touchend", function(event) {
+			if(Controller.amount == 1) {	
+				this.useNet = false;
+			} else {
+				this.useNet = true;
+			}
 			event.preventDefault();
 			const ctx = _this.Controller.gameCtx;
 			let touches = event.changedTouches;

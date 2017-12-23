@@ -18,6 +18,7 @@ class MenuView extends View {
 	}
 
 	init() {
+		console.log("INIT")
 		this.dom.insertDom(this.body, Header.rend({
 			loggedin: this.user.isAuth(),
 			score: this.user.getScore()
@@ -30,8 +31,8 @@ class MenuView extends View {
 		if(this.user.isAuth()) {
 			items.menuitems.push('Scores');
 			items.links.push('/scores/');
-			items.menuitems.push('Multiplayer');
-			items.links.push('/multiplayer/');
+			//items.menuitems.push('Multiplayer');
+			//items.links.push('/multiplayer/');
 		}
 
 		this.dom.insertDom(this.body, Menu.rend(

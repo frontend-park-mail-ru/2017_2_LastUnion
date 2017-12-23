@@ -11,8 +11,13 @@ export default {
 	},
 
 	resizeInit : function() {
-		document.getElementById('multiplayer').width = document.body.clientWidth - 100;		
-		document.getElementById('multiplayer').height = document.getElementById('multiplayer').width / 16 * 8;
+		if( /Android|webOS|iPhone|iPad|iPod/i.test(navigator.userAgent) ) {
+			document.getElementById('multiplayer').width = window.innerWidth - 100;
+			document.getElementById('multiplayer').height = (window.innerWidth - 100) / 2;
+		} else {
+			document.getElementById('multiplayer').height = window.innerHeight - 100;
+			document.getElementById('multiplayer').width = document.getElementById('multiplayer').height * 2;
+		}	
 	},
 
 	resize : function() {

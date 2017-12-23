@@ -72,12 +72,12 @@ class MidObstacle extends WorldObject {
 		}
 		
 		// check non-Fatal collision
-		if (this.x <= playerBottomRight.x && playerBottomRight.x <= this.x+WIDTH && playerBottomRight.y > Y+WIDTH/2) {
+		if (this.x < playerBottomRight.x && playerBottomRight.x <= this.x+WIDTH * 2 && playerBottomRight.y > Y+WIDTH/2) {
 			result.isCollided = true;
 			result.isFatal = false;
 			
 			result.playerEffect = function (player, gameSettings) {
-				player.changePosition(-gameSettings.horSpeed*1.5,0);
+				player.changePosition(-gameSettings.horSpeed, 0);
 			};
 			
 			return result;

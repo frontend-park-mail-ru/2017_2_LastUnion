@@ -103,7 +103,7 @@ class Router {
 		console.log('Loaded new page: ' + url);
 		const user = new User();
 		if(typeof user.isAuth() === 'undefined') {
-			user.getUser().then(function() {
+			user.getUser().then(function() {		
 				Route.load();
 			});
 		} else {

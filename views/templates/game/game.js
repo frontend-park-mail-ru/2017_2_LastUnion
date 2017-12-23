@@ -10,9 +10,14 @@ export default {
 		return elem;
 	},
 
-	resizeInit : function() {
-		document.getElementById('game').width = document.body.clientWidth - 100;		
-		document.getElementById('game').height = document.getElementById('game').width / 16 * 8;
+	resizeInit : function() {	
+		if( /Android|webOS|iPhone|iPad|iPod/i.test(navigator.userAgent) ) {
+			document.getElementById('game').width = window.innerWidth - 100;
+			document.getElementById('game').height = (window.innerWidth - 100) / 2;
+		} else {
+			document.getElementById('game').height = window.innerHeight - 100;
+			document.getElementById('game').width = document.getElementById('game').height * 2;
+		}
 	},
 
 	resize : function() {

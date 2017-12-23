@@ -37,17 +37,18 @@ class MultiplayerController {
 			'width' : this.gameCanvas.width,
 			'scale' : this.gameCanvas.width / DEFAULT_W,
 			'defaultW' : DEFAULT_W
-		};
+        };
+        
+        this.user = new User();
 		
         this.Player = new Opponent();
         this.Opponent = new Opponent();
 
         this.WorldObjectsController = new WorldObjectsController();
-        this.NetController = new Net(this.Player, this.Opponent, this.WorldObjectsController);
+        this.NetController = new Net(this.Player, this.Opponent, this.WorldObjectsController, this, this.user._proto.login);
         this.InputController = new InputController(this);
 
 		this.NetController.connect('wss://api.lastunion.ml/websocket');
-		
 	}
 
 	initGame(_started) {
@@ -58,18 +59,19 @@ class MultiplayerController {
         this.Opponent.init();
 		this.WorldObjectsController.resetObjects();
 		this.time = 0;
-		this.skin = 0;
+        this.skin = 0;
+        this.time = 3;
 	}
 
 	redrawScene(prev) {
 		if(!this.NetController.over) {
 			this.gameSettings.height = this.gameCanvas.height;
 			this.gameSettings.width = this.gameCanvas.width;
-			this.gameSettings.scale = this.gameCanvas.width / DEFAULT_W;
+            this.gameSettings.scale = this.gameCanvas.width / DEFAULT_W;
 
 			this.drawSurface();
-			this.text('Your score: ' + this.NetController.PlayerScore + ' and Your opponent score is ' + this.NetController.OpponentScore, 60 + 80, 25 * this.gameSettings.scale, '#000000');
-			this.NetController.World.redrawAllObjects(this.gameSettings);
+			this.text('Your score: ' + this.NetController.PlayerScore + ' and Your opponent score is ' + this.NetController.OpponentScore, 60 + 80, 25, '#000000');
+			//this.NetController.World.redrawAllObjects(this.gameSettings);
             this.NetController.Player.draw(this.gameSettings);
             this.NetController.Opponent.draw(this.gameSettings);
 
@@ -85,6 +87,10 @@ class MultiplayerController {
 	}
 
 	drawSurface() {
+        this.time++;
+        if(this.time % 4 == 0) {
+            this.skin == 2 ? this.skin = 0 : this.skin++;
+        }
 		// Reset canvas
 		this.gameCtx.fillStyle = '#FFFFFF';
 		this.gameCtx.strokeStyle = '#000000';
@@ -134,7 +140,32 @@ class MultiplayerController {
 		this.gameCtx.fillStyle = '#FFFFFF';
 		this.gameCtx.fillRect(0, 0, this.gameCanvas.width, this.gameCanvas.height);
 		this.gameCtx.globalAlpha = 1.0;
-	}
+    }
+    
+    ready() {
+        this.gameCtx.fillStyle = '#FFFFFF';
+		this.gameCtx.fillRect(0, 0, this.gameCanvas.width, this.gameCanvas.height);
+		this.text('You are ready!', this.gameCanvas.height / 2, 60, '#000000');
+        this.text('Waiting for opponent to start', this.gameCanvas.height / 2 + 30, 40, '#555555');
+    }
+
+    starting() {
+        this.gameCtx.fillStyle = '#FFFFFF';
+		this.gameCtx.fillRect(0, 0, this.gameCanvas.width, this.gameCanvas.height);
+        this.text('Game is about to start!', this.gameCanvas.height / 2, 60, '#000000');
+        
+        const _this = this;
+        this.text(this.time, this.gameCanvas.height / 2 + 50, 60, '#000000');
+        if(this.time > 0) {
+            this.time--;
+            setTimeout(function() {
+                _this.starting();
+            }, 1000);
+        } else {
+            this.reset(true);
+        }
+        
+    }
 
 	startOverlay() {
 		this.setOpacity();
@@ -143,7 +174,6 @@ class MultiplayerController {
 	}
 
 	gameover() {
-		clearInterval(this.game);
 		this.gameoverOverlay();
 	}
 

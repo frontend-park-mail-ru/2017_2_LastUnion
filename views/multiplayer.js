@@ -17,7 +17,6 @@ class MultiplayerView extends View {
 			return MultiplayerView._instance;
 		}
 		MultiplayerView._instance = this;
-		this.init();
 	}
 
 	init() {
