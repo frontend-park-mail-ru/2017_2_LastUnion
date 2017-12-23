@@ -129,8 +129,8 @@ class Player {
 			this.changePosition(-3, 0);
 		} else {
 			if(this.offtop < 0) {
-				this.offtop += 6;
-				this.changePosition(6, 0);
+				this.offtop += 3;
+				this.changePosition(3, 0);
 			}
 		}
 	}

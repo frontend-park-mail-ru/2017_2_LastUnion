@@ -10,9 +10,9 @@ export default {
 		return elem;
 	},
 
-	resizeInit : function() {
-		document.getElementById('game').width = document.body.clientWidth - 100;		
-		document.getElementById('game').height = document.getElementById('game').width / 16 * 8;
+	resizeInit : function() {	
+		document.getElementById('game').height = window.innerHeight - 100;
+		document.getElementById('game').width = document.getElementById('game').height * 2;
 	},
 
 	resize : function() {

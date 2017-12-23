@@ -11,8 +11,8 @@ export default {
 	},
 
 	resizeInit : function() {
-		document.getElementById('multiplayer').width = document.body.clientWidth - 100;		
-		document.getElementById('multiplayer').height = document.getElementById('multiplayer').width / 16 * 8;
+		document.getElementById('multiplayer').height = window.innerHeight - 100;
+		document.getElementById('multiplayer').width = document.getElementById('multiplayer').height * 2;
 	},
 
 	resize : function() {
