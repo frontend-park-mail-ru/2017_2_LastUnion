@@ -37,13 +37,15 @@ class MultiplayerController {
 			'width' : this.gameCanvas.width,
 			'scale' : this.gameCanvas.width / DEFAULT_W,
 			'defaultW' : DEFAULT_W
-		};
+        };
+        
+        this.user = new User();
 		
         this.Player = new Opponent();
         this.Opponent = new Opponent();
 
         this.WorldObjectsController = new WorldObjectsController();
-        this.NetController = new Net(this.Player, this.Opponent, this.WorldObjectsController, this);
+        this.NetController = new Net(this.Player, this.Opponent, this.WorldObjectsController, this, this.user._proto.login);
         this.InputController = new InputController(this);
 
 		this.NetController.connect('wss://api.lastunion.ml/websocket');
@@ -69,7 +71,7 @@ class MultiplayerController {
 
 			this.drawSurface();
 			this.text('Your score: ' + this.NetController.PlayerScore + ' and Your opponent score is ' + this.NetController.OpponentScore, 60 + 80, 25, '#000000');
-			this.NetController.World.redrawAllObjects(this.gameSettings);
+			//this.NetController.World.redrawAllObjects(this.gameSettings);
             this.NetController.Player.draw(this.gameSettings);
             this.NetController.Opponent.draw(this.gameSettings);
 

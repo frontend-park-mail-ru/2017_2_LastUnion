@@ -9,7 +9,7 @@ import Opponent from './opponent';
 
 class Net {
 
-	constructor (Player, Opponent, World, Controller) {
+	constructor (Player, Opponent, World, Controller, login) {
 		if(Net._instance) {
 			return Net._instance;
 		}
@@ -29,6 +29,8 @@ class Net {
         this.World = World;
 
         this.Multiplayer = Controller;
+        this.login = login;
+        console.log(login);
 	}
 
 	connect(serverAddr){

@@ -64,6 +64,7 @@ class GameController {
 		this.ScoreController.init();
 		this.time = 0;
 		this.skin = 0;
+		this.writed = false;
 	}
 
 	runLogic() {
@@ -98,21 +99,28 @@ class GameController {
 	}
 
 	redrawScene(prev) {
-		if(!this._over && !this._pause) {
-			this.gameSettings.height = this.gameCanvas.height;
-			this.gameSettings.width = this.gameCanvas.width;
-			this.gameSettings.scale = this.gameCanvas.width / DEFAULT_W;
-			
-			this.runLogic();
-
-			this.drawSurface();
-			this.text('Score: ' + this.ScoreController.scoreValue, 60 + 80, 30, '#000000');
-			this.WorldObjectsController.redrawAllObjects(this.gameSettings);
-			this.PlayerController.draw(this.gameSettings);
-
+		if(!this._over) {
+			if(this._pause) {
+				this.pauseOverlay();
+			} else {
+				this.gameSettings.height = this.gameCanvas.height;
+				this.gameSettings.width = this.gameCanvas.width;
+				this.gameSettings.scale = this.gameCanvas.width / DEFAULT_W;
+				
+				this.runLogic();
+	
+				this.drawSurface();
+				this.text('Score: ' + this.ScoreController.scoreValue, 60 + 80, 30, '#000000');
+				this.WorldObjectsController.redrawAllObjects(this.gameSettings);
+				this.PlayerController.draw(this.gameSettings);
+			}
 			requestAnimationFrame(() => this.redrawScene());
+		} else {
+			this.gameoverOverlay();
 		}
-		if(this._over) {
+		
+		if(this._over && !this.writed) {
+			this.writed = true;
 			this.gameover();
 			if(this.UserController.isAuth()) {
 				const currentScore = this.UserController._proto.score;
@@ -195,7 +203,6 @@ class GameController {
 		}
 
 		this._pause = false;
-		this.play();
 	}
 
 	startOverlay() {
